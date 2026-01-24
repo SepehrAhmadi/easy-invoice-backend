@@ -1,0 +1,155 @@
+2025-12-08 	 13:42:13 	 14f09bbf-01dc-475c-b8a3-71743c5f8723 	 Error: Not allowed by CORS
+    at origin (D:\Sepehr\tutorial\nodeJS-tutorial\server.js:21:16)
+    at D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\cors\lib\index.js:219:13
+    at optionsCallback (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\cors\lib\index.js:199:9)
+    at corsMiddleware (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\cors\lib\index.js:204:7)
+    at Layer.handleRequest (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\router\index.js:342:13)
+    at D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\router\index.js:297:9
+    at processParams (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\router\index.js:582:12)
+    at next (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\router\index.js:291:5)
+    at logger (D:\Sepehr\tutorial\nodeJS-tutorial\middleware\logEvent.js:31:3)
+2025-12-08 	 13:42:29 	 add717ae-81d5-42b3-bba7-66c59714638e 	 Error: Not allowed by CORS
+    at origin (D:\Sepehr\tutorial\nodeJS-tutorial\server.js:21:16)
+    at D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\cors\lib\index.js:219:13
+    at optionsCallback (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\cors\lib\index.js:199:9)
+    at corsMiddleware (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\cors\lib\index.js:204:7)
+    at Layer.handleRequest (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\router\index.js:342:13)
+    at D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\router\index.js:297:9
+    at processParams (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\router\index.js:582:12)
+    at next (D:\Sepehr\tutorial\nodeJS-tutorial\node_modules\router\index.js:291:5)
+    at logger (D:\Sepehr\tutorial\nodeJS-tutorial\middleware\logEvent.js:31:3)
+2025-12-08 	 13:46:36 	 5be20599-2e3a-4b2c-bce7-4861d58f0bd4 	 Error Not allowed by CORS
+2025-12-08 	 13:47:02 	 f38080cf-a467-427e-82ae-55c2ac833a5d 	  Not allowed by CORS
+2025-12-09 	 11:44:01 	 65358c22-07b1-447f-8123-649e88b127b4 	 SyntaxError Unexpected token ''', ..."stname" : 'Ahmadi'}" is not valid JSON
+2025-12-09 	 11:44:47 	 fdb4e528-4702-43aa-bc55-ec41c41269b6 	 SyntaxError Expected property name or '}' in JSON at position 1 (line 1 column 2)
+2025-12-09 	 11:44:48 	 f4d96452-8bb5-4e7c-a3e8-9373c914726e 	 SyntaxError Expected property name or '}' in JSON at position 1 (line 1 column 2)
+2025-12-09 	 11:58:31 	 185dd201-3c24-4997-bbda-ad5774796a55 	 TypeError The "cb" argument must be of type function. Received undefined
+2025-12-09 	 11:59:13 	 11359616-b43b-48d2-aebb-ae4832a586b6 	 TypeError The "cb" argument must be of type function. Received undefined
+2025-12-09 	 12:00:24 	 291ad940-d508-4070-934a-f7ffc6e23bac 	 TypeError The "cb" argument must be of type function. Received undefined
+2025-12-09 	 12:02:06 	 599a9f25-64ee-49ff-872b-18ca2cf8f4c8 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:02:10 	 38792133-3b20-44e2-9466-017da9c8b307 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:02:22 	 bf9afe28-7b62-4eb2-abd4-a81bda304253 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:02:28 	 53372491-75ce-4929-aa5a-97c280a70ae4 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:02:29 	 49c83e4b-972e-4708-8538-d7eeeec63c71 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:02:30 	 5640f37f-cbc9-4d46-b482-0aaa3c6e7e22 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:04:05 	 35aef803-d037-4ec8-9b58-c054e2545fb5 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:04:06 	 c9961442-6e10-4158-8861-1344eb35da2c 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:04:07 	 e94c91f0-e57c-48f1-adcc-d8c884c9860e 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:04:07 	 29d734f7-8faf-4845-a130-b2ef775ec37e 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:04:07 	 e4e2008e-60ed-46f5-8d54-5289accce0e4 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:04:08 	 3c28f91e-9ce6-46b6-b175-9c49457be940 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:04:22 	 77482f38-b951-4bc7-9e95-30611cdcc0c3 	 TypeError data.employees.push is not a function
+2025-12-09 	 12:11:29 	 7dab41e3-c737-4bc2-b19a-eda39f2ede85 	 TypeError data.push is not a function
+2025-12-09 	 12:28:21 	 47166bd7-f3ce-4b13-a7ec-ea51aa782e13 	 ReferenceError Cannot access 'data' before initialization
+2025-12-09 	 12:37:12 	 6a55c017-ab3f-41c3-b169-da64cfe541ea 	 SyntaxError Expected ',' or '}' after property value in JSON at position 15 (line 3 column 3)
+2025-12-09 	 15:00:11 	 a6528afe-f4c0-4977-a243-1a719f3d560e 	 Error ENOENT: no such file or directory, open 'D:\Sepehr\tutorial\data\employees.json'
+2025-12-09 	 15:01:38 	 957e8e7e-9d77-4e46-892d-b3a8b6b5807e 	 Error ENOENT: no such file or directory, open 'D:\Sepehr\tutorial\data\employees.json'
+2025-12-09 	 15:01:38 	 f8f0e3cd-4c67-47ae-8f45-0e07da646759 	 Error ENOENT: no such file or directory, open 'D:\Sepehr\tutorial\data\employees.json'
+2025-12-09 	 15:21:30 	 fba2f514-c9d8-49c8-be8c-039ecee07d01 	 TypeError data.employees is not iterable
+2025-12-09 	 15:22:39 	 ac85b105-e775-4a8a-b552-d4172cdf733b 	 TypeError data.employees is not iterable
+2025-12-09 	 15:37:55 	 0795d18f-b57e-4db0-8be2-b55c8e58609d 	 TypeError Cannot read properties of undefined (reading 'firstname')
+2025-12-09 	 15:38:11 	 dac6151d-f304-4262-bf05-1bd699f9dd6e 	 ReferenceError Cannot access 'newEmployee' before initialization
+2025-12-09 	 15:38:43 	 afe32bd9-8c17-4159-8495-4e0e31b6144b 	 TypeError Cannot read properties of undefined (reading 'firstname')
+2025-12-10 	 09:48:16 	 f2412851-220b-4a8e-bd74-ba5f6a5d8dd5 	 Error Employee ID 35sb33418-d91b-4b7e-8c1d-884sa1659e20d not found
+2025-12-10 	 09:48:19 	 f78a3ff8-dd98-4fba-826f-4066763e7d57 	 Error Employee ID 35sb33418-d91b-4b7e-8c1d-884sa1659e20d not found
+2025-12-10 	 09:48:20 	 62c448db-0507-47b2-962c-dbf61cceb033 	 Error Employee ID 35sb33418-d91b-4b7e-8c1d-884sa1659e20d not found
+2025-12-10 	 09:48:21 	 c0a1cf3c-be85-4887-9e1d-902e0432318f 	 Error Employee ID 35sb33418-d91b-4b7e-8c1d-884sa1659e20d not found
+2025-12-10 	 09:48:21 	 c6ddabdb-9abd-4af3-80dc-908531db26c3 	 Error Employee ID 35sb33418-d91b-4b7e-8c1d-884sa1659e20d not found
+2025-12-10 	 09:48:22 	 0af4bb24-ffe8-449b-8d5a-9709958b1b0d 	 Error Employee ID 35sb33418-d91b-4b7e-8c1d-884sa1659e20d not found
+2025-12-10 	 09:48:22 	 72597530-0b4e-4bce-99cb-d20d463bad46 	 Error Employee ID 35sb33418-d91b-4b7e-8c1d-884sa1659e20d not found
+2025-12-10 	 09:48:22 	 2c6e17af-3acb-477d-9340-de9af614aca2 	 Error Employee ID 35sb33418-d91b-4b7e-8c1d-884sa1659e20d not found
+2025-12-10 	 09:48:23 	 e88ca621-097a-4098-bfc4-346f231d6ffd 	 Error Employee ID 35sb33418-d91b-4b7e-8c1d-884sa1659e20d not found
+2025-12-10 	 09:49:45 	 76045bf8-a895-4b99-9123-ec2af1207e9f 	 Error Employee ID 123 not found
+2025-12-10 	 09:49:46 	 4bf9a885-1a21-44f1-ba23-f815635e07d2 	 Error Employee ID 123 not found
+2025-12-10 	 10:08:45 	 80a84ef7-5ded-4d23-8fe2-3da2d0f2192a 	 ReferenceError res is not defined
+2025-12-10 	 10:08:47 	 c30ff3e0-e7ab-4afb-9d25-818dd3f67d8b 	 ReferenceError res is not defined
+2025-12-10 	 10:09:05 	 280f13a9-9b1f-4838-9e03-c1f8f0fa05cb 	 ReferenceError status is not defined
+2025-12-10 	 10:09:05 	 47617132-36dc-4b7a-ae92-cb66cad4e9b9 	 ReferenceError status is not defined
+2025-12-10 	 11:07:26 	 d8f521b4-e0fb-4fc7-808e-6cd208014969 	 TypeError Cannot destructure property 'username' of 'res.body' as it is undefined.
+2025-12-10 	 11:08:09 	 01dd7d8e-384e-4f1f-8f01-2b711089c8d0 	 TypeError Cannot destructure property 'username' of 'res.body' as it is undefined.
+2025-12-10 	 11:08:40 	 401c6112-6ca7-4b2f-84f5-2e05bfb1b9fb 	 ReferenceError statusCode is not defined
+2025-12-10 	 11:13:02 	 cf463abd-1cdf-4355-ab15-43b15c4fadbe 	 TypeError res.statusCode is not a function
+2025-12-20 	 10:15:13 	 64bded7b-b6a8-44cb-af90-a958f27d90f8 	 Error secretOrPrivateKey must have a value
+2025-12-20 	 10:15:50 	 1ee47dc5-b239-4930-899a-74bc1c072d84 	 Error secretOrPrivateKey must have a value
+2025-12-20 	 10:18:21 	 4a497098-bcbc-4eac-8c09-1a8b8d10ffda 	 Error secretOrPrivateKey must have a value
+2025-12-20 	 10:21:00 	 f7994e00-d2b6-448e-94cb-2bb277cbd168 	 ReferenceError cookie is not defined
+2025-12-20 	 12:39:23 	 108fda68-f5ad-49e8-89af-f029efcb95c1 	 TypeError res.sendS is not a function
+2025-12-27 	 12:36:13 	 f13596e3-02bb-4b4c-af7f-e761ac7cc4c0 	 ReferenceError refreshToken is not defined
+2025-12-27 	 12:36:19 	 177a99fe-b899-4fb2-bd83-9990c8301b3c 	 ReferenceError refreshToken is not defined
+2025-12-27 	 12:36:19 	 d59e776a-f9b6-476a-b34b-daa44d504193 	 ReferenceError refreshToken is not defined
+2025-12-27 	 13:21:59 	 c6cf3f0c-07fb-4f3c-83a4-eb93ea3899df 	 ReferenceError body is not defined
+2025-12-27 	 13:22:06 	 c9377a40-b4d6-4b55-96db-1b6ed758cd49 	 ReferenceError body is not defined
+2025-12-27 	 13:22:06 	 0eabbb0e-10e4-40b8-a03e-f379c6cb2abd 	 ReferenceError body is not defined
+2026-01-18 	 11:23:44 	 9dd0f64c-0d52-4080-8d0c-7e2ff3e0c12c 	 SyntaxError Expected double-quoted property name in JSON at position 28 (line 3 column 3)
+2026-01-18 	 13:32:07 	 849f4161-9381-4137-9064-f283c493b907 	 SyntaxError Expected double-quoted property name in JSON at position 57 (line 4 column 1)
+2026-01-18 	 13:33:29 	 8218174a-130b-459a-8d22-91b75cccf560 	 TypeError Company.save is not a function
+2026-01-18 	 13:35:55 	 80ca8c3b-a08e-4402-8998-1af3a5e92d8f 	 ReferenceError params is not defined
+2026-01-18 	 13:36:04 	 64d5812f-fca8-488d-8cb5-c0b81ff8fe1b 	 ReferenceError params is not defined
+2026-01-18 	 13:36:54 	 2a25db14-713b-4354-b068-e298fb18e059 	 ReferenceError params is not defined
+2026-01-18 	 13:37:09 	 62e2887a-68b8-4863-abe3-463d56062bc1 	 ReferenceError params is not defined
+2026-01-18 	 13:37:14 	 40cc9f83-96dd-4db1-a6e5-7f0159387c91 	 ReferenceError params is not defined
+2026-01-18 	 13:37:42 	 9887709e-d6cc-43db-a083-b65124991b24 	 ReferenceError params is not defined
+2026-01-18 	 13:37:55 	 6e400ec3-c324-45c4-9787-4ea995a5abf1 	 ReferenceError params is not defined
+2026-01-18 	 13:37:56 	 ea663ea9-4c37-4efb-9799-56f22cabf397 	 ReferenceError params is not defined
+2026-01-18 	 13:38:31 	 c92071f4-1b7d-4d0c-bd11-37d1f8fcc994 	 ReferenceError params is not defined
+2026-01-18 	 17:04:51 	 f1b6db43-e2e8-46c0-92a8-002d21f9ec63 	 ReferenceError json is not defined
+2026-01-18 	 17:04:54 	 2bfebb16-9747-466f-ae7e-2885984284bf 	 ReferenceError json is not defined
+2026-01-18 	 17:04:54 	 12c47b3f-05ea-48ec-8df0-0a5dd182229d 	 ReferenceError json is not defined
+2026-01-18 	 17:04:55 	 3691899b-dae7-4b66-a2d0-2e30385e4461 	 ReferenceError json is not defined
+2026-01-19 	 12:01:10 	 76e0fff3-caa5-416e-a54f-f47342f8ec29 	 SyntaxError Expected property name or '}' in JSON at position 4 (line 2 column 3)
+2026-01-19 	 12:01:25 	 d3e72c2e-4b94-43d2-9bf6-b09453975693 	 TypeError product.save(...).then(...).chath is not a function
+2026-01-19 	 12:03:04 	 544acfd4-eeb6-40dd-8f14-4b9134bcf2d2 	 TypeError product.save(...).then(...).chath is not a function
+2026-01-19 	 12:03:55 	 ee0024fd-dba7-4838-9b45-fb544fd66e1f 	 CastError Cast to ObjectId failed for value "696de12aa224b429d14f5b742" (type string) at path "_id" for model "Packaging"
+2026-01-19 	 12:04:43 	 e2f51492-fe9e-4aa4-9d92-071c9c2b4cd0 	 ReferenceError product is not defined
+2026-01-19 	 12:04:47 	 6c06e05a-5889-45b9-8edb-a9b020912643 	 ReferenceError product is not defined
+2026-01-19 	 12:05:39 	 22f818eb-ddba-4d8d-8768-8f746d9b3379 	 ReferenceError product is not defined
+2026-01-19 	 12:05:49 	 ad6cce9b-788b-493a-b881-d92016e5375b 	 ReferenceError product is not defined
+2026-01-19 	 14:45:47 	 9518acb8-74b5-4192-b955-60951c9ce467 	 TypeError Invalid sort() argument. Must be a string, object, array, or map.
+2026-01-19 	 14:49:06 	 2c2195a5-3cc8-4048-bf14-49b528c2f01c 	 ReferenceError products is not defined
+2026-01-19 	 14:49:34 	 b5679c45-a95d-4e32-bfe1-b0daf368a44a 	 ReferenceError product is not defined
+2026-01-19 	 15:07:35 	 b62778c0-af52-455d-b74d-e7aa30db40a2 	 TypeError Invalid sort() argument. Must be a string, object, array, or map.
+2026-01-19 	 16:25:10 	 557698ec-7990-4e41-bbbe-c472e1ad9c4f 	 TypeError invoice.items.save is not a function
+2026-01-19 	 16:25:14 	 7619ea0e-4df5-4df2-b063-97ac5f0aef02 	 TypeError invoice.items.save is not a function
+2026-01-19 	 16:25:17 	 d0795125-b55c-4f21-90a2-8164c0b02f30 	 TypeError invoice.items.save is not a function
+2026-01-19 	 16:25:18 	 012b44ae-307f-4b54-9499-b96cacc23f5e 	 TypeError invoice.items.save is not a function
+2026-01-19 	 16:57:21 	 967db205-eb24-404e-8a50-34001c9103d7 	 ReferenceError invoiceItem is not defined
+2026-01-19 	 16:57:23 	 0458773e-899f-4d79-a873-382c98bcc913 	 ReferenceError invoiceItem is not defined
+2026-01-19 	 16:58:39 	 9d5ad729-761a-484e-a355-1cca7a362233 	 TypeError invoice.items.save is not a function
+2026-01-19 	 17:04:49 	 132f5103-8ec1-4d6e-b0ba-3498360ae91d 	 TypeError invoice.items.insertOne is not a function
+2026-01-19 	 17:12:36 	 98b8b550-890d-4cab-87d5-e96d1f09ec7f 	 TypeError InvoiceItem is not a constructor
+2026-01-20 	 09:52:14 	 03abf2dc-142d-4ab7-ad7d-9ee54f9c5257 	 TypeError Namespace must be array-like (16 iterable integer values, 0-255)
+2026-01-20 	 09:52:21 	 6a61fdd5-938f-4d71-b176-72b8cd10bdd6 	 TypeError Namespace must be array-like (16 iterable integer values, 0-255)
+2026-01-20 	 09:53:43 	 604249bd-1a14-4168-933d-48177f721991 	 TypeError uuid is not a function
+2026-01-20 	 10:53:32 	 eee19d91-f746-4273-b9b2-02db0371d916 	 ObjectParameterError Parameter "filter" to find() must be an object, got "696e34b04d978f83b7dd57a9" (type string)
+2026-01-20 	 10:53:37 	 a9576b6b-33dc-4ccc-9248-d74bd80ec71d 	 ObjectParameterError Parameter "filter" to find() must be an object, got "696e34b04d978f83b7dd57a9" (type string)
+2026-01-20 	 10:53:37 	 5af99513-0a04-4821-9f44-96a0db7805c6 	 ObjectParameterError Parameter "filter" to find() must be an object, got "696e34b04d978f83b7dd57a9" (type string)
+2026-01-20 	 10:59:48 	 610503d2-83b1-4209-9e58-03dd6344f108 	 ObjectParameterError Parameter "filter" to find() must be an object, got "696e34b04d978f83b7dd57a9" (type string)
+2026-01-20 	 11:00:45 	 489fe5bc-e764-4112-9a1b-6863336496b9 	 ReferenceError invoice is not defined
+2026-01-20 	 11:00:46 	 ccfd7fde-9884-45c7-87de-f2719de3f247 	 ReferenceError invoice is not defined
+2026-01-20 	 11:00:47 	 8c3df79b-5691-4468-aeb0-fc466dacf360 	 ReferenceError invoice is not defined
+2026-01-20 	 11:12:24 	 b936dbdb-4b02-4a5d-a54c-9c5fd4422c3c 	 ReferenceError Cannot access 'invoiceItem' before initialization
+2026-01-20 	 11:12:42 	 1788049b-9b71-433b-9510-0ab27a104c55 	 ReferenceError invoice is not defined
+2026-01-20 	 11:12:43 	 640a4975-2780-436c-aa68-a942bd41967a 	 ReferenceError invoice is not defined
+2026-01-20 	 15:35:00 	 cfc9a139-d1ea-45b8-b866-9d51e2efa5d6 	 ReferenceError result is not defined
+2026-01-20 	 15:35:01 	 8e800037-6954-4088-bd27-04790f0367fd 	 ReferenceError result is not defined
+2026-01-20 	 15:37:52 	 5f86c4a5-a98a-4b6d-962b-20acae0764db 	 ReferenceError result is not defined
+2026-01-20 	 15:39:26 	 c593991e-e580-42be-b0d3-c821b6c817fc 	 ReferenceError result is not defined
+2026-01-20 	 15:39:42 	 b919817f-ce64-4e87-9de6-2e0aa86b40f8 	 ReferenceError result is not defined
+2026-01-20 	 15:48:44 	 c35eada3-384a-414b-91ed-c62a302983ad 	 TypeError invoiceItems.forEach is not a function
+2026-01-20 	 15:57:01 	 ea50fc31-05c8-4b67-b290-c526f8ae4491 	 TypeError packagings.map is not a function
+2026-01-21 	 10:41:31 	 c03027f2-0692-4f4c-a077-06a147a004e5 	 TypeError Cannot read properties of undefined (reading 'invoiceId')
+2026-01-21 	 13:13:19 	 a0b0795b-7553-4e87-8b85-9c07a3c3c378 	 TypeError packagings.map is not a function
+2026-01-21 	 14:22:58 	 76da78c1-1c43-427b-ae31-391a9576e325 	 ReferenceError packagingsReport is not defined
+2026-01-21 	 14:23:01 	 58f889d5-cca8-4943-a695-fbca0aa44f18 	 ReferenceError packagingsReport is not defined
+2026-01-21 	 14:23:02 	 45d15d9e-f753-41cb-b644-b11d503b4705 	 ReferenceError packagingsReport is not defined
+2026-01-21 	 15:54:04 	 7485c0d1-d355-4b8f-b64d-1dd9abc5e620 	 ReferenceError Cannot access 'Product' before initialization
+2026-01-21 	 15:54:08 	 2b387d6b-b483-4bc6-ad04-8068c794b93b 	 ReferenceError Cannot access 'Product' before initialization
+2026-01-21 	 15:54:09 	 4f2b564a-c8f8-4e7a-a084-5a1f630fb619 	 ReferenceError Cannot access 'Product' before initialization
+2026-01-21 	 15:54:55 	 ba40a28c-5e61-45ff-afac-b61178567501 	 ReferenceError Cannot access 'Product' before initialization
+2026-01-21 	 15:54:55 	 248bacb9-714b-4532-bf09-2b12aad49c73 	 ReferenceError Cannot access 'Product' before initialization
+2026-01-21 	 15:58:42 	 1913ce27-89a1-4f2f-ba1a-bce10e9739eb 	 ReferenceError Cannot access 'Product' before initialization
+2026-01-24 	 10:28:45 	 c5e0d26f-0c8e-4165-aaac-bb5a1d9496a3 	 ReferenceError invoiceItem is not defined
+2026-01-24 	 10:29:03 	 3e15f37d-200b-47ab-ad0f-74ce08424924 	 ReferenceError invoiceItem is not defined
+2026-01-24 	 10:29:32 	 5c49b47f-23e4-41e0-95e3-44ea471704ca 	 ReferenceError invoiceItem is not defined

@@ -1,0 +1,10 @@
+2026-01-24 	 10:38:13 	 undefined 	 GET 	 undefined 	 /report/packaging/696de14eb95e0e649ed4946c
+2026-01-24 	 10:39:32 	 undefined 	 GET 	 undefined 	 /report/packaging/696de14eb95e0e649ed4946c
+2026-01-24 	 10:41:12 	 undefined 	 GET 	 undefined 	 /report/packaging/696de14eb95e0e649ed4946c
+2026-01-24 	 10:41:49 	 128f0d1a-b7bd-4563-9d04-233e10f4d721 	 GET 	 undefined 	 /report/packaging/696de14eb95e0e649ed4946c
+2026-01-24 	 10:42:24 	 2c4bb96a-274e-4f7c-9139-81050447b5df 	 GET 	  	 /report/packaging/696de14eb95e0e649ed4946c
+2026-01-24 	 10:42:40 	 23fd64ac-2e1f-435a-aa50-60f90ac55ceb 	 GET 	 undefined 	 /report/packaging/696de14eb95e0e649ed4946c
+2026-01-24 	 11:00:26 	 1961b192-4f46-41cb-b5da-3e8aeb60bf8b 	 GET 	 undefined 	 /refresh
+2026-01-24 	 11:00:31 	 103a635d-c85a-4500-a8c7-2e1aaf5962f1 	 GET 	 undefined 	 /report/packaging/696de14eb95e0e649ed4946c
+2026-01-24 	 11:06:57 	 0a5d8437-94f9-4fab-bb52-024f079d3150 	 GET 	 undefined 	 /report/packaging/696de14eb95e0e649ed4946c
+2026-01-24 	 11:07:14 	 f3eeedc2-9420-4367-8457-5d7f5f076835 	 GET 	 undefined 	 /report/packaging/696de14eb95e0e649ed4946c
