@@ -8,10 +8,12 @@ const Unit = require("../../model/base/Unit");
 const { format } = require("date-fns");
 
 const getAllInvoiceItems = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req.body.invoiceId) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Invoice ID not found",
+      message: message.error.notFound,
     });
   }
   const invoiceItems = await InvoiceItem.find({
@@ -21,7 +23,7 @@ const getAllInvoiceItems = async (req, res) => {
   if (!invoiceItems) {
     return res.status(404).json({
       statusCode: 404,
-      message: "No Invoice items found",
+      message: message.success.dataReceived,
       data: [],
     });
   }
@@ -51,7 +53,7 @@ const getAllInvoiceItems = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Invoice items were successfuly received",
+    message: message.success.dataReceived,
     data: {
       invoiceItems: invoiceItemsData,
     },
@@ -59,10 +61,12 @@ const getAllInvoiceItems = async (req, res) => {
 };
 
 const getInvoiceItem = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req.body.invoiceId) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Invoice ID not found",
+      message: message.error.invoiceIdRequired,
     });
   }
 
@@ -72,14 +76,14 @@ const getInvoiceItem = async (req, res) => {
   if (!invoiceItems) {
     return res.status(404).json({
       statusCode: 404,
-      message: `Invoice ID ${req.body.invoiceId} no found`,
+      message: message.error.notFound,
     });
   }
 
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: `ID parameters is required`,
+      message: message.error.idRequired,
     });
   }
 
@@ -87,7 +91,7 @@ const getInvoiceItem = async (req, res) => {
   if (!invoiceItem) {
     return res.status(404).json({
       statusCode: 404,
-      message: `Invoice item ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
   const invoiceItemData = {
@@ -114,16 +118,18 @@ const getInvoiceItem = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Invoice item successfully received",
+    message: message.success.dataReceived,
     data: invoiceItemData,
   });
 };
 
 const addInvoiceItem = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req.body.invoiceId) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Invoice ID not found",
+      message: message.error.invoiceIdRequired,
     });
   }
 
@@ -136,7 +142,7 @@ const addInvoiceItem = async (req, res) => {
   ) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Please enter the require fields",
+      message: message.error.requireFields,
     });
   }
 
@@ -144,7 +150,7 @@ const addInvoiceItem = async (req, res) => {
   if (!invoice) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Invalid Invoice ID",
+      message: message.error.notFound,
     });
   }
 
@@ -158,7 +164,7 @@ const addInvoiceItem = async (req, res) => {
   if (!product) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid productId",
+      message: message.error.invalidProductId,
     });
   }
   invoiceItem.productId = req.body.productId;
@@ -168,7 +174,7 @@ const addInvoiceItem = async (req, res) => {
   if (!brand) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid brandId",
+      message: message.error.invalidBrandId,
     });
   }
   invoiceItem.brandId = req.body.brandId;
@@ -178,7 +184,7 @@ const addInvoiceItem = async (req, res) => {
   if (!packaging) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid packagingId",
+      message: message.error.invalidPackagingId,
     });
   }
   invoiceItem.packagingId = req.body.packagingId;
@@ -188,7 +194,7 @@ const addInvoiceItem = async (req, res) => {
   if (!unit) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid unitId",
+      message: message.error.invalidUnitId,
     });
   }
   invoiceItem.unitId = req.body.unitId;
@@ -197,7 +203,7 @@ const addInvoiceItem = async (req, res) => {
   if (req.body.amount <= 0) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Amount must be bigger than 0",
+      message: message.error.amountMin,
     });
   }
   invoiceItem.amount = req.body.amount;
@@ -205,7 +211,7 @@ const addInvoiceItem = async (req, res) => {
   if (req.body.unitCount <= 0) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Unit count must be bigger than 0",
+      message: message.error.unitCountMin,
     });
   }
   invoiceItem.unitCount = req.body.unitCount;
@@ -213,7 +219,7 @@ const addInvoiceItem = async (req, res) => {
   if (req.body.pageCount <= 0) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Page count must be bigger than 0",
+      message: message.error.pageCountMin,
     });
   }
   invoiceItem.pageCount = req.body.pageCount;
@@ -221,10 +227,9 @@ const addInvoiceItem = async (req, res) => {
   if (req.body.singlePrice <= 0) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Single price must be bigger than 0",
+      message: message.error.singlePriceMin,
     });
   }
-
   invoiceItem.singlePrice = req.body.singlePrice;
 
   let totalPice = invoiceItem.pageCount * invoiceItem.singlePrice;
@@ -239,23 +244,25 @@ const addInvoiceItem = async (req, res) => {
     .then(() => {
       res.status(200).json({
         statusCode: 200,
-        message: "Invoice item successfully added",
+        message: message.success.added,
       });
     })
     .catch((err) => {
       console.log(err);
       res.status(500).json({
         statusCode: 500,
-        message: "faild to add Invoice item",
+        message: message.error.faildToAdd,
       });
     });
 };
 
 const updateInvoiceItem = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: `ID parameters is required`,
+      message: message.error.idRequired,
     });
   }
 
@@ -263,7 +270,7 @@ const updateInvoiceItem = async (req, res) => {
   if (!invoiceItem) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Invoice item ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
 
@@ -276,7 +283,7 @@ const updateInvoiceItem = async (req, res) => {
   ) {
     res.status(400).json({
       statusCode: 400,
-      message: "Please enter the require fields",
+      message: message.error.requireFields,
     });
   }
 
@@ -287,7 +294,7 @@ const updateInvoiceItem = async (req, res) => {
   if (!product) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid productId",
+      message: message.error.invalidProductId,
     });
   }
   invoiceItem.productId = req.body.productId;
@@ -297,7 +304,7 @@ const updateInvoiceItem = async (req, res) => {
   if (!brand) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid brandId",
+      message: message.error.invalidBrandId,
     });
   }
   invoiceItem.brandId = req.body.brandId;
@@ -307,7 +314,7 @@ const updateInvoiceItem = async (req, res) => {
   if (!packaging) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid packagingId",
+      message: message.error.invalidPackagingId,
     });
   }
   invoiceItem.packagingId = req.body.packagingId;
@@ -317,7 +324,7 @@ const updateInvoiceItem = async (req, res) => {
   if (!unit) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid unitId",
+      message: message.error.invalidUnitId,
     });
   }
   invoiceItem.unitId = req.body.unitId;
@@ -326,7 +333,7 @@ const updateInvoiceItem = async (req, res) => {
   if (req.body.amount <= 0) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Amount must be bigger than 0",
+      message: message.error.amountMin,
     });
   }
   invoiceItem.amount = req.body.amount;
@@ -334,7 +341,7 @@ const updateInvoiceItem = async (req, res) => {
   if (req.body.unitCount <= 0) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Unit count must be bigger than 0",
+      message: message.error.unitCountMin,
     });
   }
   invoiceItem.unitCount = req.body.unitCount;
@@ -342,7 +349,7 @@ const updateInvoiceItem = async (req, res) => {
   if (req.body.pageCount <= 0) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Page count must be bigger than 0",
+      message: message.error.pageCountMin,
     });
   }
   invoiceItem.pageCount = req.body.pageCount;
@@ -350,7 +357,7 @@ const updateInvoiceItem = async (req, res) => {
   if (req.body.singlePrice <= 0) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Single price must be bigger than 0",
+      message: message.error.singlePriceMin,
     });
   }
 
@@ -366,23 +373,25 @@ const updateInvoiceItem = async (req, res) => {
     .then(() => {
       res.status(200).json({
         statusCode: 200,
-        message: "Invoice item successfully updated",
+        message: message.success.edited,
       });
     })
     .catch((err) => {
       console.log(err);
       res.status(500).json({
         statusCode: 500,
-        message: "faild to add Invoice item",
+        message: message.error.faildToEdit,
       });
     });
 };
 
 const deleteInvoiceItem = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: `ID parameters is required`,
+      message: message.error.idRequired,
     });
   }
 
@@ -390,7 +399,7 @@ const deleteInvoiceItem = async (req, res) => {
   if (!invoiceItem) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Invoice item ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
 
@@ -398,7 +407,7 @@ const deleteInvoiceItem = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Invoice item successfully deleted",
+    message: message.success.deleted,
   });
 };
 

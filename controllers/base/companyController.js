@@ -1,11 +1,13 @@
 const Company = require("../../model/base/Company");
 
 const getAllCompanies = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   const companies = await Company.find();
   if (!companies) {
     return res.status(200).json({
       statusCode: 200,
-      message: "No Companies found",
+      message: message.success.dataReceived,
       data: [],
     });
   }
@@ -18,7 +20,7 @@ const getAllCompanies = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Companies were successfully received",
+    message: message.success.dataReceived,
     data: {
       companies: companiesData,
     },
@@ -26,10 +28,12 @@ const getAllCompanies = async (req, res) => {
 };
 
 const getCompany = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: "ID parameter is required",
+      message: message.error.idRequired,
     });
   }
 
@@ -37,9 +41,9 @@ const getCompany = async (req, res) => {
   if (!company) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Company ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
-  };
+  }
   const companyData = {
     id: company.id,
     name: company.name,
@@ -47,16 +51,18 @@ const getCompany = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Company successfully received",
+    message: message.success.dataReceived,
     data: companyData,
   });
 };
 
 const addCompany = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req.body.name) {
     return res
       .status(400)
-      .json({ statusCode: 400, message: "name is required" });
+      .json({ statusCode: 400, message: message.error.requireFields });
   }
 
   const company = new Company();
@@ -68,23 +74,25 @@ const addCompany = async (req, res) => {
     .then(() => {
       res.status(201).json({
         statusCode: 201,
-        message: "Company successfully added",
+        message: message.success.added,
       });
     })
     .catch((err) => {
-      (err);
+      err;
       res.status(500).json({
         statusCode: 500,
-        message: "failed to add Company",
+        message: message.error.faildToAdd,
       });
     });
 };
 
 const updateCompany = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: "ID parameter is required",
+      message: message.error.idRequired,
     });
   }
 
@@ -92,14 +100,14 @@ const updateCompany = async (req, res) => {
   if (!company) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Company ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
 
   if (!req.body.name) {
     return res
       .status(400)
-      .json({ statusCode: 400, message: "Company name is required" });
+      .json({ statusCode: 400, message: message.error.requireFields });
   }
 
   company.name = req.body.name;
@@ -108,23 +116,25 @@ const updateCompany = async (req, res) => {
     .then(() => {
       res.status(200).json({
         statusCode: 200,
-        message: "Company successfully updated",
+        message: message.success.edited,
       });
     })
     .catch((err) => {
       console.log(err);
       res.status(500).json({
         statusCode: 500,
-        message: "failed to update Company",
+        message: message.error.faildToEdit,
       });
     });
 };
 
 const deleteCompany = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: "ID parameter is required",
+      message: message.error.idRequired,
     });
   }
 
@@ -132,7 +142,7 @@ const deleteCompany = async (req, res) => {
   if (!company) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Company ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
 
@@ -140,7 +150,7 @@ const deleteCompany = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Company successfully deleted",
+    message: message.success.deleted,
   });
 };
 

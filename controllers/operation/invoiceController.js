@@ -4,11 +4,13 @@ const Company = require("../../model/base/Company");
 const { format } = require("date-fns");
 
 const getAllInvoices = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   const invoices = await Invoice.find().exec();
   if (!invoices) {
     return res.status(200).json({
       statusCode: 200,
-      message: "No Invoices found",
+      message: message.error.notFound,
       data: [],
     });
   }
@@ -26,7 +28,7 @@ const getAllInvoices = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Invoices were successfuly received",
+    message: message.success.dataReceived,
     data: {
       invoices: invoicesData,
     },
@@ -34,10 +36,12 @@ const getAllInvoices = async (req, res) => {
 };
 
 const getInvoice = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: `ID parameters is required`,
+      message: message.error.idRequired,
     });
   }
 
@@ -45,7 +49,7 @@ const getInvoice = async (req, res) => {
   if (!invoice) {
     return res.status(404).json({
       statusCode: 404,
-      message: `Invoice ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
   const invoiceData = {
@@ -60,16 +64,18 @@ const getInvoice = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Invoice successfully received",
+    message: message.success.dataReceived,
     data: invoiceData,
   });
 };
 
 const addInvoice = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req.body.companyId && !req.body.invoiceDate) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Please enter the require fields",
+      message: message.error.requireFields,
     });
   }
 
@@ -77,7 +83,6 @@ const addInvoice = async (req, res) => {
 
   let invoiceNumber = 1001;
   let lastInvoiceNumber = await Invoice.findOne().sort({ invoiceNumber: -1 });
-  console.log("last invoice number", lastInvoiceNumber);
   if (lastInvoiceNumber) {
     invoiceNumber = lastInvoiceNumber.invoiceNumber + 1;
   }
@@ -87,7 +92,7 @@ const addInvoice = async (req, res) => {
   if (!company) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid companyId",
+      message: message.error.invalidCompanyId,
     });
   }
   invoice.companyId = req.body.companyId;
@@ -101,23 +106,25 @@ const addInvoice = async (req, res) => {
     .then(() => {
       res.status(200).json({
         statusCode: 200,
-        message: "Invoice successfully added",
+        message: message.success.added,
       });
     })
     .catch((err) => {
       console.log(err);
       res.status(500).json({
         statusCode: 500,
-        message: "faild to add Invoice",
+        message: message.error.faildToAdd,
       });
     });
 };
 
 const updateInvoice = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: `ID parameters is required`,
+      message: message.error.idRequired,
     });
   }
 
@@ -125,14 +132,14 @@ const updateInvoice = async (req, res) => {
   if (!invoice) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Invoice ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
 
   if (!req.body.companyId && !req.body.invoiceDate) {
     return res.status(400).json({
       statusCode: 400,
-      message: "Please enter the require fields",
+      message: message.error.requireFields,
     });
   }
 
@@ -140,7 +147,7 @@ const updateInvoice = async (req, res) => {
   if (!company) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid companyId",
+      message: message.error.invalidCompanyId,
     });
   }
   invoice.companyId = req.body.companyId;
@@ -155,23 +162,25 @@ const updateInvoice = async (req, res) => {
     .then(() => {
       res.status(200).json({
         statusCode: 200,
-        message: "Invoice successfully updated",
+        message: message.success.edited,
       });
     })
     .catch((err) => {
       console.log(err);
       res.status(500).json({
         statusCode: 500,
-        message: "faild to add Invoice",
+        message: message.error.faildToEdit,
       });
     });
 };
 
 const deleteInvoice = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: `ID parameters is required`,
+      message: message.error.idRequired,
     });
   }
 
@@ -179,7 +188,7 @@ const deleteInvoice = async (req, res) => {
   if (!invoice) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Invoice ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
 
@@ -187,7 +196,7 @@ const deleteInvoice = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Invoice successfully deleted",
+    message: message.success.deleted,
   });
 };
 

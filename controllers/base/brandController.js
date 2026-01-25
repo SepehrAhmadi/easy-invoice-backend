@@ -1,11 +1,13 @@
 const Brand = require("../../model/base/Brand");
 
 const getAllBrands = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   const brands = await Brand.find().exec();
   if (!brands) {
     return res.status(200).json({
       statusCode: 200,
-      message: "No Brands found",
+      message: message.success.dataReceived,
       data: [],
     });
   }
@@ -18,7 +20,7 @@ const getAllBrands = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Brands were successfully received",
+    message: message.success.dataReceived,
     data: {
       brands: brandsData,
     },
@@ -26,10 +28,12 @@ const getAllBrands = async (req, res) => {
 };
 
 const getBrand = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: "ID parameters is required",
+      message: message.error.idRequired,
     });
   }
 
@@ -37,7 +41,7 @@ const getBrand = async (req, res) => {
   if (!brand) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Brand ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
   const brandData = {
@@ -47,16 +51,18 @@ const getBrand = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Brand successfully received",
+    message: message.success.dataReceived,
     data: brandData,
   });
 };
 
 const addBrand = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req.body.name) {
     return res.status(400).json({
       statusCode: 400,
-      message: "name is required",
+      message: message.error.requireFields,
     });
   }
 
@@ -69,23 +75,25 @@ const addBrand = async (req, res) => {
     .then(() => {
       res.status(201).json({
         statusCode: 201,
-        message: "brand successfully added",
+        message: message.success.added,
       });
     })
     .catch((err) => {
-      (err);
+      err;
       res.status(500).json({
         statusCode: 500,
-        message: "faild to add Brand",
+        message: message.error.faildToAdd,
       });
     });
 };
 
 const updateBrand = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: "ID parametr id required",
+      message: message.error.idRequired,
     });
   }
 
@@ -93,14 +101,14 @@ const updateBrand = async (req, res) => {
   if (!brand) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Brand ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
 
   if (!req.body.name) {
     return res
       .status(400)
-      .json({ statusCode: 400, message: "Brand name is required" });
+      .json({ statusCode: 400, message: message.error.requireFields });
   }
 
   brand.name = req.body.name;
@@ -109,23 +117,24 @@ const updateBrand = async (req, res) => {
     .then(() => {
       res.status(200).json({
         statusCode: 200,
-        message: "Brand successfully updated",
+        message: message.success.edited,
       });
     })
     .catch((err) => {
-      
       res.status(500).json({
         statusCode: 500,
-        message: "failed to update Brand",
+        message: message.error.faildToEdit,
       });
     });
 };
 
 const deleteBrand = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: "ID parameter is required",
+      message: message.error.idRequired,
     });
   }
 
@@ -133,7 +142,7 @@ const deleteBrand = async (req, res) => {
   if (!brand) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Brand ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
 
@@ -141,7 +150,7 @@ const deleteBrand = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Brand successfully deleted",
+    message: message.success.deleted,
   });
 };
 

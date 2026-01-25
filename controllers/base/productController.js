@@ -3,11 +3,13 @@ const Packaging = require("../../model/base/Packaging");
 const Unit = require("../../model/base/Unit");
 
 const getAllProducts = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   const products = await Product.find().exec();
   if (!products) {
     return res.status(200).json({
       statusCode: 200,
-      message: "No Products found",
+      message: message.success.dataReceived,
       data: [],
     });
   }
@@ -20,7 +22,7 @@ const getAllProducts = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Products were successfuly received",
+    message: message.success.dataReceived,
     data: {
       products: productsData,
     },
@@ -28,10 +30,12 @@ const getAllProducts = async (req, res) => {
 };
 
 const getProduct = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: `ID parameters is required`,
+      message: message.error.idRequired,
     });
   }
 
@@ -39,7 +43,7 @@ const getProduct = async (req, res) => {
   if (!product) {
     return res.status(499).json({
       statusCode: 400,
-      message: `Product ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
   const productData = {
@@ -49,12 +53,13 @@ const getProduct = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Product successfully received",
+    message: message.success.dataReceived,
     data: productData,
   });
 };
 
 const addProduct = async (req, res) => {
+  const message = require("../../language/message")(req);
   if (
     !req.body.name &&
     !req.body.amount &&
@@ -63,7 +68,7 @@ const addProduct = async (req, res) => {
   ) {
     res.status(400).json({
       statusCode: 400,
-      message: "Please enter the require fields",
+      message: message.error.requireFields,
     });
   }
 
@@ -76,7 +81,7 @@ const addProduct = async (req, res) => {
   if (!package) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid packagingId",
+      message: message.error.invalidPackagingId,
     });
   }
   product.packagingId = req.body.packagingId;
@@ -86,7 +91,7 @@ const addProduct = async (req, res) => {
   if (!unit) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid unitId",
+      message: message.error.invalidUnitId,
     });
   }
   product.unitId = req.body.unitId;
@@ -97,23 +102,25 @@ const addProduct = async (req, res) => {
     .then(() => {
       res.status(200).json({
         statusCode: 200,
-        message: "Product successfully added",
+        message: message.success.added,
       });
     })
     .catch((err) => {
       console.log(err);
       res.status(500).json({
         statusCode: 500,
-        message: "faild to add Product",
+        message: message.error.faildToAdd,
       });
     });
 };
 
 const updateProduct = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: `ID parameters is required`,
+      message: message.error.idRequired,
     });
   }
 
@@ -121,7 +128,7 @@ const updateProduct = async (req, res) => {
   if (!product) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Product ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
 
@@ -133,7 +140,7 @@ const updateProduct = async (req, res) => {
   ) {
     res.status(400).json({
       statusCode: 400,
-      message: "Please enter the require fields",
+      message: message.error.requireFields,
     });
   }
 
@@ -144,7 +151,7 @@ const updateProduct = async (req, res) => {
   if (!package) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid packagingId",
+      message: message.error.invalidPackagingId,
     });
   }
   product.packagingId = req.body.packagingId;
@@ -154,7 +161,7 @@ const updateProduct = async (req, res) => {
   if (!unit) {
     return res.status(400).json({
       statusCode: 400,
-      message: "invalid unitId",
+      message: message.error.invalidUnitId,
     });
   }
   product.unitId = req.body.unitId;
@@ -165,23 +172,25 @@ const updateProduct = async (req, res) => {
     .then(() => {
       res.status(200).json({
         statusCode: 200,
-        message: "Product successfully updated",
+        message: message.success.edited,
       });
     })
     .catch((err) => {
       console.log(err);
       res.status(500).json({
         statusCode: 500,
-        message: "faild to add Product",
+        message: message.error.faildToEdit,
       });
     });
 };
 
 const deleteProduct = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   if (!req?.params?.id) {
     return res.status(400).json({
       statusCode: 400,
-      message: `ID parameters is required`,
+      message: message.error.idRequired,
     });
   }
 
@@ -189,7 +198,7 @@ const deleteProduct = async (req, res) => {
   if (!product) {
     return res.status(400).json({
       statusCode: 400,
-      message: `Product ID ${req.params.id} not found`,
+      message: message.error.notFound,
     });
   }
 
@@ -197,7 +206,7 @@ const deleteProduct = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Product successfully deleted",
+    message: message.success.deleted,
   });
 };
 

@@ -5,6 +5,8 @@ const Units = require("../../model/base/Unit");
 const Product = require("../../model/base/Product");
 
 const getCompanies = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   const companies = await Company.find().exec();
 
   const companiesData = companies.map((item) => {
@@ -13,7 +15,7 @@ const getCompanies = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Companies were successfully received",
+    message: message.success.dataReceived,
     data: {
       companies: companiesData,
     },
@@ -21,6 +23,8 @@ const getCompanies = async (req, res) => {
 };
 
 const getBrands = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   const brands = await Brand.find().exec();
 
   const brandsData = brands.map((item) => {
@@ -29,7 +33,7 @@ const getBrands = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Companies were successfully received",
+    message: message.success.dataReceived,
     data: {
       brands: brandsData,
     },
@@ -37,21 +41,23 @@ const getBrands = async (req, res) => {
 };
 
 const getProducts = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   const products = await Product.find().exec();
 
   const productsData = products.map((item) => {
     return {
       id: item._id,
       name: `${item.name} - ${item.packagingName} ${item.amount} ${item.unitName}ی`,
-      packagingId : item.packagingId,
-      unitId : item.unitId,
-      unitAmount : item.amount,
+      packagingId: item.packagingId,
+      unitId: item.unitId,
+      unitAmount: item.amount,
     };
   });
 
   res.status(200).json({
     statusCode: 200,
-    message: "Product were successfully received",
+    message: message.success.dataReceived,
     data: {
       products: productsData,
     },
@@ -59,6 +65,8 @@ const getProducts = async (req, res) => {
 };
 
 const getPackagings = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   const packaging = await Packaging.find().exec();
 
   const packagingsData = packaging.map((item) => {
@@ -67,7 +75,7 @@ const getPackagings = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Packagings were successfully received",
+    message: message.success.dataReceived,
     data: {
       packagings: packagingsData,
     },
@@ -75,6 +83,8 @@ const getPackagings = async (req, res) => {
 };
 
 const getUnits = async (req, res) => {
+  const message = require("../../language/message")(req);
+
   const units = await Units.find().exec();
 
   const unitsData = units.map((item) => {
@@ -83,7 +93,7 @@ const getUnits = async (req, res) => {
 
   res.status(200).json({
     statusCode: 200,
-    message: "Packagings were successfully received",
+    message: message.success.dataReceived,
     data: {
       units: unitsData,
     },
