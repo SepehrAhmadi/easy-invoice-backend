@@ -8,6 +8,9 @@ module.exports = (req) => {
         added: "Data successfully added",
         edited: "Data successfully updated",
         deleted: "Data successtully deleted",
+        login: "Wellcome to the dashoard",
+        logout: "You have successfully logout",
+        userCreate: "Your account successfully created",
       },
       error: {
         idRequired: "ID parametr is required",
@@ -26,6 +29,10 @@ module.exports = (req) => {
         unitCountMin: "Unit count must be bigger than 0",
         pageCountMin: "Page count must be bigger than 0",
         singlePriceMin: "Single price must be bigger than 0",
+        userAndPassRequired: "Username and Password are required",
+        usernameNotFond: "There is no user with this name",
+        userAndPassNotMatch: "Username and Password doesn't match",
+        userExist: "This username alredy exist",
       },
     };
   } else {
@@ -35,6 +42,9 @@ module.exports = (req) => {
         added: "اطلاعات مد نظر با موفقیت اضافه گردید",
         edited: "اطلاعات مد نظر با موفقیت ویرایش گردید",
         deleted: "اطلاعات مد نظر با موفقیت حدف گردید",
+        login: "به سامانه خوش آمدید",
+        logout: "با موفقیت از سامانه خارج شدید",
+        userCreate: "حساب کاربری شما ایجاد شد",
       },
       error: {
         idRequired: "شناسه الزامی می باشد",
@@ -53,6 +63,11 @@ module.exports = (req) => {
         unitCountMin: "مقدار اندازه گیری باید بیشتر از صفر باشد",
         pageCountMin: "تعدا صفحه باید بیشتر از صفر باشد",
         singlePriceMin: "قیمت واحد باید بیشتر از صفر باشد",
+        userAndPassRequired: "نام کاربری و رمز عبور الزامی می باشد",
+        usernameNotFond: "کاربری با این نام کاربری وجود ندارد",
+        userAndPassNotMatch: "نام کاربری و کلمه رمز عبور تطابق ندارد",
+
+        userExist: "این نام کاربری وجود دارد",
       },
     };
   }

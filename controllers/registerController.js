@@ -2,11 +2,13 @@ const User = require("../model/User");
 const bcrypt = require("bcrypt");
 
 const handleNewUser = async (req, res) => {
+  const message = require("../language/message")(req);
+
   const { username: user, password: pswd } = req.body;
   if (!user || !pswd)
     return res.status(400).json({
       statusCode: 400,
-      message: "Username and Password are required",
+      message: message.error.userAndPassRequired,
     });
 
   // cehck duplicated usernaem
@@ -14,22 +16,22 @@ const handleNewUser = async (req, res) => {
   if (duplicate)
     return res.status(409).json({
       statusCode: 409,
-      message: `username ${user} alredy exist`,
+      message: message.error.userExist,
     });
 
   try {
     //  encryot the password
     const hashedPassword = await bcrypt.hash(pswd, 10);
-    
+
     const result = await User.create({
       username: user.toLowerCase(),
       password: hashedPassword,
     });
-    (result);
+    result;
 
     res.status(201).json({
       statusCode: 201,
-      message: `New User ${user} created.`,
+      message: message.success.userCreate,
     });
   } catch (err) {
     res.status(500).json({

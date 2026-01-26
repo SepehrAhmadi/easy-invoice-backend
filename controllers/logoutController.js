@@ -2,6 +2,8 @@ const User = require("../model/User")
 
 
 const handleLogout = async (req, res) => {
+  const message = require("../language/message")(req);
+
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.sendStatus(204); // no content
 
@@ -27,7 +29,7 @@ const handleLogout = async (req, res) => {
   });
   res.status(200).json({
     statusCode: 200,
-    message: `User ${foundUser.username} successfully logged out.`,
+    message: message.success.logout,
   });
 };
 
