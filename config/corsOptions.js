@@ -1,3 +1,4 @@
+const credentials = require("../middleware/credentials");
 const allowedOrigins = require("./allowedOrigins");
 
 const coreOption = {
@@ -9,6 +10,7 @@ const coreOption = {
     }
   },
   optionsSuccessStatus: 200,
+  credentials: true,
 };
 
 module.exports = coreOption;

@@ -42,8 +42,10 @@ const handleLogin = async (req, res) => {
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      sameSite: "Lax",
+      secure: false,
+      // secure: process.env.NODE_ENV === "production",
+      // sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     });
     return res.status(200).json({
       statusCode: 200,
