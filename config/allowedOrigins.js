@@ -1,4 +1,4 @@
-const allowedOrigins = ["https://yoursite.com", "htpp://localhost:3500"];
+const allowedOrigins = ["https://yoursite.com", "http://localhost:3000"];
 
 
 module.exports = allowedOrigins
