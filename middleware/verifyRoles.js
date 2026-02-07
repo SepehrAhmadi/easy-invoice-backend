@@ -11,9 +11,9 @@ const verifyRoles = (...allowedRoles) => {
       .map((role) => rolesArray.includes(role))
       .find((val) => val === true);
     if (!result) {
-      return res.status(401).json({
-        statusCode: 401,
-        message: "Unauthorized , You Dont have permission",
+      return res.status(403).json({
+        statusCode: 403,
+        message: "Forbidden , You Dont have permission",
       });
     }
     next();
