@@ -9,6 +9,7 @@ const companySchema = new Schema({
     type: Number,
     enum: [1, 2], // 1 -> legalEntity & 2 -> individual
   },
+  typeTitle: String,
 });
 
 module.exports = mongoose.model("Company", companySchema);

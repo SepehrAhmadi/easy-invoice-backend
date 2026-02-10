@@ -1,5 +1,11 @@
 const Company = require("../../model/base/Company");
 
+// company type
+const COMPANY_TYPE = {
+  LEGAL_ENTITY: 1,
+  INDIVIDUAL: 2,
+};
+
 const getAllCompanies = async (req, res) => {
   const message = require("../../language/message")(req);
 
@@ -15,6 +21,8 @@ const getAllCompanies = async (req, res) => {
     return {
       id: item.id,
       type: item.type,
+      typeTitle:
+        item.type === COMPANY_TYPE.LEGAL_ENTITY ? "legal entity" : "individual",
       name: item.name,
       address: item.address,
       phone: item.phone,
@@ -50,6 +58,10 @@ const getCompany = async (req, res) => {
   const companyData = {
     id: company.id,
     type: company.type,
+    typeTitle:
+      company.type === COMPANY_TYPE.LEGAL_ENTITY
+        ? "legal entity"
+        : "individual",
     name: company.name,
     address: company.address,
     phone: company.phone,
@@ -66,7 +78,7 @@ const addCompany = async (req, res) => {
   const message = require("../../language/message")(req);
 
   if (
-    !req.body.type &&
+    ![1, 2].includes(req.body.type) &&
     !req.body.name &&
     !req.body.address &&
     !req.body.phone
@@ -79,6 +91,7 @@ const addCompany = async (req, res) => {
   const company = new Company();
 
   company.type = req.body.type;
+  company.typeTitle = req.body.type === 1 ? "legal entity" : "individual";
   company.name = req.body.name;
   company.address = req.body.address;
   company.phone = req.body.phone;
@@ -119,7 +132,7 @@ const updateCompany = async (req, res) => {
   }
 
   if (
-    !req.body.type &&
+    ![1, 2].includes(req.body.type) &&
     !req.body.name &&
     !req.body.address &&
     !req.body.phone
@@ -130,6 +143,7 @@ const updateCompany = async (req, res) => {
   }
 
   company.type = req.body.type;
+  company.typeTitle = req.body.type === 1 ? "legal entity" : "individual";
   company.name = req.body.name;
   company.address = req.body.address;
   company.phone = req.body.phone;

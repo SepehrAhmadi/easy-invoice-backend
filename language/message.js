@@ -33,6 +33,8 @@ module.exports = (req) => {
         usernameNotFond: "There is no user with this name",
         userAndPassNotMatch: "Username and Password doesn't match",
         userExist: "This username alredy exist",
+        noPermission: "You dont have Permission",
+        noRole: "Without any role",
       },
     };
   } else {
@@ -66,8 +68,9 @@ module.exports = (req) => {
         userAndPassRequired: "نام کاربری و رمز عبور الزامی می باشد",
         usernameNotFond: "کاربری با این نام کاربری وجود ندارد",
         userAndPassNotMatch: "نام کاربری و کلمه رمز عبور تطابق ندارد",
-
         userExist: "این نام کاربری وجود دارد",
+        noPermission: "شما به این قست دسترسی ندارید",
+        noRole: "هیچ دسترسی وجود ندارد",
       },
     };
   }

@@ -1,9 +1,11 @@
 const verifyRoles = (...allowedRoles) => {
   return (req, res, next) => {
+    const message = require("../language/message")(req);
+
     if (!req?.roles) {
       return res.status(401).json({
         statusCode: 401,
-        message: "Unauthorized , Without any roles",
+        message: message.error.noRole,
       });
     }
     const rolesArray = [...allowedRoles];
@@ -13,13 +15,11 @@ const verifyRoles = (...allowedRoles) => {
     if (!result) {
       return res.status(403).json({
         statusCode: 403,
-        message: "Forbidden , You Dont have permission",
+        message: message.error.noPermission,
       });
     }
     next();
   };
 };
 
-module.exports = verifyRoles
-
-
+module.exports = verifyRoles;
