@@ -13,8 +13,11 @@ const getAllCompanies = async (req, res) => {
   }
   const companiesData = companies.map((item) => {
     return {
-      name: item.name,
       id: item.id,
+      type: item.type,
+      name: item.name,
+      address: item.address,
+      phone: item.phone,
     };
   });
 
@@ -46,7 +49,10 @@ const getCompany = async (req, res) => {
   }
   const companyData = {
     id: company.id,
+    type: company.type,
     name: company.name,
+    address: company.address,
+    phone: company.phone,
   };
 
   res.status(200).json({
@@ -59,7 +65,12 @@ const getCompany = async (req, res) => {
 const addCompany = async (req, res) => {
   const message = require("../../language/message")(req);
 
-  if (!req.body.name) {
+  if (
+    !req.body.type &&
+    !req.body.name &&
+    !req.body.address &&
+    !req.body.phone
+  ) {
     return res
       .status(400)
       .json({ statusCode: 400, message: message.error.requireFields });
@@ -67,7 +78,10 @@ const addCompany = async (req, res) => {
 
   const company = new Company();
 
+  company.type = req.body.type;
   company.name = req.body.name;
+  company.address = req.body.address;
+  company.phone = req.body.phone;
 
   company
     .save()
@@ -104,13 +118,22 @@ const updateCompany = async (req, res) => {
     });
   }
 
-  if (!req.body.name) {
+  if (
+    !req.body.type &&
+    !req.body.name &&
+    !req.body.address &&
+    !req.body.phone
+  ) {
     return res
       .status(400)
       .json({ statusCode: 400, message: message.error.requireFields });
   }
 
+  company.type = req.body.type;
   company.name = req.body.name;
+  company.address = req.body.address;
+  company.phone = req.body.phone;
+
   company
     .save()
     .then(() => {
