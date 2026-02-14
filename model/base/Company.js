@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const companySchema = new Schema({
   name: String,
   address: String,
-  phone: Number,
+  phone: String,
   type: {
     type: Number,
     enum: [1, 2], // 1 -> legalEntity & 2 -> individual
