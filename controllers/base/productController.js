@@ -15,8 +15,14 @@ const getAllProducts = async (req, res) => {
   }
   const productsData = products.map((item) => {
     return {
-      name: item.name,
       id: item.id,
+      name: item.name,
+      amount: item.amount,
+      packagingId: item.packagingId,
+      packagingName: item.packagingName,
+      packagingType: item.packagingType,
+      unitId: item.unitId,
+      unitName: item.unitName,
     };
   });
 
@@ -49,6 +55,12 @@ const getProduct = async (req, res) => {
   const productData = {
     id: product.id,
     name: product.name,
+    amount: product.amount,
+    packagingId: product.packagingId,
+    packagingName: product.packagingName,
+    packagingType: product.packagingType,
+    unitId: product.unitId,
+    unitName: product.unitName,
   };
 
   res.status(200).json({
@@ -86,6 +98,7 @@ const addProduct = async (req, res) => {
   }
   product.packagingId = req.body.packagingId;
   product.packagingName = package.name;
+  product.packagingType = package.type;
 
   const unit = await Unit.findById(req.body.unitId);
   if (!unit) {
@@ -156,6 +169,7 @@ const updateProduct = async (req, res) => {
   }
   product.packagingId = req.body.packagingId;
   product.packagingName = package.name;
+  product.packagingType = package.type;
 
   const unit = await Unit.findById(req.body.unitId);
   if (!unit) {

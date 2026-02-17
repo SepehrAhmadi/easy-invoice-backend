@@ -6,6 +6,7 @@ const productSchema = new Schema({
   amount: Number,
   packagingId: String,
   packagingName: String,
+  packagingType: String,
   unitId: String,
   unitName: String,
 });
