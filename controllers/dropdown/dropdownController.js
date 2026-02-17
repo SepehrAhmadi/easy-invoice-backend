@@ -70,7 +70,7 @@ const getPackagings = async (req, res) => {
   const packaging = await Packaging.find().exec();
 
   const packagingsData = packaging.map((item) => {
-    return { id: item._id, name: item.name };
+    return { id: item._id, name: item.name, type: item.type };
   });
 
   res.status(200).json({
