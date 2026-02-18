@@ -6,6 +6,7 @@ const invoiceSchema = new Schema({
   companyId: String,
   companyName: String,
   invoiceDate: Date,
+  localInvoiceDate: Date,
   createdDate: Date,
   lastUpdateDate: Date,
 });

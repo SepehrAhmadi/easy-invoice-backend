@@ -1,6 +1,7 @@
 const Invoice = require("../../model/operation/Invoice");
 const Company = require("../../model/base/Company");
 
+const moment = require("jalali-moment");
 const { format } = require("date-fns");
 
 const getAllInvoices = async (req, res) => {
@@ -98,12 +99,25 @@ const addInvoice = async (req, res) => {
   invoice.companyId = req.body.companyId;
   invoice.companyName = company.name;
 
-  invoice.invoiceDate = req.body.invoiceDate;
+  const localDate = req.body.invoiceDate;
+  const isValidDate = moment(localDate, "jYYYY/jMM/jDD", true).isValid();
+  if (!isValidDate) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.invalidDate,
+    });
+  }
+  invoice.localInvoiceDate = localDate;
+  const gregorianDate = moment
+    .from(localDate, "fa", "YYYY/MM/DD")
+    .format("YYYY-MM-DD");
+  invoice.invoiceDate = gregorianDate;
   invoice.createdDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
 
   invoice
     .save()
     .then(() => {
+      ff;
       res.status(200).json({
         statusCode: 200,
         message: message.success.added,
@@ -153,7 +167,19 @@ const updateInvoice = async (req, res) => {
   invoice.companyId = req.body.companyId;
   invoice.companyName = company.name;
 
-  invoice.invoiceDate = req.body.invoiceDate;
+  const localDate = req.body.invoiceDate;
+  const isValidDate = moment(localDate, "jYYYY/jMM/jDD", true).isValid();
+  if (!isValidDate) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.invalidDate,
+    });
+  }
+  invoice.localInvoiceDate = localDate;
+  const gregorianDate = moment
+    .from(localDate, "fa", "YYYY/MM/DD")
+    .format("YYYY-MM-DD");
+  invoice.invoiceDate = gregorianDate;
   invoice.createdDate = format(new Date(), "yyyy-MM-dd \t HH:mm:ss");
   invoice.lastUpdateDate = format(new Date(), "yyyy-MM-dd \t HH:mm:ss");
 
