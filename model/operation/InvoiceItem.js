@@ -27,6 +27,7 @@ const invoiceItemSchema = new Schema({
   singlePrice: Number,
   totalPrice: Number,
   date: Date,
+  localDate: Date,
   createdDate: Date,
   lastUpdateDate: Date,
 });

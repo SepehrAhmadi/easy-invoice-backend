@@ -112,7 +112,7 @@ const addInvoice = async (req, res) => {
     .from(localDate, "fa", "YYYY/MM/DD")
     .format("YYYY-MM-DD");
   invoice.invoiceDate = gregorianDate;
-  invoice.createdDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+  invoice.createdDate = format(new Date(), "yyyy-MM-dd \t HH:mm:ss");
 
   invoice
     .save()
@@ -180,7 +180,6 @@ const updateInvoice = async (req, res) => {
     .from(localDate, "fa", "YYYY/MM/DD")
     .format("YYYY-MM-DD");
   invoice.invoiceDate = gregorianDate;
-  invoice.createdDate = format(new Date(), "yyyy-MM-dd \t HH:mm:ss");
   invoice.lastUpdateDate = format(new Date(), "yyyy-MM-dd \t HH:mm:ss");
 
   invoice

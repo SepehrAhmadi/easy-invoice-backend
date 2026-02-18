@@ -5,6 +5,7 @@ const Brand = require("../../model/base/Brand");
 const Packaging = require("../../model/base/Packaging");
 const Unit = require("../../model/base/Unit");
 
+const moment = require("jalali-moment");
 const { format } = require("date-fns");
 
 const getAllInvoiceItems = async (req, res) => {
@@ -45,7 +46,7 @@ const getAllInvoiceItems = async (req, res) => {
       pageCount: item.pageCount,
       singlePrice: item.singlePrice,
       totalPrice: item.totalPrice,
-      date: item.date,
+      localDate: item.localDate,
       createdDate: item.createdDate,
       lastUpdateDate: item.lastUpdateDate,
     };
@@ -111,7 +112,7 @@ const getInvoiceItem = async (req, res) => {
     pageCount: invoiceItem.pageCount,
     singlePrice: invoiceItem.singlePrice,
     totalPrice: invoiceItem.totalPrice,
-    date: invoiceItem.date,
+    localDate: invoiceItem.localDate,
     createdDate: invoiceItem.createdDate,
     lastUpdateDate: invoiceItem.lastUpdateDate,
   };
@@ -157,8 +158,21 @@ const addInvoiceItem = async (req, res) => {
   const invoiceItem = new InvoiceItem();
 
   invoiceItem.invoiceId = req.body.invoiceId;
-  invoiceItem.date = req.body.date;
   invoiceItem.isEdit = req.body.isEdit;
+
+  const localDate = req.body.localDate;
+  const isValidDate = moment(localDate, "jYYYY/jMM/jDD", true).isValid();
+  if (!isValidDate) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.invalidDate,
+    });
+  }
+  invoiceItem.localDate = localDate;
+  const gregorianDate = moment
+    .from(localDate, "fa", "YYYY/MM/DD")
+    .format("YYYY-MM-DD");
+  invoiceItem.date = gregorianDate;
 
   const product = await Product.findById(req.body.productId);
   if (!product) {
@@ -235,7 +249,7 @@ const addInvoiceItem = async (req, res) => {
   let totalPice = invoiceItem.pageCount * invoiceItem.singlePrice;
   invoiceItem.totalPrice = totalPice;
 
-  invoiceItem.createdDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+  invoiceItem.createdDate = format(new Date(), "yyyy-MM-dd \t HH:mm:ss");
 
   // invoice.items.push(invoiceItem);
 
@@ -288,7 +302,20 @@ const updateInvoiceItem = async (req, res) => {
   }
 
   invoiceItem.isEdit = req.body.isEdit;
-  invoiceItem.date = req.body.date;
+
+  const localDate = req.body.localDate;
+  const isValidDate = moment(localDate, "jYYYY/jMM/jDD", true).isValid();
+  if (!isValidDate) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.invalidDate,
+    });
+  }
+  invoiceItem.localDate = localDate;
+  const gregorianDate = moment
+    .from(localDate, "fa", "YYYY/MM/DD")
+    .format("YYYY-MM-DD");
+  invoiceItem.date = gregorianDate;
 
   const product = await Product.findById(req.body.productId);
   if (!product) {
@@ -366,7 +393,7 @@ const updateInvoiceItem = async (req, res) => {
   let totalPice = invoiceItem.pageCount * invoiceItem.singlePrice;
   invoiceItem.totalPrice = totalPice;
 
-  invoiceItem.lastUpdateDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+  invoiceItem.lastUpdateDate = format(new Date(), "yyyy-MM-dd \t HH:mm:ss");
 
   invoiceItem
     .save()
