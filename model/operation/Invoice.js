@@ -13,8 +13,8 @@ const invoiceSchema = new Schema({
   status: {
     type: Number,
     enum: [1, 2], // 1 -> paid & 2 -> awaiting payment
+    default : 2,
   },
-  status: Number,
   date: Date,
   localDate: String,
   createdDate: Date,
