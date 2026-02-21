@@ -5,8 +5,8 @@ const invoiceSchema = new Schema({
   invoiceNumber: Number,
   companyId: String,
   companyName: String,
-  invoiceDate: Date,
-  localInvoiceDate: Date,
+  date: Date,
+  localDate: String,
   createdDate: Date,
   lastUpdateDate: Date,
 });

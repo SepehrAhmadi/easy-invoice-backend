@@ -5,3 +5,36 @@
 2026-02-03 	 14:35:35 	 a6c1f0c7-59dc-4e6c-bda5-ea59332e62a7 	 ReferenceError none is not defined
 2026-02-14 	 09:23:42 	 e52cf850-bf1d-4e29-8984-e28d015da993 	 Error Not allowed by CORS
 2026-02-18 	 16:42:35 	 ba50ad98-d029-49bf-a24d-5e85dae4f40c 	 SyntaxError Expected double-quoted property name in JSON at position 371 (line 13 column 1)
+2026-02-18 	 17:03:50 	 a00601cd-cd6d-430a-8098-dd2331487dc4 	 CastError Cast to ObjectId failed for value ":id" (type string) at path "_id" for model "Brand"
+2026-02-18 	 17:03:50 	 0d23884e-d6e1-48aa-b484-694c42ddd3f0 	 CastError Cast to ObjectId failed for value ":id" (type string) at path "_id" for model "Brand"
+2026-02-18 	 17:03:51 	 68985fa2-4d2d-41b7-ac98-4079831b6d68 	 CastError Cast to ObjectId failed for value ":id" (type string) at path "_id" for model "Brand"
+2026-02-18 	 17:03:51 	 857f9e35-6b89-47af-8007-b66c4c7a2aa8 	 CastError Cast to ObjectId failed for value ":id" (type string) at path "_id" for model "Company"
+2026-02-18 	 17:03:51 	 900c3829-f77f-4d45-9f7b-f3c44d2d562b 	 CastError Cast to ObjectId failed for value ":id" (type string) at path "_id" for model "Company"
+2026-02-18 	 17:03:52 	 57c10b2a-f4c3-4f39-be95-3b57766c2f67 	 CastError Cast to ObjectId failed for value ":id" (type string) at path "_id" for model "Company"
+2026-02-18 	 17:03:52 	 d49cb361-9272-4f31-a14d-2468a8f9e1c2 	 CastError Cast to ObjectId failed for value ":id" (type string) at path "_id" for model "Product"
+2026-02-18 	 17:03:52 	 f5cb95a0-8cac-48f5-b977-c96179d2cdcc 	 CastError Cast to ObjectId failed for value ":id" (type string) at path "_id" for model "Product"
+2026-02-18 	 17:03:53 	 720a53a8-9b8c-4597-bef1-4ff50a76af83 	 CastError Cast to ObjectId failed for value ":id" (type string) at path "_id" for model "Product"
+2026-02-18 	 17:03:53 	 231c50f7-676b-4d17-b16d-94ccf8f72075 	 CastError Cast to ObjectId failed for value ":id" (type string) at path "_id" for model "Invoice"
+2026-02-18 	 17:03:53 	 1146f685-970e-4ee8-8a26-ffb5eab29af1 	 SyntaxError Expected double-quoted property name in JSON at position 54 (line 4 column 1)
+2026-02-18 	 17:03:54 	 55c89ead-6653-4a3a-9e7b-9d9b52351042 	 SyntaxError Expected double-quoted property name in JSON at position 54 (line 4 column 1)
+2026-02-18 	 17:04:39 	 8c966f91-9615-4984-91ba-b6ea51a16535 	 ReferenceError item is not defined
+2026-02-18 	 17:04:57 	 c2d305c5-e5d1-4352-a02e-6b2f74b7fac7 	 ReferenceError item is not defined
+2026-02-18 	 17:05:03 	 ea5ff92b-2df8-474c-aeda-ae414bff476b 	 ReferenceError item is not defined
+2026-02-18 	 17:06:49 	 2a752ecd-b1b4-40d7-90d0-15b928015440 	 ReferenceError item is not defined
+2026-02-18 	 17:06:49 	 e05e924b-4613-4ae1-9649-ce683863d039 	 ReferenceError item is not defined
+2026-02-18 	 17:07:21 	 495d77f4-c293-4cf9-97eb-f7117e4781f6 	 ReferenceError item is not defined
+2026-02-18 	 17:08:22 	 6ea2af9c-6982-487d-a166-a21c79eda062 	 CastError Cast to ObjectId failed for value "asdasd" (type string) at path "_id" for model "Invoice"
+2026-02-18 	 17:08:30 	 4db87c6e-124e-4285-a35e-9abadf145884 	 CastError Cast to ObjectId failed for value "123asd" (type string) at path "_id" for model "Invoice"
+2026-02-18 	 17:09:11 	 50f087b2-a69a-45a2-a75b-ab37dc29294d 	 CastError Cast to ObjectId failed for value "69902576026bd003dccbc4" (type string) at path "_id" for model "Company"
+2026-02-18 	 17:10:33 	 0c8034bf-55ba-4fd9-bbbf-a9ca823df997 	 ReferenceError item is not defined
+2026-02-18 	 17:10:36 	 5faa40a3-157f-4a77-af4d-3576b78c7852 	 CastError Cast to ObjectId failed for value "696e34b04d978f83b7dd57" (type string) at path "_id" for model "Invoice"
+2026-02-18 	 17:10:48 	 1704dc7c-06ae-47d4-b9bb-847efc4b11b2 	 ReferenceError item is not defined
+2026-02-18 	 17:10:51 	 3df17fb8-e92d-4651-98fe-a1d1aa096ecd 	 CastError Cast to ObjectId failed for value "696e34b04d978f83b7dd577" (type string) at path "_id" for model "Invoice"
+2026-02-18 	 17:10:55 	 877a17b4-d748-489a-ad5d-a56ea967c93a 	 ReferenceError item is not defined
+2026-02-18 	 17:10:58 	 feabf720-d283-4ce3-ab01-ded649ad982b 	 CastError Cast to ObjectId failed for value "696e34b04d978f83b7dd57" (type string) at path "_id" for model "Invoice"
+2026-02-18 	 17:10:59 	 9862a1e0-df28-4692-8780-28bb5f458a42 	 CastError Cast to ObjectId failed for value "696e34b04d978f83b7dd58" (type string) at path "_id" for model "Invoice"
+2026-02-21 	 10:06:22 	 889bae0b-fd0a-4965-b3bc-a308bd6e0684 	 ReferenceError item is not defined
+2026-02-21 	 10:06:27 	 485a4477-bd05-45a3-bbcc-f0d0966b5f1c 	 ReferenceError item is not defined
+2026-02-21 	 10:11:54 	 74c15a24-8162-4243-995d-cf4789f9391b 	 ReferenceError item is not defined
+2026-02-21 	 10:18:07 	 6fb042de-40c5-4bf4-a06c-e397b6779235 	 ReferenceError invoice is not defined
+2026-02-21 	 10:24:22 	 9fa730af-5b05-4f66-960b-7561ae13bbb3 	 TypeError moment(...).tz is not a function

@@ -171,8 +171,10 @@ const addInvoiceItem = async (req, res) => {
   invoiceItem.localDate = localDate;
   const gregorianDate = moment
     .from(localDate, "fa", "YYYY/MM/DD")
-    .format("YYYY-MM-DD");
+    .startOf("day")
+    .toDate();
   invoiceItem.date = gregorianDate;
+  invoiceItem.createdDate = new Date();
 
   const product = await Product.findById(req.body.productId);
   if (!product) {
@@ -248,10 +250,6 @@ const addInvoiceItem = async (req, res) => {
 
   let totalPice = invoiceItem.pageCount * invoiceItem.singlePrice;
   invoiceItem.totalPrice = totalPice;
-
-  invoiceItem.createdDate = format(new Date(), "yyyy-MM-dd \t HH:mm:ss");
-
-  // invoice.items.push(invoiceItem);
 
   invoiceItem
     .save()
@@ -314,8 +312,10 @@ const updateInvoiceItem = async (req, res) => {
   invoiceItem.localDate = localDate;
   const gregorianDate = moment
     .from(localDate, "fa", "YYYY/MM/DD")
-    .format("YYYY-MM-DD");
+    .startOf("day")
+    .toDate();
   invoiceItem.date = gregorianDate;
+  invoiceItem.lastUpdateDate = new Date();
 
   const product = await Product.findById(req.body.productId);
   if (!product) {
@@ -392,8 +392,6 @@ const updateInvoiceItem = async (req, res) => {
 
   let totalPice = invoiceItem.pageCount * invoiceItem.singlePrice;
   invoiceItem.totalPrice = totalPice;
-
-  invoiceItem.lastUpdateDate = format(new Date(), "yyyy-MM-dd \t HH:mm:ss");
 
   invoiceItem
     .save()
