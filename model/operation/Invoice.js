@@ -5,6 +5,16 @@ const invoiceSchema = new Schema({
   invoiceNumber: Number,
   companyId: String,
   companyName: String,
+  companyType: {
+    type: Number,
+    enum: [1, 2], // 1 -> legalEntity & 2 -> individual
+  },
+  companyTypeTitle: String,
+  status: {
+    type: Number,
+    enum: [1, 2], // 1 -> paid & 2 -> awaiting payment
+  },
+  status: Number,
   date: Date,
   localDate: String,
   createdDate: Date,

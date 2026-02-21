@@ -20,6 +20,8 @@ const getAllInvoices = async (req, res) => {
       invoiceNumber: item.invoiceNumber,
       companyId: item.companyId,
       companyName: item.companyName,
+      companyType: item.companyType,
+      companyTypeTitle: item.companyTypeTitle,
       localDate: item.localDate,
       date: item.date,
       createdDate: item.createdDate,
@@ -58,6 +60,8 @@ const getInvoice = async (req, res) => {
     invoiceNumber: invoice.invoiceNumber,
     companyId: invoice.companyId,
     companyName: invoice.companyName,
+    companyType: invoice.companyType,
+    companyTypeTitle: invoice.companyTypeTitle,
     localDate: invoice.localDate,
     date: invoice.date,
     createdDate: invoice.createdDate,
@@ -99,6 +103,8 @@ const addInvoice = async (req, res) => {
   }
   invoice.companyId = req.body.companyId;
   invoice.companyName = company.name;
+  invoice.companyType = company.type;
+  invoice.companyTypeTitle = company.typeTitle;
 
   const localDate = req.body.localDate;
   const isValidDate = moment(localDate, "jYYYY/jMM/jDD", true).isValid();
@@ -167,6 +173,8 @@ const updateInvoice = async (req, res) => {
   }
   invoice.companyId = req.body.companyId;
   invoice.companyName = company.name;
+  invoice.companyType = company.type;
+  invoice.companyTypeTitle = company.typeTitle;
 
   const localDate = req.body.date;
   const isValidDate = moment(localDate, "jYYYY/jMM/jDD", true).isValid();
