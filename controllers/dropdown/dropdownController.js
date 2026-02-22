@@ -10,7 +10,12 @@ const getCompanies = async (req, res) => {
   const companies = await Company.find().exec();
 
   const companiesData = companies.map((item) => {
-    return { id: item._id, name: item.name };
+    return {
+      id: item._id,
+      name: item.name,
+      type: item.type,
+      typeTitle: item.typeTitle,
+    };
   });
 
   res.status(200).json({
