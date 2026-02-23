@@ -22,7 +22,7 @@ const getAllInvoices = async (req, res) => {
       companyName: item.companyName,
       companyType: item.companyType,
       companyTypeTitle: item.companyTypeTitle,
-      status : item.status,
+      status: item.status,
       localDate: item.localDate,
       date: item.date,
       createdDate: item.createdDate,
@@ -63,7 +63,7 @@ const getInvoice = async (req, res) => {
     companyName: invoice.companyName,
     companyType: invoice.companyType,
     companyTypeTitle: invoice.companyTypeTitle,
-    status : invoice.status,
+    status: invoice.status,
     localDate: invoice.localDate,
     date: invoice.date,
     createdDate: invoice.createdDate,
@@ -130,6 +130,7 @@ const addInvoice = async (req, res) => {
       res.status(200).json({
         statusCode: 200,
         message: message.success.added,
+        id: invoice.id,
       });
     })
     .catch((err) => {
