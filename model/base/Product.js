@@ -9,6 +9,8 @@ const productSchema = new Schema({
   packagingType: String,
   unitId: String,
   unitName: String,
+  brandId: String,
+  brandName: String,
 });
 
 module.exports = mongoose.model("Product", productSchema);

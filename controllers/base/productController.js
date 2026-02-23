@@ -1,6 +1,7 @@
 const Product = require("../../model/base/Product");
 const Packaging = require("../../model/base/Packaging");
 const Unit = require("../../model/base/Unit");
+const Brand = require("../../model/base/Brand");
 
 const getAllProducts = async (req, res) => {
   const message = require("../../language/message")(req);
@@ -17,12 +18,14 @@ const getAllProducts = async (req, res) => {
     return {
       id: item.id,
       name: item.name,
-      amount: item.amount,
+      brandId: item.brandId,
+      brandName: item.brandName,
       packagingId: item.packagingId,
       packagingName: item.packagingName,
       packagingType: item.packagingType,
       unitId: item.unitId,
       unitName: item.unitName,
+      amount: item.amount,
     };
   });
 
@@ -55,12 +58,14 @@ const getProduct = async (req, res) => {
   const productData = {
     id: product.id,
     name: product.name,
-    amount: product.amount,
+    brandId: product.brandId,
+    brandName: product.brandName,
     packagingId: product.packagingId,
     packagingName: product.packagingName,
     packagingType: product.packagingType,
     unitId: product.unitId,
     unitName: product.unitName,
+    amount: product.amount,
   };
 
   res.status(200).json({
@@ -74,9 +79,10 @@ const addProduct = async (req, res) => {
   const message = require("../../language/message")(req);
   if (
     !req.body.name &&
-    !req.body.amount &&
+    !req.body.brandId &&
     !req.body.packagingId &&
-    !req.body.unitId
+    !req.body.unitId &&
+    !req.body.amount
   ) {
     res.status(400).json({
       statusCode: 400,
@@ -109,6 +115,16 @@ const addProduct = async (req, res) => {
   }
   product.unitId = req.body.unitId;
   product.unitName = unit.name;
+
+  const brand = await Brand.findById(req.body.brandId);
+  if (!unit) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.invalidUnitId,
+    });
+  }
+  product.brandId = req.body.brandId;
+  product.brandName = brand.name;
 
   product
     .save()
@@ -147,9 +163,10 @@ const updateProduct = async (req, res) => {
 
   if (
     !req.body.name &&
-    !req.body.amount &&
+    !req.body.brandId &&
     !req.body.packagingId &&
-    !req.body.unitId
+    !req.body.unitId &&
+    !req.body.amount
   ) {
     res.status(400).json({
       statusCode: 400,
@@ -180,6 +197,16 @@ const updateProduct = async (req, res) => {
   }
   product.unitId = req.body.unitId;
   product.unitName = unit.name;
+
+  const brand = await Brand.findById(req.body.brandId);
+  if (!unit) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.invalidUnitId,
+    });
+  }
+  product.brandId = req.body.brandId;
+  product.brandName = brand.name;
 
   product
     .save()

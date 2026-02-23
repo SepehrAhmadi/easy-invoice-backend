@@ -57,6 +57,7 @@ const getProducts = async (req, res) => {
       packagingId: item.packagingId,
       unitId: item.unitId,
       unitAmount: item.amount,
+      brandId: item.brandId,
     };
   });
 
