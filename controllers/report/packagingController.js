@@ -1,5 +1,5 @@
 const Packaging = require("../../model/base/Packaging");
-const InvoiceItem = require("../../model/operation/InvoiceItem");
+const InvoiceItem = require("../../model/operation/invoice/InvoiceItem");
 
 const getReport = async (req, res) => {
   const message = require("../../language/message")(req);

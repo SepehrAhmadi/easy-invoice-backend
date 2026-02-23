@@ -56,7 +56,6 @@ app.use("/base/brand", require("./routes/api/base/brand"));
 app.use("/base/product", require("./routes/api/base/product"));
 // operation api
 app.use("/operation/invoice", require("./routes/api/operation/invoice"));
-app.use("/operation/invoiceItem", require("./routes/api/operation/invoiceItem"));
 // report
 app.use("/report/packaging", require("./routes/api/report/packaging"));
 

@@ -32,4 +32,6 @@ const invoiceItemSchema = new Schema({
   lastUpdateDate: Date,
 });
 
+invoiceItemSchema.index({ invoiceId: 1, _id: 1 });
+
 module.exports = mongoose.model("InvoiceItem", invoiceItemSchema);

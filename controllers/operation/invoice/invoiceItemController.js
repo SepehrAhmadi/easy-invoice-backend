@@ -1,24 +1,24 @@
-const Invoice = require("../../model/operation/Invoice");
-const InvoiceItem = require("../../model/operation/InvoiceItem");
-const Product = require("../../model/base/Product");
-const Brand = require("../../model/base/Brand");
-const Packaging = require("../../model/base/Packaging");
-const Unit = require("../../model/base/Unit");
+const Invoice = require("../../../model/operation/invoice/Invoice");
+const InvoiceItem = require("../../../model/operation/invoice/InvoiceItem");
+const Product = require("../../../model/base/Product");
+const Brand = require("../../../model/base/Brand");
+const Packaging = require("../../../model/base/Packaging");
+const Unit = require("../../../model/base/Unit");
 
 const moment = require("jalali-moment");
 const { format } = require("date-fns");
 
 const getAllInvoiceItems = async (req, res) => {
-  const message = require("../../language/message")(req);
+  const message = require("../../../language/message")(req);
 
-  if (!req.body.invoiceId) {
+  if (!req.params.invoiceId) {
     return res.status(400).json({
       statusCode: 400,
       message: message.error.notFound,
     });
   }
   const invoiceItems = await InvoiceItem.find({
-    invoiceId: req.body.invoiceId,
+    invoiceId: req.params.invoiceId,
   }).exec();
   console.log("fafa", invoiceItems);
   if (!invoiceItems) {
@@ -62,33 +62,26 @@ const getAllInvoiceItems = async (req, res) => {
 };
 
 const getInvoiceItem = async (req, res) => {
-  const message = require("../../language/message")(req);
+  const message = require("../../../language/message")(req);
 
-  if (!req.body.invoiceId) {
+  if (!req.params.invoiceId) {
     return res.status(400).json({
       statusCode: 400,
       message: message.error.invoiceIdRequired,
     });
   }
 
-  const invoiceItems = await InvoiceItem.find({
-    invoiceId: req.body.invoiceId,
-  }).exec();
-  if (!invoiceItems) {
-    return res.status(404).json({
-      statusCode: 404,
-      message: message.error.notFound,
-    });
-  }
-
-  if (!req?.params?.id) {
+  if (!req?.params?.itemId) {
     return res.status(400).json({
       statusCode: 400,
       message: message.error.idRequired,
     });
   }
 
-  const invoiceItem = invoiceItems.find((value) => value.id === req.params.id);
+  const invoiceItem = await InvoiceItem.findOne({
+    _id: req.params.itemId,
+    invoiceId: req.params.invoiceId,
+  });
   if (!invoiceItem) {
     return res.status(404).json({
       statusCode: 404,
@@ -125,9 +118,9 @@ const getInvoiceItem = async (req, res) => {
 };
 
 const addInvoiceItem = async (req, res) => {
-  const message = require("../../language/message")(req);
+  const message = require("../../../language/message")(req);
 
-  if (!req.body.invoiceId) {
+  if (!req.params.invoiceId) {
     return res.status(400).json({
       statusCode: 400,
       message: message.error.invoiceIdRequired,
@@ -147,7 +140,7 @@ const addInvoiceItem = async (req, res) => {
     });
   }
 
-  const invoice = await Invoice.findById(req.body.invoiceId);
+  const invoice = await Invoice.findById(req.params.invoiceId);
   if (!invoice) {
     return res.status(400).json({
       statusCode: 400,
@@ -157,7 +150,7 @@ const addInvoiceItem = async (req, res) => {
 
   const invoiceItem = new InvoiceItem();
 
-  invoiceItem.invoiceId = req.body.invoiceId;
+  invoiceItem.invoiceId = req.params.invoiceId;
   invoiceItem.isEdit = req.body.isEdit;
 
   const localDate = req.body.localDate;
@@ -269,16 +262,26 @@ const addInvoiceItem = async (req, res) => {
 };
 
 const updateInvoiceItem = async (req, res) => {
-  const message = require("../../language/message")(req);
+  const message = require("../../../language/message")(req);
 
-  if (!req?.params?.id) {
+  if (!req.params.invoiceId) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.invoiceIdRequired,
+    });
+  }
+
+  if (!req?.params?.itemId) {
     return res.status(400).json({
       statusCode: 400,
       message: message.error.idRequired,
     });
   }
 
-  const invoiceItem = await InvoiceItem.findById(req.params.id).exec();
+  const invoiceItem = await InvoiceItem.findOne({
+    _id: req.params.itemId,
+    invoiceId: req.params.invoiceId,
+  });
   if (!invoiceItem) {
     return res.status(400).json({
       statusCode: 400,
@@ -411,16 +414,26 @@ const updateInvoiceItem = async (req, res) => {
 };
 
 const deleteInvoiceItem = async (req, res) => {
-  const message = require("../../language/message")(req);
+  const message = require("../../../language/message")(req);
 
-  if (!req?.params?.id) {
+  if (!req.params.invoiceId) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.invoiceIdRequired,
+    });
+  }
+
+  if (!req?.params?.itemId) {
     return res.status(400).json({
       statusCode: 400,
       message: message.error.idRequired,
     });
   }
 
-  const invoiceItem = await InvoiceItem.findById(req.params.id).exec();
+  const invoiceItem = await InvoiceItem.findOne({
+    _id: req.params.itemId,
+    invoiceId: req.params.invoiceId,
+  });
   if (!invoiceItem) {
     return res.status(400).json({
       statusCode: 400,

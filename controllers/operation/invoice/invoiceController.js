@@ -1,10 +1,10 @@
-const Invoice = require("../../model/operation/Invoice");
-const Company = require("../../model/base/Company");
+const Invoice = require("../../../model/operation/invoice/Invoice");
+const Company = require("../../../model/base/Company");
 
 const moment = require("jalali-moment");
 
 const getAllInvoices = async (req, res) => {
-  const message = require("../../language/message")(req);
+  const message = require("../../../language/message")(req);
 
   const invoices = await Invoice.find().exec();
   if (!invoices) {
@@ -40,7 +40,7 @@ const getAllInvoices = async (req, res) => {
 };
 
 const getInvoice = async (req, res) => {
-  const message = require("../../language/message")(req);
+  const message = require("../../../language/message")(req);
 
   if (!req?.params?.id) {
     return res.status(400).json({
@@ -78,7 +78,7 @@ const getInvoice = async (req, res) => {
 };
 
 const addInvoice = async (req, res) => {
-  const message = require("../../language/message")(req);
+  const message = require("../../../language/message")(req);
 
   if (!req.body.companyId && !req.body.date) {
     return res.status(400).json({
@@ -143,7 +143,7 @@ const addInvoice = async (req, res) => {
 };
 
 const updateInvoice = async (req, res) => {
-  const message = require("../../language/message")(req);
+  const message = require("../../../language/message")(req);
 
   if (!req?.params?.id) {
     return res.status(400).json({
@@ -213,7 +213,7 @@ const updateInvoice = async (req, res) => {
 };
 
 const deleteInvoice = async (req, res) => {
-  const message = require("../../language/message")(req);
+  const message = require("../../../language/message")(req);
 
   if (!req?.params?.id) {
     return res.status(400).json({
