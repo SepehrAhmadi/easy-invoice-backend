@@ -179,7 +179,7 @@ const updateInvoice = async (req, res) => {
   invoice.companyType = company.type;
   invoice.companyTypeTitle = company.typeTitle;
 
-  const localDate = req.body.date;
+  const localDate = req.body.localDate;
   const isValidDate = moment(localDate, "jYYYY/jMM/jDD", true).isValid();
   if (!isValidDate) {
     return res.status(400).json({
