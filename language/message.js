@@ -11,6 +11,7 @@ module.exports = (req) => {
         login: "Wellcome to the dashoard",
         logout: "You have successfully logout",
         userCreate: "Your account successfully created",
+        statusChanged : "Status changed successfully",
       },
       error: {
         idRequired: "ID parametr is required",
@@ -48,6 +49,7 @@ module.exports = (req) => {
         login: "به سامانه خوش آمدید",
         logout: "با موفقیت از سامانه خارج شدید",
         userCreate: "حساب کاربری شما ایجاد شد",
+        statusChanged : "وضعیت با موقیت تغییر پیدا کرد",
       },
       error: {
         idRequired: "شناسه الزامی می باشد",

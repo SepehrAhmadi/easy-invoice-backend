@@ -26,6 +26,13 @@ router
     invoiceController.deleteInvoice,
   );
 
+router
+  .route("/:id/status")
+  .post(
+    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Editor),
+    invoiceController.changeStatus,
+  );
+
 // Invoice item
 router
   .route("/:invoiceId/items")

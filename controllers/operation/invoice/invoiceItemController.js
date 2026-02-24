@@ -420,7 +420,7 @@ const deleteInvoiceItem = async (req, res) => {
     return res.status(400).json({
       statusCode: 400,
       message: message.error.invoiceIdRequired,
-    });
+  });
   }
 
   if (!req?.params?.itemId) {

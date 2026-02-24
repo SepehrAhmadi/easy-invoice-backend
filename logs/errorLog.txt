@@ -41,3 +41,9 @@
 2026-02-24 	 10:53:45 	 284fc1f1-b2fc-439d-afd5-3b7441582692 	 CastError Cast to ObjectId failed for value "سوسک کش آتش - بطری 500 گرمی" (type string) at path "_id" for model "Packaging"
 2026-02-24 	 10:54:52 	 5bf356aa-b44d-4557-bf8b-71a8379fb7e2 	 CastError Cast to ObjectId failed for value "سوسک کش آتش - بطری 500 گرمی" (type string) at path "_id" for model "Packaging"
 2026-02-24 	 11:17:09 	 d99b1c0c-01cd-4487-9f16-d52a2c15ef56 	 CastError Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Invoice"
+2026-02-24 	 16:09:43 	 3f9a729b-cd2d-4bb1-b1f8-be48bfc5c04f 	 SyntaxError Unexpected token '1', "1" is not valid JSON
+2026-02-24 	 16:12:49 	 74f21649-e0da-4b4d-b8b6-bf710d1539c0 	 SyntaxError Unexpected token '1', "1" is not valid JSON
+2026-02-24 	 16:49:07 	 c720b320-defc-46c3-a1fe-15c402e4387a 	 TypeError Cannot read properties of null (reading 'name')
+2026-02-24 	 16:49:16 	 8d4c68bf-0cf1-4241-986e-2026a04c35ae 	 TypeError Cannot read properties of null (reading 'name')
+2026-02-24 	 16:49:58 	 c49f9b71-f224-48b0-92b9-498fed14f76c 	 TypeError Cannot read properties of null (reading 'name')
+2026-02-24 	 16:50:43 	 9682ae29-203f-402e-a66d-93003e0b96cc 	 TypeError Cannot read properties of null (reading 'name')
