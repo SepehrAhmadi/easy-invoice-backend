@@ -1,4 +1,5 @@
 const Invoice = require("../../../model/operation/invoice/Invoice");
+const InvoiceItem = require("../../../model/operation/invoice/InvoiceItem");
 const Company = require("../../../model/base/Company");
 
 const moment = require("jalali-moment");
@@ -230,6 +231,8 @@ const deleteInvoice = async (req, res) => {
     });
   }
 
+  
+  await InvoiceItem.deleteMany({invoiceId : req.params.id})
   await invoice.deleteOne();
 
   res.status(200).json({

@@ -38,3 +38,6 @@
 2026-02-21 	 10:11:54 	 74c15a24-8162-4243-995d-cf4789f9391b 	 ReferenceError item is not defined
 2026-02-21 	 10:18:07 	 6fb042de-40c5-4bf4-a06c-e397b6779235 	 ReferenceError invoice is not defined
 2026-02-21 	 10:24:22 	 9fa730af-5b05-4f66-960b-7561ae13bbb3 	 TypeError moment(...).tz is not a function
+2026-02-24 	 10:53:45 	 284fc1f1-b2fc-439d-afd5-3b7441582692 	 CastError Cast to ObjectId failed for value "سوسک کش آتش - بطری 500 گرمی" (type string) at path "_id" for model "Packaging"
+2026-02-24 	 10:54:52 	 5bf356aa-b44d-4557-bf8b-71a8379fb7e2 	 CastError Cast to ObjectId failed for value "سوسک کش آتش - بطری 500 گرمی" (type string) at path "_id" for model "Packaging"
+2026-02-24 	 11:17:09 	 d99b1c0c-01cd-4487-9f16-d52a2c15ef56 	 CastError Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Invoice"
