@@ -53,6 +53,7 @@ app.use("/dropdown", require("./routes/api/dropdown/index"));
 // base api
 app.use("/base/company", require("./routes/api/base/company"));
 app.use("/base/brand", require("./routes/api/base/brand"));
+app.use("/base/category", require("./routes/api/base/category"));
 app.use("/base/product", require("./routes/api/base/product"));
 // operation api
 app.use("/operation/invoice", require("./routes/api/operation/invoice"));
