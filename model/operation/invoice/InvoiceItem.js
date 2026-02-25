@@ -11,6 +11,8 @@ const invoiceItemSchema = new Schema({
   productName: String,
   brandId: String,
   brandName: String,
+  categoryId: String,
+  categoryName: String,
   packagingId: String,
   packagingName: String,
   unitId: String,

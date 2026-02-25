@@ -4,6 +4,7 @@ const Product = require("../../../model/base/Product");
 const Brand = require("../../../model/base/Brand");
 const Packaging = require("../../../model/base/Packaging");
 const Unit = require("../../../model/base/Unit");
+const Category = require("../../../model/base/Category");
 
 const moment = require("jalali-moment");
 const { format } = require("date-fns");
@@ -37,6 +38,8 @@ const getAllInvoiceItems = async (req, res) => {
       productName: item.productName,
       brandId: item.brandId,
       brandName: item.brandName,
+      categoryId: item.categoryId,
+      categoryName: item.categoryName,
       packagingId: item.packagingId,
       packagingName: item.packagingName,
       unitId: item.unitId,
@@ -96,6 +99,8 @@ const getInvoiceItem = async (req, res) => {
     productName: invoiceItem.productName,
     brandId: invoiceItem.brandId,
     brandName: invoiceItem.brandName,
+    categoryId: invoiceItem.categoryId,
+    categoryName: invoiceItem.categoryName,
     packagingId: invoiceItem.packagingId,
     packagingName: invoiceItem.packagingName,
     unitId: invoiceItem.unitId,
@@ -130,6 +135,7 @@ const addInvoiceItem = async (req, res) => {
   if (
     !req.body.productId &&
     !req.body.brandId &&
+    !req.body.categoryId &&
     !req.body.unitCount &&
     !req.body.pageCount &&
     !req.body.singlePrice
@@ -188,6 +194,16 @@ const addInvoiceItem = async (req, res) => {
   }
   invoiceItem.brandId = req.body.brandId;
   invoiceItem.brandName = brand.name;
+
+  const category = await Category.findById(req.body.categoryId);
+  if (!category) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.invalidCategoryId,
+    });
+  }
+  invoiceItem.categoryId = req.body.categoryId;
+  invoiceItem.categoryName = category.name;
 
   const packaging = await Packaging.findById(req.body.packagingId);
   if (!packaging) {
@@ -292,6 +308,7 @@ const updateInvoiceItem = async (req, res) => {
   if (
     !req.body.productId &&
     !req.body.brandId &&
+    !req.body.categoryId &&
     !req.body.unitCount &&
     !req.body.pageCount &&
     !req.body.singlePrice
@@ -339,6 +356,16 @@ const updateInvoiceItem = async (req, res) => {
   }
   invoiceItem.brandId = req.body.brandId;
   invoiceItem.brandName = brand.name;
+
+  const category = await Category.findById(req.body.categoryId);
+  if (!category) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.invalidCategoryId,
+    });
+  }
+  invoiceItem.categoryId = req.body.categoryId;
+  invoiceItem.categoryName = category.name;
 
   const packaging = await Packaging.findById(req.body.packagingId);
   if (!packaging) {

@@ -3,6 +3,7 @@ const Brand = require("../../model/base/Brand");
 const Packaging = require("../../model/base/Packaging");
 const Units = require("../../model/base/Unit");
 const Product = require("../../model/base/Product");
+const Category = require("../../model/base/Category");
 
 const getCompanies = async (req, res) => {
   const message = require("../../language/message")(req);
@@ -41,6 +42,24 @@ const getBrands = async (req, res) => {
     message: message.success.dataReceived,
     data: {
       brands: brandsData,
+    },
+  });
+};
+
+const getCategories = async (req, res) => {
+  const message = require("../../language/message")(req);
+
+  const categories = await Category.find().exec();
+
+  const categoriesData = categories.map((item) => {
+    return { id: item._id, name: item.name };
+  });
+
+  res.status(200).json({
+    statusCode: 200,
+    message: message.success.dataReceived,
+    data: {
+      categories: categoriesData,
     },
   });
 };
@@ -112,4 +131,5 @@ module.exports = {
   getPackagings,
   getUnits,
   getProducts,
+  getCategories,
 };

@@ -8,5 +8,6 @@ router.route("/units").get(dropdownController.getUnits);
 router.route("/companies").get(dropdownController.getCompanies);
 router.route("/brands").get(dropdownController.getBrands);
 router.route("/products").get(dropdownController.getProducts);
+router.route("/categories").get(dropdownController.getCategories);
 
 module.exports = router;
