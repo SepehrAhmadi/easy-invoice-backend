@@ -10,12 +10,12 @@ const invoiceSchema = new Schema({
     enum: [1, 2], // 1 -> legalEntity & 2 -> individual
   },
   companyTypeTitle: String,
-  status: {
+  paymentStatus: {
     type: Number,
     enum: [1, 2], // 1 -> paid & 2 -> awaiting payment
     default : 2,
   },
-  statusName : {
+  paymentStatusName : {
     type : String ,
     default : "paid"
   },

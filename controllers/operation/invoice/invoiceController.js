@@ -12,7 +12,6 @@ const PAYMENT_STATUS_TYPE = {
 
 const getAllInvoices = async (req, res) => {
   const message = require("../../../language/message")(req);
-  
   const invoices = await Invoice.find().exec();
   if (!invoices) {
     return res.status(200).json({
@@ -29,8 +28,8 @@ const getAllInvoices = async (req, res) => {
       companyName: item.companyName,
       companyType: item.companyType,
       companyTypeTitle: item.companyTypeTitle,
-      status: item.status,
-      statusName: item.statusName,
+      paymentStatus: item.paymentStatus,
+      paymentStatusName: item.paymentStatusName,
       localDate: item.localDate,
       date: item.date,
       createdDate: item.createdDate,
@@ -71,8 +70,8 @@ const getInvoice = async (req, res) => {
     companyName: invoice.companyName,
     companyType: invoice.companyType,
     companyTypeTitle: invoice.companyTypeTitle,
-    status: invoice.status,
-    statusName: invoice.statusName,
+    paymentStatus: invoice.paymentStatus,
+    paymentStatusName: invoice.paymentStatusName,
     localDate: invoice.localDate,
     date: invoice.date,
     createdDate: invoice.createdDate,
@@ -258,7 +257,7 @@ const changeStatus = async (req, res) => {
     });
   }
 
-  if (![1, 2].includes(req.body.status)) {
+  if (![1, 2].includes(req.body.paymentStatus)) {
     return res.status(400).json({
       statusCode: 400,
       message: message.error.requireFields,
@@ -266,8 +265,9 @@ const changeStatus = async (req, res) => {
   }
 
   const invoice = await Invoice.findById(req.params.id).exec();
-  invoice.status = req.body.status;
-  invoice.statusName = req.body.status == 1 ? "Paid" : "Awaiting payment";
+  invoice.paymentStatus = req.body.paymentStatus;
+  invoice.paymentStatusName =
+    req.body.paymentStatus == 1 ? "Paid" : "Awaiting payment";
 
   invoice
     .save()
