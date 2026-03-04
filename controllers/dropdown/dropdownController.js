@@ -5,6 +5,18 @@ const Units = require("../../model/base/Unit");
 const Product = require("../../model/base/Product");
 const Category = require("../../model/base/Category");
 
+// company type
+const COMPANY_TYPE = {
+  LEGAL_ENTITY: 1,
+  INDIVIDUAL: 2,
+};
+
+// payment status type
+const PAYMENT_STATUS_TYPE = {
+  PAID: 1,
+  AWAITING_PAYMENT: 2,
+};
+
 const getCompanies = async (req, res) => {
   const message = require("../../language/message")(req);
 
@@ -125,6 +137,52 @@ const getUnits = async (req, res) => {
   });
 };
 
+const getCompanyType = async (req, res) => {
+  const message = require("../../language/message")(req);
+
+  const companyTypeData = [
+    {
+      id: COMPANY_TYPE.LEGAL_ENTITY,
+      name: message.response.legalEntity,
+    },
+    {
+      id: COMPANY_TYPE.INDIVIDUAL,
+      name: message.response.individual,
+    },
+  ];
+
+  res.status(200).json({
+    statusCode: 200,
+    message: message.success.dataReceived,
+    data: {
+      companyType: companyTypeData,
+    },
+  });
+};
+
+const getpaymentStatus = async (req, res) => {
+  const message = require("../../language/message")(req);
+
+  const paymentStatusData = [
+    {
+      id: PAYMENT_STATUS_TYPE.PAID,
+      name: message.response.paid,
+    },
+    {
+      id: PAYMENT_STATUS_TYPE.AWAITING_PAYMENT,
+      name: message.response.awatingPayment,
+    },
+  ];
+
+  res.status(200).json({
+    statusCode: 200,
+    message: message.success.dataReceived,
+    data: {
+      paymentStatus: paymentStatusData,
+    },
+  });
+};
+
 module.exports = {
   getCompanies,
   getBrands,
@@ -132,4 +190,6 @@ module.exports = {
   getUnits,
   getProducts,
   getCategories,
+  getCompanyType,
+  getpaymentStatus,
 };

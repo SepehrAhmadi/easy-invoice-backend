@@ -21,7 +21,6 @@ const getAllInvoiceItems = async (req, res) => {
   const invoiceItems = await InvoiceItem.find({
     invoiceId: req.params.invoiceId,
   }).exec();
-  console.log("fafa", invoiceItems);
   if (!invoiceItems) {
     return res.status(404).json({
       statusCode: 404,

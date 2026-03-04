@@ -11,7 +11,7 @@ module.exports = (req) => {
         login: "Wellcome to the dashoard",
         logout: "You have successfully logout",
         userCreate: "Your account successfully created",
-        statusChanged : "Status changed successfully",
+        statusChanged: "Status changed successfully",
       },
       error: {
         idRequired: "ID parametr is required",
@@ -39,6 +39,12 @@ module.exports = (req) => {
         noPermission: "You dont have Permission",
         noRole: "Without any role",
       },
+      response: {
+        legalEntity: "Legal entity",
+        individual: "Individual",
+        paid: "Paid",
+        awatingPayment: "Awating payment",
+      },
     };
   } else {
     return {
@@ -50,7 +56,7 @@ module.exports = (req) => {
         login: "به سامانه خوش آمدید",
         logout: "با موفقیت از سامانه خارج شدید",
         userCreate: "حساب کاربری شما ایجاد شد",
-        statusChanged : "وضعیت با موقیت تغییر پیدا کرد",
+        statusChanged: "وضعیت با موقیت تغییر پیدا کرد",
       },
       error: {
         idRequired: "شناسه الزامی می باشد",
@@ -77,6 +83,12 @@ module.exports = (req) => {
         userExist: "این نام کاربری وجود دارد",
         noPermission: "شما به این قست دسترسی ندارید",
         noRole: "هیچ دسترسی وجود ندارد",
+      },
+      response: {
+        legalEntity: "حقیقی",
+        individual: "حقوقی",
+        paid: "پرداخت شده",
+        awatingPayment: "در انتظار پرداخت",
       },
     };
   }

@@ -9,5 +9,7 @@ router.route("/companies").get(dropdownController.getCompanies);
 router.route("/brands").get(dropdownController.getBrands);
 router.route("/products").get(dropdownController.getProducts);
 router.route("/categories").get(dropdownController.getCategories);
+router.route("/companyType").get(dropdownController.getCompanyType);
+router.route("/paymentStatus").get(dropdownController.getpaymentStatus);
 
 module.exports = router;

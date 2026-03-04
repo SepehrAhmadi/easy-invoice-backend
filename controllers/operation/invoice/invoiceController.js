@@ -5,14 +5,14 @@ const Company = require("../../../model/base/Company");
 const moment = require("jalali-moment");
 
 // payment status type
-const COMPANY_TYPE = {
+const PAYMENT_STATUS_TYPE = {
   PAID: 1,
-  WAITING_PAYMENT: 2,
+  AWAITING_PAYMENT: 2,
 };
 
 const getAllInvoices = async (req, res) => {
   const message = require("../../../language/message")(req);
-
+  
   const invoices = await Invoice.find().exec();
   if (!invoices) {
     return res.status(200).json({
@@ -30,7 +30,7 @@ const getAllInvoices = async (req, res) => {
       companyType: item.companyType,
       companyTypeTitle: item.companyTypeTitle,
       status: item.status,
-      statusName : item.statusName,
+      statusName: item.statusName,
       localDate: item.localDate,
       date: item.date,
       createdDate: item.createdDate,
@@ -72,7 +72,7 @@ const getInvoice = async (req, res) => {
     companyType: invoice.companyType,
     companyTypeTitle: invoice.companyTypeTitle,
     status: invoice.status,
-    statusName : invoice.statusName,
+    statusName: invoice.statusName,
     localDate: invoice.localDate,
     date: invoice.date,
     createdDate: invoice.createdDate,
@@ -239,8 +239,7 @@ const deleteInvoice = async (req, res) => {
     });
   }
 
-  
-  await InvoiceItem.deleteMany({invoiceId : req.params.id})
+  await InvoiceItem.deleteMany({ invoiceId: req.params.id });
   await invoice.deleteOne();
 
   res.status(200).json({
@@ -249,7 +248,7 @@ const deleteInvoice = async (req, res) => {
   });
 };
 
-const changeStatus = async (req , res) => {
+const changeStatus = async (req, res) => {
   const message = require("../../../language/message")(req);
 
   if (!req?.params?.id) {
@@ -266,9 +265,9 @@ const changeStatus = async (req , res) => {
     });
   }
 
-  const invoice = await Invoice.findById(req.params.id).exec()
-  invoice.status = req.body.status
-  invoice.statusName = req.body.status == 1 ? "Paid" : "Awaiting payment"
+  const invoice = await Invoice.findById(req.params.id).exec();
+  invoice.status = req.body.status;
+  invoice.statusName = req.body.status == 1 ? "Paid" : "Awaiting payment";
 
   invoice
     .save()
@@ -285,7 +284,7 @@ const changeStatus = async (req , res) => {
         message: message.error.faildToEdit,
       });
     });
-}
+};
 
 module.exports = {
   getAllInvoices,
