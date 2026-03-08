@@ -12,7 +12,7 @@ const handleLogin = async (req, res) => {
       message: message.error.userAndPassRequired,
     });
 
-  const foundUser = await User.findOne({ username: user });
+  const foundUser = await User.findOne({ username: user.toLowerCase() });
   if (!foundUser)
     return res.status(401).json({
       statusCode: 401,
@@ -48,6 +48,7 @@ const handleLogin = async (req, res) => {
     return res.status(200).json({
       statusCode: 200,
       accessToken,
+      username: user,
       message: message.success.login,
     });
   } else {
