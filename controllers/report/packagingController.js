@@ -25,7 +25,8 @@ const getReport = async (req, res) => {
       return {
         packagingId: item.id,
         packagingName: item.name,
-        totalprice: totalPrice,
+        packagingType: item.type,
+        totalPrice: totalPrice,
         totalPage: totalPage,
         count: invoiceItems.length,
       };
@@ -68,11 +69,37 @@ const getReportDetail = async (req, res) => {
     totalPage += invoice.pageCount;
   });
 
+  const invoiceItemsData = invoiceItems.map((item) => {
+    return {
+      id: item.id,
+      invoiceId: item.invoiceId,
+      isEdit: item.isEdit,
+      productId: item.productId,
+      productName: item.productName,
+      brandId: item.brandId,
+      brandName: item.brandName,
+      categoryId: item.categoryId,
+      categoryName: item.categoryName,
+      packagingId: item.packagingId,
+      packagingName: item.packagingName,
+      unitId: item.unitId,
+      unitName: item.unitName,
+      amount: item.amount,
+      unitCount: item.unitCount,
+      pageCount: item.pageCount,
+      singlePrice: item.singlePrice,
+      totalPrice: item.totalPrice,
+      localDate: item.localDate,
+      createdDate: item.createdDate,
+      lastUpdateDate: item.lastUpdateDate,
+    };
+  });
+
   res.status(200).json({
     statusCode: 200,
     message: message.success.dataReceived,
     data: {
-      items: invoiceItems,
+      items: invoiceItemsData,
       totalPrice: totalPrice,
       totalPage: totalPage,
     },
