@@ -17,7 +17,7 @@ const getReport = async (req, res) => {
         totalPrice += invoice.totalPrice;
       });
 
-      let totalPage = 0;
+      let totalPage = 0; 
       invoiceItems.forEach((invoice) => {
         totalPage += invoice.pageCount;
       });
@@ -108,5 +108,6 @@ const getReportDetail = async (req, res) => {
 
 module.exports = {
   getReport,
-  getReportDetail,
+  getReportDetail,  
 };
+   

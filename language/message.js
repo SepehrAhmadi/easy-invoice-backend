@@ -12,6 +12,7 @@ module.exports = (req) => {
         logout: "You have successfully logout",
         userCreate: "Your account successfully created",
         statusChanged: "Status changed successfully",
+        passowrdChanged: "Password changed successfully",
       },
       error: {
         idRequired: "ID parametr is required",
@@ -38,6 +39,7 @@ module.exports = (req) => {
         userExist: "This username alredy exist",
         noPermission: "You dont have Permission",
         noRole: "Without any role",
+        wrongCurrentPassword: "Current Password is wrong",
       },
       response: {
         legalEntity: "Legal entity",
@@ -57,6 +59,7 @@ module.exports = (req) => {
         logout: "با موفقیت از سامانه خارج شدید",
         userCreate: "حساب کاربری شما ایجاد شد",
         statusChanged: "وضعیت با موقیت تغییر پیدا کرد",
+        passowrdChanged: "کلمه عبور با موفیقت تغییر یافت",
       },
       error: {
         idRequired: "شناسه الزامی می باشد",
@@ -83,6 +86,7 @@ module.exports = (req) => {
         userExist: "این نام کاربری وجود دارد",
         noPermission: "شما به این قست دسترسی ندارید",
         noRole: "هیچ دسترسی وجود ندارد",
+        wrongCurrentPassword: "کلمه عبور فعلی اشتباه است",
       },
       response: {
         legalEntity: "حقیقی",

@@ -50,6 +50,8 @@ app.use("/logout", require("./routes/logout"));
 app.use(verifyJWT);
 // dropdown api
 app.use("/dropdown", require("./routes/api/dropdown/index"));
+// profile api
+app.use("/profile", require("./routes/profile"));
 // base api
 app.use("/base/company", require("./routes/api/base/company"));
 app.use("/base/brand", require("./routes/api/base/brand"));
