@@ -40,6 +40,9 @@ module.exports = (req) => {
         noPermission: "You dont have Permission",
         noRole: "Without any role",
         wrongCurrentPassword: "Current Password is wrong",
+        usernameRequired: "Username required",
+        sameUsername:
+          "The entered username is the same as the current username",
       },
       response: {
         legalEntity: "Legal entity",
@@ -87,6 +90,8 @@ module.exports = (req) => {
         noPermission: "شما به این قست دسترسی ندارید",
         noRole: "هیچ دسترسی وجود ندارد",
         wrongCurrentPassword: "کلمه عبور فعلی اشتباه است",
+        usernameRequired: "نام کاربری الزامی می باشد",
+        sameUsername: "نام کاربری وارد شده با نام کاربری فعلی یکسان است",
       },
       response: {
         legalEntity: "حقیقی",

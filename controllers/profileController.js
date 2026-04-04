@@ -4,14 +4,14 @@ const bcrypt = require("bcrypt");
 const getProfile = async (req, res) => {
   const message = require("../language/message")(req);
 
-  if (!req?.params?.id) {
+  if (!req?.params?.username) {
     return res.status(400).json({
       statusCode: 400,
-      message: message.error.idRequired,
+      message: message.error.usernameRequired,
     });
   }
 
-  const user = await User.findById(req.params.id).exec();
+  const user = await User.findOne({ username: req.params.username }).exec();
   if (!user) {
     return res.status(200).json({
       statusCode: 200,
@@ -21,6 +21,7 @@ const getProfile = async (req, res) => {
   }
 
   const userData = {
+    id: user.id,
     profilePicture: "",
     username: user.username,
   };
@@ -61,7 +62,7 @@ const updateProfile = async (req, res) => {
   if (req.body.username === user.username) {
     return res.status(409).json({
       statusCode: 409,
-      message: message.error.userExist,
+      message: message.error.sameUsername,
     });
   }
 

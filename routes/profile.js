@@ -5,9 +5,10 @@ const verifyRoles = require("../middleware/verifyRoles");
 
 const profileController = require("../controllers/profileController");
 
+router.route("/:username").get(profileController.getProfile);
+
 router
   .route("/:id")
-  .get(profileController.getProfile)
   .put(verifyRoles(ROLES_LIST.Admin), profileController.updateProfile);
 
 router
