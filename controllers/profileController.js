@@ -20,9 +20,16 @@ const getProfile = async (req, res) => {
     });
   }
 
+  let avatarUrl = "";
+  if (user.avatarPath) {
+    const cleanedPath = user.avatarPath.replace(/\\/g, "/");
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    avatarUrl = `${baseUrl}/${cleanedPath}`;
+  }
+
   const userData = {
     id: user.id,
-    profilePicture: "",
+    avatar: avatarUrl,
     username: user.username,
   };
 
@@ -59,14 +66,26 @@ const updateProfile = async (req, res) => {
     });
   }
 
-  if (req.body.username === user.username) {
-    return res.status(409).json({
-      statusCode: 409,
-      message: message.error.sameUsername,
-    });
+  const newUsername = req.body.username.toLowerCase();
+
+  if (user.username !== newUsername) {
+    const existingUser = await User.findOne({
+      username: newUsername,
+      _id: { $ne: req.params.id },
+    }).exec();
+    if (existingUser) {
+      return res.status(409).json({
+        statusCode: 409,
+        message: message.error.userExist,
+      });
+    }
   }
 
-  user.username = req.body.username.toLowerCase();
+  user.username = newUsername;
+
+  if (req.file) {
+    user.avatarPath = req.file.path;
+  }
 
   user
     .save()
@@ -104,14 +123,14 @@ const changePassword = async (req, res) => {
     });
   }
 
-  if (!req.body.oldPassword && !req.body.newPassword) {
+  if (!req.body.currentPassword && !req.body.newPassword) {
     return res.status(400).json({
       statusCode: 400,
       message: message.error.requireFields,
     });
   }
 
-  const match = await bcrypt.compare(req.body.oldPassword, user.password);
+  const match = await bcrypt.compare(req.body.currentPassword, user.password);
   if (!match) {
     return res.status(401).json({
       statusCode: 401,
@@ -139,8 +158,36 @@ const changePassword = async (req, res) => {
     });
 };
 
+const deleteAvatar = async (req, res) => {
+  const message = require("../language/message")(req);
+
+  if (!req?.params?.id) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.idRequired,
+    });
+  }
+
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.notFound,
+    });
+  }
+
+  user.avatarPath = "";
+
+  user.save();
+  res.status(200).json({
+    statusCode: 200,
+    message: message.success.deleted,
+  });
+};
+
 module.exports = {
   getProfile,
   updateProfile,
   changePassword,
+  deleteAvatar,
 };

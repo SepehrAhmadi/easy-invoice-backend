@@ -27,6 +27,7 @@
     "jalali-moment": "^3.3.11",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.2",
+    "multer": "^2.1.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

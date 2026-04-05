@@ -40,6 +40,9 @@ app.use(cookieParser());
 // built in middleware for static files
 app.use("/", express.static(path.join(__dirname, "/public")));
 
+// middleware for uploads file
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 // =========== routing ============//
 app.use("/", require("./routes/root"));
 app.use("/register", require("./routes/register"));

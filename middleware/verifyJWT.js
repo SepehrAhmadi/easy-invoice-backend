@@ -2,6 +2,10 @@ const jwt = require("jsonwebtoken");
 
 const verifyJWT = (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
+  if (req.url.startsWith("/uploads")) {
+    return next();
+  }
+
   if (!authHeader?.startsWith("Bearer ")) {
     return res.status(401).json({
       statusCode: 401,
@@ -18,7 +22,7 @@ const verifyJWT = (req, res, next) => {
       });
     }
     req.user = decoded.UserInfo.username;
-    req.roles = decoded.UserInfo.roles
+    req.roles = decoded.UserInfo.roles;
     next();
   });
 };

@@ -43,6 +43,7 @@ module.exports = (req) => {
         usernameRequired: "Username required",
         sameUsername:
           "The entered username is the same as the current username",
+        avatarFileType: "You can only upload JPEG or PNG file",
       },
       response: {
         legalEntity: "Legal entity",
@@ -92,6 +93,7 @@ module.exports = (req) => {
         wrongCurrentPassword: "کلمه عبور فعلی اشتباه است",
         usernameRequired: "نام کاربری الزامی می باشد",
         sameUsername: "نام کاربری وارد شده با نام کاربری فعلی یکسان است",
+        avatarFileType: "شما فقط به آپلود فایل JPEG یا PNG هستید",
       },
       response: {
         legalEntity: "حقیقی",
