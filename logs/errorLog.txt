@@ -62,3 +62,13 @@ Require stack:
 - C:\project\easy-invoice-backend\controllers\profileController.js
 - C:\project\easy-invoice-backend\routes\profile.js
 - C:\project\easy-invoice-backend\server.js
+2026-04-05 	 16:05:49 	 9d3e6670-7e23-45e3-beae-995cb57e5b29 	 ReferenceError jwt is not defined
+2026-04-05 	 16:05:50 	 617471c8-7e02-4f52-aeb6-7985b52aa973 	 ReferenceError jwt is not defined
+2026-04-05 	 16:05:51 	 d8da3d04-a5f9-4baf-8270-18283662d761 	 ReferenceError jwt is not defined
+2026-04-05 	 16:05:51 	 6bfa3d38-68c0-4283-8fc2-b1808b842d12 	 ReferenceError jwt is not defined
+2026-04-05 	 16:05:51 	 593bcddb-e832-476d-b486-f07f83993918 	 ReferenceError jwt is not defined
+2026-04-05 	 16:05:51 	 923b47a7-eb3b-4974-b9aa-5b3b4c9792a7 	 ReferenceError jwt is not defined
+2026-04-05 	 16:05:52 	 2971e17b-ca50-46b2-aef0-7182bc044d8c 	 ReferenceError jwt is not defined
+2026-04-05 	 16:05:52 	 3c0be20b-78f7-4bf1-80a7-02aac9e208b8 	 ReferenceError jwt is not defined
+2026-04-05 	 16:16:34 	 c40090e3-cc51-4a3d-8884-7d0cadc048d0 	 ReferenceError username is not defined
+2026-04-05 	 16:16:35 	 c3730cb5-8742-49f4-bd4c-018d71d166be 	 ReferenceError username is not defined

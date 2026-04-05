@@ -1,17 +1,18 @@
 const User = require("../model/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const getProfile = async (req, res) => {
   const message = require("../language/message")(req);
 
-  if (!req?.params?.username) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.usernameRequired,
-    });
-  }
+  let userId = "null";
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    userId = decoded.UserInfo.userId;
+  });
 
-  const user = await User.findOne({ username: req.params.username }).exec();
+  const user = await User.findById(userId).exec();
   if (!user) {
     return res.status(200).json({
       statusCode: 200,
@@ -43,14 +44,14 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
   const message = require("../language/message")(req);
 
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
-    });
-  }
+  let userId = "null";
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    userId = decoded.UserInfo.userId;
+  });
 
-  const user = await User.findById(req.params.id).exec();
+  const user = await User.findById(userId).exec();
   if (!user) {
     return res.status(200).json({
       statusCode: 200,
@@ -107,14 +108,14 @@ const updateProfile = async (req, res) => {
 const changePassword = async (req, res) => {
   const message = require("../language/message")(req);
 
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
-    });
-  }
+  let userId = "null";
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    userId = decoded.UserInfo.userId;
+  });
 
-  const user = await User.findById(req.params.id).exec();
+  const user = await User.findById(userId).exec();
   if (!user) {
     return res.status(200).json({
       statusCode: 200,
@@ -161,14 +162,14 @@ const changePassword = async (req, res) => {
 const deleteAvatar = async (req, res) => {
   const message = require("../language/message")(req);
 
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
-    });
-  }
+  let userId = "null";
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    userId = decoded.UserInfo.userId;
+  });
 
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(userId);
   if (!user) {
     return res.status(400).json({
       statusCode: 400,
