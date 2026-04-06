@@ -286,6 +286,76 @@ const changeStatus = async (req, res) => {
     });
 };
 
+const print = async (req, res) => {
+  const message = require("../../../language/message")(req);
+
+  if (!req.params.id) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: message.error.idRequired,
+    });
+  }
+
+  const invoice = await Invoice.findById(req.params.id).exec();
+  if (!invoice) {
+    return res.status(404).json({
+      statusCode: 404,
+      message: message.error.notFound,
+    });
+  }
+
+  const invoiceItems = await InvoiceItem.find({ invoiceId: req.params.id });
+  let invoiceItemsData = [];
+  if (invoiceItems) {
+    invoiceItemsData = invoiceItems.map((item) => {
+      return {
+        id: item.id,
+        invoiceId: item.invoiceId,
+        isEdit: item.isEdit,
+        productId: item.productId,
+        productName: item.productName,
+        brandId: item.brandId,
+        brandName: item.brandName,
+        categoryId: item.categoryId,
+        categoryName: item.categoryName,
+        packagingId: item.packagingId,
+        packagingName: item.packagingName,
+        unitId: item.unitId,
+        unitName: item.unitName,
+        amount: item.amount,
+        unitCount: item.unitCount,
+        pageCount: item.pageCount,
+        singlePrice: item.singlePrice,
+        totalPrice: item.totalPrice,
+        localDate: item.localDate,
+        createdDate: item.createdDate,
+        lastUpdateDate: item.lastUpdateDate,
+      };
+    });
+  }
+
+  const printData = {
+    id: invoice.id,
+    invoiceNumber: invoice.invoiceNumber,
+    companyId: invoice.companyId,
+    companyName: invoice.companyName,
+    companyType: invoice.companyType,
+    companyTypeTitle: invoice.companyTypeTitle,
+    paymentStatus: invoice.paymentStatus,
+    paymentStatusName: invoice.paymentStatusName,
+    localDate: invoice.localDate,
+    date: invoice.date,
+
+    invoiceItems: invoiceItemsData,
+  };
+
+  res.status(200).json({
+    statusCode: 200,
+    message: message.success.dataReceived,
+    data: printData,
+  });
+};
+
 module.exports = {
   getAllInvoices,
   getInvoice,
@@ -293,4 +363,5 @@ module.exports = {
   updateInvoice,
   deleteInvoice,
   changeStatus,
+  print,
 };

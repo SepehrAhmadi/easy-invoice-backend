@@ -33,6 +33,8 @@ router
     invoiceController.changeStatus,
   );
 
+router.route("/:id/print").get(invoiceController.print);
+
 // Invoice item
 router
   .route("/:invoiceId/items")

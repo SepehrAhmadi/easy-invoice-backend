@@ -72,3 +72,8 @@ Require stack:
 2026-04-05 	 16:05:52 	 3c0be20b-78f7-4bf1-80a7-02aac9e208b8 	 ReferenceError jwt is not defined
 2026-04-05 	 16:16:34 	 c40090e3-cc51-4a3d-8884-7d0cadc048d0 	 ReferenceError username is not defined
 2026-04-05 	 16:16:35 	 c3730cb5-8742-49f4-bd4c-018d71d166be 	 ReferenceError username is not defined
+2026-04-06 	 12:38:06 	 47cb7b9a-f3d4-479d-8020-65823a87331f 	 TypeError Cannot read properties of undefined (reading 'id')
+2026-04-06 	 12:38:09 	 12efb941-1269-47d9-a61c-fdfd92990828 	 TypeError Cannot read properties of undefined (reading 'id')
+2026-04-06 	 12:38:13 	 ea963dd0-fb85-4f2d-862f-d44c8b376844 	 TypeError Cannot read properties of undefined (reading 'id')
+2026-04-06 	 12:38:42 	 ccf458e8-fa5f-44cd-b498-8b6bbece4e25 	 TypeError Assignment to constant variable.
+2026-04-06 	 12:38:44 	 a5906646-5731-49fd-9336-487cc9fb5900 	 TypeError Assignment to constant variable.
