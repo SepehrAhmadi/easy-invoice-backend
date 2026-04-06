@@ -50,6 +50,8 @@ module.exports = (req) => {
         individual: "Individual",
         paid: "Paid",
         awatingPayment: "Awating payment",
+        design: "Design",
+        edit: "Edit",
       },
     };
   } else {
@@ -100,6 +102,8 @@ module.exports = (req) => {
         individual: "حقوقی",
         paid: "پرداخت شده",
         awatingPayment: "در انتظار پرداخت",
+        design: "طراحی",
+        edit: "ویرایش",
       },
     };
   }

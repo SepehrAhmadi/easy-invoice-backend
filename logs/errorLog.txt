@@ -77,3 +77,5 @@ Require stack:
 2026-04-06 	 12:38:13 	 ea963dd0-fb85-4f2d-862f-d44c8b376844 	 TypeError Cannot read properties of undefined (reading 'id')
 2026-04-06 	 12:38:42 	 ccf458e8-fa5f-44cd-b498-8b6bbece4e25 	 TypeError Assignment to constant variable.
 2026-04-06 	 12:38:44 	 a5906646-5731-49fd-9336-487cc9fb5900 	 TypeError Assignment to constant variable.
+2026-04-06 	 13:19:49 	 6a53e1d6-2497-4404-b3a1-7539609a2d29 	 ReferenceError isEdit is not defined
+2026-04-06 	 13:19:50 	 b49f302c-0a13-45f9-b013-28b12ef89209 	 ReferenceError isEdit is not defined

@@ -286,7 +286,7 @@ const changeStatus = async (req, res) => {
     });
 };
 
-const print = async (req, res) => {
+const printInvoice = async (req, res) => {
   const message = require("../../../language/message")(req);
 
   if (!req.params.id) {
@@ -308,8 +308,13 @@ const print = async (req, res) => {
   let invoiceItemsData = [];
   if (invoiceItems) {
     invoiceItemsData = invoiceItems.map((item) => {
+      const designType = item.isEdit
+        ? message.response.edit
+        : message.response.design;
+      const productDisplayName = `${designType} ${item.categoryName} ${item.amount} ${item.unitName} - ${item.brandName} - ${item.productName}`;
       return {
         id: item.id,
+        prroduntDisplayName: productDisplayName,
         invoiceId: item.invoiceId,
         isEdit: item.isEdit,
         productId: item.productId,
@@ -363,5 +368,5 @@ module.exports = {
   updateInvoice,
   deleteInvoice,
   changeStatus,
-  print,
+  printInvoice,
 };
