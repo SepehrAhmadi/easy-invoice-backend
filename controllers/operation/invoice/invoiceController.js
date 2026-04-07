@@ -306,12 +306,14 @@ const printInvoice = async (req, res) => {
 
   const invoiceItems = await InvoiceItem.find({ invoiceId: req.params.id });
   let invoiceItemsData = [];
+  let totalPrice = 0;
   if (invoiceItems) {
     invoiceItemsData = invoiceItems.map((item) => {
       const designType = item.isEdit
         ? message.response.edit
         : message.response.design;
       const productDisplayName = `${designType} ${item.categoryName} ${item.amount} ${item.unitName} - ${item.brandName} - ${item.productName}`;
+      totalPrice += item.totalPrice;
       return {
         id: item.id,
         prroduntDisplayName: productDisplayName,
@@ -349,6 +351,8 @@ const printInvoice = async (req, res) => {
     paymentStatus: invoice.paymentStatus,
     paymentStatusName: invoice.paymentStatusName,
     localDate: invoice.localDate,
+    totalPrice: totalPrice,
+    count: invoiceItems.length,
     date: invoice.date,
 
     invoiceItems: invoiceItemsData,
