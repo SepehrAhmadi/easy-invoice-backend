@@ -259,21 +259,34 @@ const addInvoiceItem = async (req, res) => {
   let totalPice = invoiceItem.pageCount * invoiceItem.singlePrice;
   invoiceItem.totalPrice = totalPice;
 
-  invoiceItem
-    .save()
-    .then(() => {
-      res.status(200).json({
-        statusCode: 200,
-        message: message.success.added,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        statusCode: 500,
-        message: message.error.faildToAdd,
-      });
+  try {
+    await invoiceItem.save();
+
+    const invoiceItems = await InvoiceItem.find({
+      invoiceId: req.params.invoiceId,
     });
+
+    let totalInvoicePrice = 0;
+    invoiceItems.forEach((item) => {
+      totalInvoicePrice += item.totalPrice;
+    });
+
+    await Invoice.findByIdAndUpdate(req.params.invoiceId, {
+      totalPrice: totalInvoicePrice.toString(),
+      lastUpdateDate: new Date(),
+    });
+
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.added,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
+    });
+  }
 };
 
 const updateInvoiceItem = async (req, res) => {
@@ -422,21 +435,34 @@ const updateInvoiceItem = async (req, res) => {
   let totalPice = invoiceItem.pageCount * invoiceItem.singlePrice;
   invoiceItem.totalPrice = totalPice;
 
-  invoiceItem
-    .save()
-    .then(() => {
-      res.status(200).json({
-        statusCode: 200,
-        message: message.success.edited,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        statusCode: 500,
-        message: message.error.faildToEdit,
-      });
+  try {
+    await invoiceItem.save();
+
+    const invoiceItems = await InvoiceItem.find({
+      invoiceId: req.params.invoiceId,
     });
+
+    let totalInvoicePrice = 0;
+    invoiceItems.forEach((item) => {
+      totalInvoicePrice += item.totalPrice;
+    });
+
+    await Invoice.findByIdAndUpdate(req.params.invoiceId, {
+      totalPrice: totalInvoicePrice.toString(),
+      lastUpdateDate: new Date(),
+    });
+
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.added,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
+    });
+  }
 };
 
 const deleteInvoiceItem = async (req, res) => {
@@ -446,7 +472,7 @@ const deleteInvoiceItem = async (req, res) => {
     return res.status(400).json({
       statusCode: 400,
       message: message.error.invoiceIdRequired,
-  });
+    });
   }
 
   if (!req?.params?.itemId) {

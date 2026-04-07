@@ -51,10 +51,12 @@ app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/logout"));
 
 app.use(verifyJWT);
-// dropdown api
-app.use("/dropdown", require("./routes/api/dropdown/index"));
+// dashboard api
+app.use("/dashboard", require("./routes/dashboard"));
 // profile api
 app.use("/profile", require("./routes/profile"));
+// dropdown api
+app.use("/dropdown", require("./routes/api/dropdown/index"));
 // base api
 app.use("/base/company", require("./routes/api/base/company"));
 app.use("/base/brand", require("./routes/api/base/brand"));

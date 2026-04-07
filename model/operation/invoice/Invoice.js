@@ -13,12 +13,13 @@ const invoiceSchema = new Schema({
   paymentStatus: {
     type: Number,
     enum: [1, 2], // 1 -> paid & 2 -> awaiting payment
-    default : 2,
+    default: 2,
   },
-  paymentStatusName : {
-    type : String ,
-    default : "paid"
+  paymentStatusName: {
+    type: String,
+    default: "paid",
   },
+  totalPrice: String,
   date: Date,
   localDate: String,
   createdDate: Date,

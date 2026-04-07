@@ -13,6 +13,7 @@ const PAYMENT_STATUS_TYPE = {
 const getAllInvoices = async (req, res) => {
   const message = require("../../../language/message")(req);
   const invoices = await Invoice.find().exec();
+
   if (!invoices) {
     return res.status(200).json({
       statusCode: 200,
@@ -30,6 +31,7 @@ const getAllInvoices = async (req, res) => {
       companyTypeTitle: item.companyTypeTitle,
       paymentStatus: item.paymentStatus,
       paymentStatusName: item.paymentStatusName,
+      totalPrice: item.totalPrice,
       localDate: item.localDate,
       date: item.date,
       createdDate: item.createdDate,
@@ -72,6 +74,7 @@ const getInvoice = async (req, res) => {
     companyTypeTitle: invoice.companyTypeTitle,
     paymentStatus: invoice.paymentStatus,
     paymentStatusName: invoice.paymentStatusName,
+    totalPrice: invoice.totalPrice,
     localDate: invoice.localDate,
     date: invoice.date,
     createdDate: invoice.createdDate,
