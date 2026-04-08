@@ -17,7 +17,7 @@ const getDashboard = async (req, res) => {
   });
 
   const companies = await Company.find();
-  const priceByCompany = await Promise.all(
+  const valueByCompany = await Promise.all(
     companies.map(async (item) => {
       const invoices = await Invoice.find({
         companyId: item.id,
@@ -42,6 +42,10 @@ const getDashboard = async (req, res) => {
   const awaitingPaymentInvoices = await Invoice.find({
     paymentStatus: 2,
   });
+  let awaitingPaymentInvoiceTotalPrice = 0;
+  awaitingPaymentInvoices.forEach((item) => {
+    awaitingPaymentInvoiceTotalPrice += item.totalPrice;
+  });
   const awaitingPaymentInvoicesData = awaitingPaymentInvoices.map((item) => {
     return {
       id: item.id,
@@ -59,8 +63,13 @@ const getDashboard = async (req, res) => {
       lastUpdateDate: item.lastUpdateDate,
     };
   });
+
   const paidInvoices = await Invoice.find({
     paymentStatus: 1,
+  });
+  let paidInvoiceTotalPrice = 0;
+  paidInvoices.forEach((item) => {
+    paidInvoiceTotalPrice += item.totalPrice;
   });
   const paidInvoicesData = paidInvoices.map((item) => {
     return {
@@ -100,8 +109,12 @@ const getDashboard = async (req, res) => {
     message: message.success.dataReceived,
     data: {
       invoicesCount: invoices.length,
+      awaitingPaymentInvoicesCount: awaitingPaymentInvoices.length,
+      paidInvoicesCount: paidInvoices.length,
       totalPrice: invoiceTotalPrice,
-      priceByCompany: priceByCompany,
+      awaitingPaymentTotalPrice: awaitingPaymentInvoiceTotalPrice,
+      paidTotalPrice: paidInvoiceTotalPrice,
+      valueByCompany: valueByCompany,
       invoicesByPaymentStatus: {
         awatintPayment: awaitingPaymentInvoicesData,
         paid: paidInvoicesData,
