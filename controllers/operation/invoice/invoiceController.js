@@ -340,6 +340,7 @@ const printInvoice = async (req, res) => {
         localDate: item.localDate,
         createdDate: item.createdDate,
         lastUpdateDate: item.lastUpdateDate,
+        description: item.description,
       };
     });
   }

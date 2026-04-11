@@ -32,6 +32,7 @@ const invoiceItemSchema = new Schema({
   localDate: String,
   createdDate: Date,
   lastUpdateDate: Date,
+  description: String,
 });
 
 invoiceItemSchema.index({ invoiceId: 1, _id: 1 });

@@ -51,6 +51,7 @@ const getAllInvoiceItems = async (req, res) => {
       localDate: item.localDate,
       createdDate: item.createdDate,
       lastUpdateDate: item.lastUpdateDate,
+      description: item.description,
     };
   });
 
@@ -112,6 +113,7 @@ const getInvoiceItem = async (req, res) => {
     localDate: invoiceItem.localDate,
     createdDate: invoiceItem.createdDate,
     lastUpdateDate: invoiceItem.lastUpdateDate,
+    description: invoiceItem.description,
   };
 
   res.status(200).json({
@@ -258,6 +260,8 @@ const addInvoiceItem = async (req, res) => {
 
   let totalPice = invoiceItem.pageCount * invoiceItem.singlePrice;
   invoiceItem.totalPrice = totalPice;
+
+  invoiceItem.description = req.body.description;
 
   try {
     await invoiceItem.save();
@@ -434,6 +438,8 @@ const updateInvoiceItem = async (req, res) => {
 
   let totalPice = invoiceItem.pageCount * invoiceItem.singlePrice;
   invoiceItem.totalPrice = totalPice;
+
+  invoiceItem.description = req.body.description;
 
   try {
     await invoiceItem.save();
