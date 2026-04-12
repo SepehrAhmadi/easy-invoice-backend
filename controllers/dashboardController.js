@@ -25,7 +25,7 @@ const getDashboard = async (req, res) => {
 
       let totalPrice = 0;
       invoices.forEach((item) => {
-        totalPrice += item.totalPrice;
+        totalPrice += Number(item.totalPrice);
       });
 
       return {
@@ -44,7 +44,7 @@ const getDashboard = async (req, res) => {
   });
   let awaitingPaymentInvoiceTotalPrice = 0;
   awaitingPaymentInvoices.forEach((item) => {
-    awaitingPaymentInvoiceTotalPrice += item.totalPrice;
+    awaitingPaymentInvoiceTotalPrice += Number(item.totalPrice);
   });
   const awaitingPaymentInvoicesData = awaitingPaymentInvoices.map((item) => {
     return {

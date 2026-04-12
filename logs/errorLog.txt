@@ -95,3 +95,6 @@ Require stack:
 - C:\project\easy-invoice-backend\controllers\dashboardController.js
 - C:\project\easy-invoice-backend\routes\dashboard.js
 - C:\project\easy-invoice-backend\server.js
+2026-04-12 	 14:58:46 	 8169ada0-3b09-46eb-afd5-9257e2214263 	 ReferenceError message is not defined
+2026-04-12 	 15:43:10 	 a1dc3afe-f5b6-4ccb-a0e5-0bcdd3c7171f 	 TypeError Cannot read properties of undefined (reading 'map')
+2026-04-12 	 15:43:55 	 c8921545-5a4f-43e2-96a9-f10b6686c264 	 ReferenceError companyItemsData is not defined

@@ -12,18 +12,52 @@ const PAYMENT_STATUS_TYPE = {
 
 const getAllInvoices = async (req, res) => {
   const message = require("../../../language/message")(req);
-  const invoices = await Invoice.find().exec();
 
-  if (!invoices) {
-    return res.status(200).json({
-      statusCode: 200,
-      message: message.error.notFound,
-      data: [],
-    });
+  const { fromDate, toDate, paymentStatus, companyType } = req.query;
+
+  let query = {};
+
+  if (fromDate && toDate) {
+    const isValidFrom = moment(fromDate, "jYYYY/jMM/jDD", true).isValid();
+    const isValidTo = moment(toDate, "jYYYY/jMM/jDD", true).isValid();
+
+    if (!isValidFrom || !isValidTo) {
+      return res.status(400).json({
+        statusCode: 400,
+        message: message.error.invalidDate,
+      });
+    }
+
+    const gteDate = moment(fromDate, "jYYYY/jMM/jDD").startOf("day").toDate();
+    const lteDate = moment(toDate, "jYYYY/jMM/jDD").endOf("day").toDate();
+
+    query.date = {
+      $gte: gteDate,
+      $lte: lteDate,
+    };
   }
-  const invoicesData = invoices.map((item) => {
-    return {
-      id: item.id,
+
+  if (paymentStatus) {
+    query.paymentStatus = Number(paymentStatus);
+  }
+
+  if (companyType) {
+    query.companyType = Number(companyType);
+  }
+
+  try {
+    const invoices = await Invoice.find(query).lean();
+
+    if (!invoices.length) {
+      return res.status(200).json({
+        statusCode: 200,
+        message: message.error.notFound,
+        data: [],
+      });
+    }
+
+    const invoicesData = invoices.map((item) => ({
+      id: item._id,
       invoiceNumber: item.invoiceNumber,
       companyId: item.companyId,
       companyName: item.companyName,
@@ -36,16 +70,20 @@ const getAllInvoices = async (req, res) => {
       date: item.date,
       createdDate: item.createdDate,
       lastUpdateDate: item.lastUpdateDate,
-    };
-  });
+    }));
 
-  res.status(200).json({
-    statusCode: 200,
-    message: message.success.dataReceived,
-    data: {
-      invoices: invoicesData,
-    },
-  });
+    return res.status(200).json({
+      statusCode: 200,
+      message: message.success.dataReceived,
+      data: { invoices: invoicesData },
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      statusCode: 500,
+      message: message.error.serverError,
+    });
+  }
 };
 
 const getInvoice = async (req, res) => {

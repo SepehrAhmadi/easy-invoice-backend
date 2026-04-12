@@ -66,6 +66,7 @@ app.use("/base/product", require("./routes/api/base/product"));
 app.use("/operation/invoice", require("./routes/api/operation/invoice"));
 // report
 app.use("/report/packaging", require("./routes/api/report/packaging"));
+app.use("/report/company", require("./routes/api/report/company"));
 
 // =========== 404 ============//
 app.all("/*splat", (req, res) => {

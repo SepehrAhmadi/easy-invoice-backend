@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const invoiceItemSchema = new Schema({
-  invoiceId: String,
+  invoiceId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Invoice",
+  },
   isEdit: {
     type: Boolean,
     default: false,
