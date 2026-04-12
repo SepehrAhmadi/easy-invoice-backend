@@ -13,7 +13,7 @@ const getDashboard = async (req, res) => {
   const invoiceItems = await InvoiceItem.find();
   let invoiceTotalPrice = 0;
   invoiceItems.forEach((item) => {
-    invoiceTotalPrice += item.totalPrice;
+    invoiceTotalPrice += Number(item.totalPrice);
   });
 
   const companies = await Company.find();
@@ -69,7 +69,7 @@ const getDashboard = async (req, res) => {
   });
   let paidInvoiceTotalPrice = 0;
   paidInvoices.forEach((item) => {
-    paidInvoiceTotalPrice += item.totalPrice;
+    paidInvoiceTotalPrice += Number(item.totalPrice);
   });
   const paidInvoicesData = paidInvoices.map((item) => {
     return {
