@@ -15,7 +15,7 @@ const getReport = async (req, res) => {
   });
 
   const paidInvoices = await Invoice.find({
-    paymentStatus: 2,
+    paymentStatus: 1,
   });
   let totalPaidPrice = 0;
   let totalPaidCount = 0;
