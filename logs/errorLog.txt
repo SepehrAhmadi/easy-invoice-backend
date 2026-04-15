@@ -98,3 +98,14 @@ Require stack:
 2026-04-12 	 14:58:46 	 8169ada0-3b09-46eb-afd5-9257e2214263 	 ReferenceError message is not defined
 2026-04-12 	 15:43:10 	 a1dc3afe-f5b6-4ccb-a0e5-0bcdd3c7171f 	 TypeError Cannot read properties of undefined (reading 'map')
 2026-04-12 	 15:43:55 	 c8921545-5a4f-43e2-96a9-f10b6686c264 	 ReferenceError companyItemsData is not defined
+2026-04-13 	 10:32:34 	 8b1b43e5-716c-455e-bd97-7d06c94a8cea 	 ReferenceError valueByCompany is not defined
+2026-04-13 	 10:34:59 	 bc9d4283-aa6a-48c7-a6c2-4e414587f981 	 ReferenceError Nubmer is not defined
+2026-04-13 	 10:35:01 	 9e524c1f-88f0-4fac-8894-d77249943921 	 ReferenceError Nubmer is not defined
+2026-04-13 	 10:35:02 	 a470437b-ec2f-4e16-8686-cb91e6e42541 	 ReferenceError Nubmer is not defined
+2026-04-13 	 11:18:24 	 7e737bca-c905-4889-9f74-e2d93320f15d 	 ReferenceError message is not defined
+2026-04-13 	 15:36:49 	 4b1c4aa3-4404-4893-80ff-217d92b4a377 	 CastError Cast to ObjectId failed for value "[object Object]" (type string) at path "_id" for model "Invoice"
+2026-04-13 	 15:39:55 	 46e7cf72-44ee-4924-8f6c-3b6d4f8b8a10 	 CastError Cast to ObjectId failed for value "[object Object]" (type string) at path "_id" for model "Invoice"
+2026-04-13 	 15:40:02 	 32d459e1-7b7d-49b6-9c4e-708aebb7eb6a 	 CastError Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Invoice"
+2026-04-13 	 15:41:09 	 0fbbd412-6d32-4204-a7e3-efbd16660ba3 	 CastError Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Invoice"
+2026-04-13 	 15:41:13 	 fa73825f-419c-4ed5-986b-41d99a7215f1 	 CastError Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Invoice"
+2026-04-13 	 15:41:17 	 44a98244-4722-4cd4-92df-a0a5a10e9d64 	 CastError Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Invoice"

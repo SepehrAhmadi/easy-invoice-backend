@@ -3,10 +3,11 @@ const Schema = mongoose.Schema;
 
 const invoiceSchema = new Schema({
   invoiceNumber: Number,
-  companyId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Company",
-  },
+  companyId: String,
+  // companyId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Company",
+  // },
   companyName: String,
   companyType: {
     type: Number,

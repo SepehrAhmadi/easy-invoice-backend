@@ -5,6 +5,8 @@ const companyController = require("../../../controllers/report/companyController
 
 router.route("/").get(companyController.getReport);
 
-router.route("/:id").get(companyController.getReportDetail);
+router.route("/invoices/:companyId").get(companyController.getInvoices);
+
+router.route("/invoiceItems/:invoiceId").get(companyController.getInvoiceItems);
 
 module.exports = router;
