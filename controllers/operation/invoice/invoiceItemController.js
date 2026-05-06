@@ -499,12 +499,34 @@ const deleteInvoiceItem = async (req, res) => {
     });
   }
 
-  await invoiceItem.deleteOne();
+  try {
+    await invoiceItem.deleteOne();
 
-  res.status(200).json({
-    statusCode: 200,
-    message: message.success.deleted,
-  });
+    const invoiceItems = await InvoiceItem.find({
+      invoiceId: req.params.invoiceId,
+    });
+
+    let totalInvoicePrice = 0;
+    invoiceItems.forEach((item) => {
+      totalInvoicePrice += item.totalPrice;
+    });
+
+    await Invoice.findByIdAndUpdate(req.params.invoiceId, {
+      totalPrice: totalInvoicePrice.toString(),
+      lastUpdateDate: new Date(),
+    });
+
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.deleted,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToDelete,
+    });
+  }
 };
 
 module.exports = {
