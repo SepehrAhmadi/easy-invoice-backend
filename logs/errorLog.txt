@@ -109,3 +109,4 @@ Require stack:
 2026-04-13 	 15:41:09 	 0fbbd412-6d32-4204-a7e3-efbd16660ba3 	 CastError Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Invoice"
 2026-04-13 	 15:41:13 	 fa73825f-419c-4ed5-986b-41d99a7215f1 	 CastError Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Invoice"
 2026-04-13 	 15:41:17 	 44a98244-4722-4cd4-92df-a0a5a10e9d64 	 CastError Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Invoice"
+2026-06-13 	 09:26:16 	 3e3180a6-659d-415e-b759-1ca9f7dbe340 	 ReferenceError res is not defined
