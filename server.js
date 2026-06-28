@@ -4,8 +4,8 @@ const app = express();
 const path = require("path");
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
-const { logger } = require("./middleware/logEvent");
-const errorHandler = require("./middleware/errorHandler");
+const requestLogger = require('./middleware/requestLogger');
+const errorHandler = require('./middleware/errorHandler');
 const verifyJWT = require("./middleware/verifyJWT");
 const cookieParser = require("cookie-parser");
 const credentials = require("./middleware/credentials");
@@ -19,19 +19,19 @@ const PORT = process.env.PORT || 3500;
 // =========== connect to MongoDB ============//
 connectDB();
 
-// =========== middleware ============//
+// =========== middleware ============// 
 // customer loger middleware
-app.use(logger);
+app.use(requestLogger);
 
 // handle options credentials check before CORS
 // and fetch cookies credentials requirement
 app.use(credentials);
 
 // cross origin resource sharing
-app.use(cors(corsOptions));
+app.use(cors(corsOptions));  
 
 // built in middleware for form data
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }))
 
 // built in middleware for jsojn
 app.use(express.json());
