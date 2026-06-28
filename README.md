@@ -132,6 +132,57 @@ Uploaded files are served from `/uploads`.
 └── server.js        # App entry point
 ```
 
+## Logging
+
+Request and error logging is handled by **Winston** and **Morgan**.
+
+- **Morgan** captures every HTTP request and streams it into Winston.
+- **Winston** writes logs to multiple transports depending on the environment:
+
+| Transport | Environment | Details |
+|-----------|-------------|--------|
+| Console | Development | Colorized output |
+| Daily rotate file (`logs/requests/`) | Development | HTTP-level logs, kept 14 days |
+| Daily rotate file (`logs/errors/`) | Development | Error-level logs, kept 30 days |
+| MongoDB `logs` collection | Always | All logs at `info` level and above |
+
+Log level defaults to `info` and can be overridden with the `LOG_LEVEL` environment variable.
+
+## Swagger
+
+Interactive API docs are available at:
+
+```
+http://localhost:<PORT>/api-docs
+```
+
+The docs are built with **swagger-jsdoc** and **swagger-ui-express** (OpenAPI 3.0). JSDoc annotations live in `swagger/docs/`:
+
+```
+swagger/
+├── definition.js        # OpenAPI metadata, server URL, security scheme
+├── setup.js             # swagger-jsdoc configuration
+└── docs/
+    ├── auth.docs.js
+    ├── dashboard.docs.js
+    ├── profile.docs.js
+    ├── base/
+    │   ├── brand.docs.js
+    │   ├── category.docs.js
+    │   ├── company.docs.js
+    │   └── product.docs.js
+    ├── dropdown/
+    │   └── dropdown.docs.js
+    ├── operation/
+    │   ├── invoice.docs.js
+    │   └── invoiceItem.docs.js
+    └── report/
+        ├── company.docs.js
+        └── packaging.docs.js
+```
+
+All protected endpoints include a `bearerAuth` security scheme — use the **Authorize** button in Swagger UI to paste your JWT.
+
 ## Roles
 
 | Role | Code |
