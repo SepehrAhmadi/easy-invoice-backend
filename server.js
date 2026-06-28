@@ -4,6 +4,7 @@ const app = express();
 const path = require("path");
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
+const logger = require('./utils/logger');
 const requestLogger = require('./middleware/requestLogger');
 const errorHandler = require('./middleware/errorHandler');
 const verifyJWT = require("./middleware/verifyJWT");
@@ -93,6 +94,6 @@ app.all("/*splat", (req, res) => {
 app.use(errorHandler);
 
 mongoose.connection.once("open", () => {
-  console.log("Connected to MongoDB");
+  logger.info("Connected to MongoDB");
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });

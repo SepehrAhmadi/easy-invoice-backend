@@ -32,7 +32,6 @@ const logger = createLogger({
       db: process.env.DATABASE_LOCAL_URI,
       collection: "logs",
       level: process.env.LOG_LEVEL || "info",
-      options: { useUnifiedTopology: true },
     }),
   ],
 });
