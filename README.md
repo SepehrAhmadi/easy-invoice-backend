@@ -52,6 +52,7 @@ cp example.env .env
 | `REFRESH_TOKEN_SECRET` | Secret for signing refresh tokens |
 | `DATABASE_ATLAS_URI` | MongoDB connection string (used by the app) |
 | `DATABASE_LOCAL_URI` | Optional local MongoDB URI |
+| `LOG_LEVEL` | Optional log level (`error`, `warn`, `info`, `http`, `verbose`, `debug`, `silly`) |
 
 Generate secure token secrets in Node.js:
 
