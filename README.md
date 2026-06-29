@@ -126,6 +126,7 @@ Uploaded files are served from `/uploads`.
 ├── middleware/      # Auth, logging, errors, file upload
 ├── model/           # Mongoose schemas
 ├── routes/          # Express routes
+├── swagger/         # Swagger documentation
 ├── uploads/         # User-uploaded files
 ├── public/          # Static assets
 ├── views/           # HTML views (404 page)
