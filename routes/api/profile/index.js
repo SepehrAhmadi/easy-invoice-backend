@@ -4,7 +4,7 @@ const ROLES_LIST = require("../../../config/rolesList");
 const verifyRoles = require("../../../middleware/verifyRoles");
 const uploadAvatar = require("../../../middleware/multer/uploadAvatar");
 
-const profileController = require("../../../controllers/profileController");
+const profileController = require("../../../controllers/profile/profileController");
 
 router.route("/:username").get(profileController.getProfile);
 

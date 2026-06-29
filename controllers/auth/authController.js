@@ -1,9 +1,9 @@
-const User = require("../model/User");
+const User = require("../../model/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const handleLogin = async (req, res) => {
-  const message = require("../language/message")(req);
+  const message = require("../../language/message")(req);
 
   const { username: user, password: pswd } = req.body;
   if (!user || !pswd)

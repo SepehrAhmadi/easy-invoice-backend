@@ -1,9 +1,9 @@
-const User = require("../model/User");
+const User = require("../../model/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const getProfile = async (req, res) => {
-  const message = require("../language/message")(req);
+  const message = require("../../language/message")(req);
 
   let userId = "null";
   const authHeader = req.headers.authorization || req.headers.Authorization;
@@ -42,7 +42,7 @@ const getProfile = async (req, res) => {
 };
 
 const updateProfile = async (req, res) => {
-  const message = require("../language/message")(req);
+  const message = require("../../language/message")(req);
 
   let userId = "null";
   const authHeader = req.headers.authorization || req.headers.Authorization;
@@ -106,7 +106,7 @@ const updateProfile = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  const message = require("../language/message")(req);
+  const message = require("../../language/message")(req);
 
   let userId = "null";
   const authHeader = req.headers.authorization || req.headers.Authorization;
@@ -160,7 +160,7 @@ const changePassword = async (req, res) => {
 };
 
 const deleteAvatar = async (req, res) => {
-  const message = require("../language/message")(req);
+  const message = require("../../language/message")(req);
 
   let userId = "null";
   const authHeader = req.headers.authorization || req.headers.Authorization;

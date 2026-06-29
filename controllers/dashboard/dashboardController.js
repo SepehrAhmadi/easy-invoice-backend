@@ -1,11 +1,11 @@
-const Invoice = require("../model/operation/invoice/Invoice");
-const InvoiceItem = require("../model/operation/invoice/InvoiceItem");
-const Company = require("../model/base/Company");
-const Packaging = require("../model/base/Packaging");
-const Product = require("../model/base/Product");
+const Invoice = require("../../model/operation/invoice/Invoice");
+const InvoiceItem = require("../../model/operation/invoice/InvoiceItem");
+const Company = require("../../model/base/Company");
+const Packaging = require("../../model/base/Packaging");
+const Product = require("../../model/base/Product");
 
 const getDashboard = async (req, res) => {
-  const message = require("../language/message")(req);
+  const message = require("../../language/message")(req);
 
   const packagings = await Packaging.find();
   const invoices = await Invoice.find();

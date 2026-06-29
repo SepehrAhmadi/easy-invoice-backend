@@ -1,8 +1,8 @@
-const User = require("../model/User")
+const User = require("../../model/User")
 
 
 const handleLogout = async (req, res) => {
-  const message = require("../language/message")(req);
+  const message = require("../../language/message")(req);
 
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.sendStatus(204); // no content

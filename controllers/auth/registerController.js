@@ -1,10 +1,11 @@
-const User = require("../model/User");
+const User = require("../../model/User");
 const bcrypt = require("bcrypt");
 
 const handleNewUser = async (req, res) => {
-  const message = require("../language/message")(req);
+  const message = require("../../language/message")(req);
 
   const { username: user, password: pswd } = req.body;
+  
   if (!user || !pswd)
     return res.status(400).json({
       statusCode: 400,
