@@ -4,23 +4,22 @@ const app = express();
 const path = require("path");
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
-const logger = require('./utils/logger');
-const requestLogger = require('./middleware/requestLogger');
-const errorHandler = require('./middleware/errorHandler');
-const verifyJWT = require("./middleware/verifyJWT");
+const logger = require("./utils/logger");
+const requestLogger = require("./middleware/requestLogger");
+const errorHandler = require("./middleware/errorHandler");
 const cookieParser = require("cookie-parser");
 const credentials = require("./middleware/credentials");
 const mongoose = require("mongoose");
 const connectDB = require("./config/dbConn");
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./swagger/setup');
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger/setup");
 
 const PORT = process.env.PORT || 3500;
 
 // =========== connect to MongoDB ============//
 connectDB();
 
-// =========== middleware ============// 
+// =========== middleware ============//
 // customer loger middleware
 app.use(requestLogger);
 
@@ -29,10 +28,10 @@ app.use(requestLogger);
 app.use(credentials);
 
 // cross origin resource sharing
-app.use(cors(corsOptions));  
+app.use(cors(corsOptions));
 
 // built in middleware for form data
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }));
 
 // built in middleware for jsojn
 app.use(express.json());
@@ -46,37 +45,19 @@ app.use("/", express.static(path.join(__dirname, "/public")));
 // middleware for uploads file
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// =========== routing ============//
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-  swaggerOptions: {
-    persistAuthorization: true,
-  },
-}));
+// =========== Swagger ============//
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  }),
+);
 
-app.use("/health", require("./routes/health"));
-app.use("/", require("./routes/root"));
-app.use("/register", require("./routes/register"));
-app.use("/auth", require("./routes/auth"));
-app.use("/refresh", require("./routes/refresh"));
-app.use("/logout", require("./routes/logout"));
-
-app.use(verifyJWT);
-// dashboard api
-app.use("/dashboard", require("./routes/dashboard"));
-// profile api
-app.use("/profile", require("./routes/profile"));
-// dropdown api
-app.use("/dropdown", require("./routes/api/dropdown/index"));
-// base api
-app.use("/base/company", require("./routes/api/base/company"));
-app.use("/base/brand", require("./routes/api/base/brand"));
-app.use("/base/category", require("./routes/api/base/category"));
-app.use("/base/product", require("./routes/api/base/product"));
-// operation api
-app.use("/operation/invoice", require("./routes/api/operation/invoice"));
-// report
-app.use("/report/packaging", require("./routes/api/report/packaging"));
-app.use("/report/company", require("./routes/api/report/company"));
+// =========== Routing ============//
+app.use("/", require("./routes"));
 
 // =========== 404 ============//
 app.all("/*splat", (req, res) => {
