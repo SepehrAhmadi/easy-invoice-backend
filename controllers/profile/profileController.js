@@ -1,6 +1,8 @@
 const User = require("../../model/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
 
 const getProfile = async (req, res) => {
   const message = require("../../language/message")(req);
@@ -174,6 +176,16 @@ const deleteAvatar = async (req, res) => {
     return res.status(400).json({
       statusCode: 400,
       message: message.error.notFound,
+    });
+  }
+
+  // Delete the avatar file from disk if it exists
+  if (user.avatarPath) {
+    const filePath = path.join(__dirname, "..", "..", user.avatarPath);
+    fs.unlink(filePath, (err) => {
+      if (err && err.code !== "ENOENT") {
+        console.error("Failed to delete avatar file:", err);
+      }
     });
   }
 
