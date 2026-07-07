@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const notificationSchema = new Schema(
   {
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -58,12 +58,7 @@ const notificationSchema = new Schema(
         trim: true,
       },
     },
-    date: Date,
-    isRead: {
-      type: Boolean,
-      default: false,
-      index:true
-    },
+    createdDate: Date,
   },
 );
 
