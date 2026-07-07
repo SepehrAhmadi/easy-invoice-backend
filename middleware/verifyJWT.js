@@ -21,8 +21,8 @@ const verifyJWT = (req, res, next) => {
         message: "Invalid token",
       });
     }
-    req.user = decoded.UserInfo.username;
-    req.user = decoded.UserInfo.userId;
+    req.username = decoded.UserInfo.username;
+    req.userId = decoded.UserInfo.userId;
     req.roles = decoded.UserInfo.roles;
     next();
   });

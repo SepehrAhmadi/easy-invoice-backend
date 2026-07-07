@@ -1,9 +1,17 @@
 const Company = require("../../model/base/Company");
+const notificationService = require("../../services/notification/notificationService");
 
 // company type
 const COMPANY_TYPE = {
   LEGAL_ENTITY: 1,
   INDIVIDUAL: 2,
+};
+
+// notification type
+const NOTIFICATION_TYPE = {
+  CREATE: "company_created",
+  UPDATE: "company_updated",
+  DELETE: "company_deleted",
 };
 
 const getAllCompanies = async (req, res) => {
@@ -98,7 +106,15 @@ const addCompany = async (req, res) => {
 
   company
     .save()
-    .then(() => {
+    .then(async () => {
+      await notificationService.create({
+        userId: req.userId,
+        type: NOTIFICATION_TYPE.CREATE,
+        data: {
+          companyName: company.name,
+        },
+      });
+
       res.status(201).json({
         statusCode: 201,
         message: message.success.added,
@@ -150,7 +166,15 @@ const updateCompany = async (req, res) => {
 
   company
     .save()
-    .then(() => {
+    .then(async () => {
+      await notificationService.create({
+        userId: req.userId,
+        type: NOTIFICATION_TYPE.UPDATE,
+        data: {
+          companyName: company.name,
+        },
+      });
+
       res.status(200).json({
         statusCode: 200,
         message: message.success.edited,
@@ -184,6 +208,14 @@ const deleteCompany = async (req, res) => {
   }
 
   await company.deleteOne();
+
+  await notificationService.create({
+    userId: req.userId,
+    type: NOTIFICATION_TYPE.DELETE,
+    data: {
+      companyName: company.name,
+    },
+  });
 
   res.status(200).json({
     statusCode: 200,

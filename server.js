@@ -3,6 +3,7 @@ const http = require("http");
 const express = require("express");
 const app = express();
 const server = http.createServer(app);
+const { initSocket } = require("./config/socket");
 const path = require("path");
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
@@ -78,6 +79,7 @@ app.use(errorHandler);
 
 mongoose.connection.once("open", () => {
   logger.info("Connected to MongoDB");
+  initSocket(server);
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });

@@ -5,6 +5,7 @@ const logger = require("../../utils/logger");
 
 const create = async ({ userId, type, data }) => {
   try {
+
     if (!notificationMessages[type]) {
       throw new Error(`Notification type "${type}" not found.`);
     }

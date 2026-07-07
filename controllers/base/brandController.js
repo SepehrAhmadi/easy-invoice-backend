@@ -1,4 +1,12 @@
 const Brand = require("../../model/base/Brand");
+const notificationService = require("../../services/notification/notificationService");
+
+// company type
+const NOTIFICATION_TYPE = {
+  CREATE: "brand_created",
+  UPDATE: "brand_updated",
+  DELETE: "brand_deleted",
+};
 
 const getAllBrands = async (req, res) => {
   const message = require("../../language/message")(req);
@@ -72,7 +80,15 @@ const addBrand = async (req, res) => {
 
   brand
     .save()
-    .then(() => {
+    .then(async () => {
+      await notificationService.create({
+        userId: req.userId,
+        type: NOTIFICATION_TYPE.CREATE,
+        data: {
+          brandName: brand.name,
+        },
+      });
+
       res.status(201).json({
         statusCode: 201,
         message: message.success.added,
@@ -114,7 +130,15 @@ const updateBrand = async (req, res) => {
   brand.name = req.body.name;
   brand
     .save()
-    .then(() => {
+    .then(async () => {
+      await notificationService.create({
+        userId: req.userId,
+        type: NOTIFICATION_TYPE.UPDATE,
+        data: {
+          brandName: brand.name,
+        },
+      });
+
       res.status(200).json({
         statusCode: 200,
         message: message.success.edited,
@@ -147,6 +171,14 @@ const deleteBrand = async (req, res) => {
   }
 
   await brand.deleteOne();
+
+  await notificationService.create({
+    userId: req.userId,
+    type: NOTIFICATION_TYPE.DELETE,
+    data: {
+      brandName: brand.name,
+    },
+  });
 
   res.status(200).json({
     statusCode: 200,

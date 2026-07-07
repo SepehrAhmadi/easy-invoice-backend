@@ -32,3 +32,5 @@ const notification = {
         },
       }),
 }
+
+module.exports = notification

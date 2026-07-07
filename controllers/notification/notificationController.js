@@ -1,10 +1,10 @@
 const Notification = require("../../model/Notification");
 
-const getNotification = async (req, res) => {
+const getNotifications = async (req, res) => {
   const message = require("../../language/message")(req);
 
   const notifications = await Notification.find().exec();
-  if (!notification) {
+  if (!notifications) {
     return res.status(200).json({
       statusCode: 200,
       message: message.success.dataReceived,
@@ -31,4 +31,4 @@ const getNotification = async (req, res) => {
   });
 };
 
-module.exports = { getNotification };
+module.exports = { getNotifications };

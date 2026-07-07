@@ -1,8 +1,16 @@
 const Invoice = require("../../../model/operation/invoice/Invoice");
 const InvoiceItem = require("../../../model/operation/invoice/InvoiceItem");
 const Company = require("../../../model/base/Company");
+const notificationService = require("../../../services/notification/notificationService");
 
 const moment = require("jalali-moment");
+
+// invoice type
+const NOTIFICATION_TYPE = {
+  CREATE: "invoice_created",
+  UPDATE: "invoice_updated",
+  DELETE: "invoice_deleted",
+};
 
 // payment status type
 const PAYMENT_STATUS_TYPE = {
@@ -175,7 +183,15 @@ const addInvoice = async (req, res) => {
 
   invoice
     .save()
-    .then(() => {
+    .then(async () => {
+      await notificationService.create({
+        userId: req.userId,
+        type: NOTIFICATION_TYPE.CREATE,
+        data: {
+          invoiceNumber: invoice.invoiceNumber,
+        },
+      });
+
       res.status(200).json({
         statusCode: 200,
         message: message.success.added,
@@ -246,7 +262,15 @@ const updateInvoice = async (req, res) => {
 
   invoice
     .save()
-    .then(() => {
+    .then(async () => {
+      await notificationService.create({
+        userId: req.userId,
+        type: NOTIFICATION_TYPE.UPDATE,
+        data: {
+          invoiceNumber: invoice.invoiceNumber,
+        },
+      });
+
       res.status(200).json({
         statusCode: 200,
         message: message.success.edited,
@@ -281,6 +305,14 @@ const deleteInvoice = async (req, res) => {
 
   await InvoiceItem.deleteMany({ invoiceId: req.params.id });
   await invoice.deleteOne();
+
+  await notificationService.create({
+    userId: req.userId,
+    type: NOTIFICATION_TYPE.DELETE,
+    data: {
+      invoiceNumber: invoice.invoiceNumber,
+    },
+  });
 
   res.status(200).json({
     statusCode: 200,

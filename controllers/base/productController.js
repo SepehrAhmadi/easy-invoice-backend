@@ -2,6 +2,14 @@ const Product = require("../../model/base/Product");
 const Packaging = require("../../model/base/Packaging");
 const Unit = require("../../model/base/Unit");
 const Brand = require("../../model/base/Brand");
+const notificationService = require("../../services/notification/notificationService");
+
+// product type
+const NOTIFICATION_TYPE = {
+  CREATE: "product_created",
+  UPDATE: "product_updated",
+  DELETE: "product_deleted",
+};
 
 const getAllProducts = async (req, res) => {
   const message = require("../../language/message")(req);
@@ -128,7 +136,15 @@ const addProduct = async (req, res) => {
 
   product
     .save()
-    .then(() => {
+    .then(async () => {
+      await notificationService.create({
+        userId: req.userId,
+        type: NOTIFICATION_TYPE.CREATE,
+        data: {
+          productName: product.name,
+        },
+      });
+
       res.status(200).json({
         statusCode: 200,
         message: message.success.added,
@@ -210,7 +226,15 @@ const updateProduct = async (req, res) => {
 
   product
     .save()
-    .then(() => {
+    .then(async () => {
+      await notificationService.create({
+        userId: req.userId,
+        type: NOTIFICATION_TYPE.UPDATE,
+        data: {
+          productName: product.name,
+        },
+      });
+
       res.status(200).json({
         statusCode: 200,
         message: message.success.edited,
@@ -244,6 +268,14 @@ const deleteProduct = async (req, res) => {
   }
 
   await product.deleteOne();
+
+  await notificationService.create({
+    userId: req.userId,
+    type: NOTIFICATION_TYPE.DELETE,
+    data: {
+      productName: product.name,
+    },
+  });
 
   res.status(200).json({
     statusCode: 200,

@@ -1,4 +1,12 @@
 const Category = require("../../model/base/Category");
+const notificationService = require("../../services/notification/notificationService");
+
+// category type
+const NOTIFICATION_TYPE = {
+  CREATE: "category_created",
+  UPDATE: "category_updated",
+  DELETE: "category_deleted",
+};
 
 const getAllCategories = async (req, res) => {
   const message = require("../../language/message")(req);
@@ -72,7 +80,15 @@ const addCategory = async (req, res) => {
 
   category
     .save()
-    .then(() => {
+    .then(async () => {
+      await notificationService.create({
+        userId: req.userId,
+        type: NOTIFICATION_TYPE.CREATE,
+        data: {
+          categoryName: category.name,
+        },
+      });
+
       res.status(201).json({
         statusCode: 201,
         message: message.success.added,
@@ -114,7 +130,15 @@ const updateCategory = async (req, res) => {
   category.name = req.body.name;
   category
     .save()
-    .then(() => {
+    .then(async () => {
+      await notificationService.create({
+        userId: req.userId,
+        type: NOTIFICATION_TYPE.UPDATE,
+        data: {
+          categoryName: category.name,
+        },
+      });
+
       res.status(200).json({
         statusCode: 200,
         message: message.success.edited,
@@ -148,6 +172,14 @@ const deleteCategory = async (req, res) => {
 
   await category.deleteOne();
 
+  await notificationService.create({
+    userId: req.userId,
+    type: NOTIFICATION_TYPE.DELETE,
+    data: {
+      categoryName: category.name,
+    },
+  });
+
   res.status(200).json({
     statusCode: 200,
     message: message.success.deleted,
@@ -161,4 +193,3 @@ module.exports = {
   updateCategory,
   deleteCategory,
 };
-
