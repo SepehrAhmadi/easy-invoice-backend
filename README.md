@@ -107,6 +107,7 @@ All routes below require a valid JWT unless noted.
 |--------|-------------|
 | `/dashboard` | Dashboard data |
 | `/profile` | User profile and password |
+| `/notification` | App notification |
 | `/dropdown` | Dropdown/select options |
 | `/base/company` | Companies |
 | `/base/brand` | Brands |
@@ -126,6 +127,7 @@ Uploaded files are served from `/uploads`.
 ├── middleware/      # Auth, logging, errors, file upload
 ├── model/           # Mongoose schemas
 ├── routes/          # Express routes
+├── services/        # App services
 ├── swagger/         # Swagger documentation
 ├── uploads/         # User-uploaded files
 ├── public/          # Static assets
@@ -142,7 +144,7 @@ Request and error logging is handled by **Winston** and **Morgan**.
 - **Winston** writes logs to multiple transports depending on the environment:
 
 | Transport | Environment | Details |
-|-----------|-------------|--------|
+|-----------|-------------|---------|
 | Console | Development | Colorized output |
 | Daily rotate file (`logs/requests/`) | Development | HTTP-level logs, kept 14 days |
 | Daily rotate file (`logs/errors/`) | Development | Error-level logs, kept 30 days |
@@ -150,8 +152,30 @@ Request and error logging is handled by **Winston** and **Morgan**.
 
 Log level defaults to `info` and can be overridden with the `LOG_LEVEL` environment variable.
 
-## Swagger
+## Notifications
 
+The notification service provides real-time and persistent notifications for CRUD operations across major entities in the system.
+
+### Key Features
+- **Real-time Delivery:** Notifications are instantly pushed to clients via **Socket.IO**.
+- **Bilingual Support:** Every notification includes both English (`en`) and Farsi (`fa`) titles and messages.
+- **Persistent Storage:** All notifications are saved in the `notifications` collection in MongoDB.
+- **Automatic Triggering:** Notifications are automatically created when entities are created, updated, or deleted.
+
+### Supported Entities
+Notifications are triggered for the following operations:
+- **Base Data:** Companies, Brands, Categories, and Products.
+- **Operations:** Invoices.
+
+### Notification Types
+The system supports 15 specific notification types:
+- `company_created`, `company_updated`, `company_deleted`
+- `brand_created`, `brand_updated`, `brand_deleted`
+- `category_created`, `category_updated`, `category_deleted`
+- `product_created`, `product_updated`, `product_deleted`
+- `invoice_created`, `invoice_updated`, `invoice_deleted`
+
+## Swagger
 Interactive API docs are available at:
 
 ```
@@ -167,6 +191,7 @@ swagger/
 └── docs/
     ├── auth.docs.js
     ├── dashboard.docs.js
+    ├── notification.docs.js
     ├── profile.docs.js
     ├── base/
     │   ├── brand.docs.js
