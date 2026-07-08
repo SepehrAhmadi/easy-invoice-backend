@@ -1,35 +1,9 @@
-const Company = require("../../model/base/Company");
-const Brand = require("../../model/base/Brand");
-const Packaging = require("../../model/base/Packaging");
-const Units = require("../../model/base/Unit");
-const Product = require("../../model/base/Product");
-const Category = require("../../model/base/Category");
-
-// company type
-const COMPANY_TYPE = {
-  LEGAL_ENTITY: 1,
-  INDIVIDUAL: 2,
-};
-
-// payment status type
-const PAYMENT_STATUS_TYPE = {
-  PAID: 1,
-  AWAITING_PAYMENT: 2,
-};
+const dropdownService = require("../../services/dropdown/dropdownService");
 
 const getCompanies = async (req, res) => {
   const message = require("../../language/message")(req);
 
-  const companies = await Company.find().exec();
-
-  const companiesData = companies.map((item) => {
-    return {
-      id: item._id,
-      name: item.name,
-      type: item.type,
-      typeTitle: item.typeTitle,
-    };
-  });
+  const companiesData = await dropdownService.getCompanies();
 
   res.status(200).json({
     statusCode: 200,
@@ -43,11 +17,7 @@ const getCompanies = async (req, res) => {
 const getBrands = async (req, res) => {
   const message = require("../../language/message")(req);
 
-  const brands = await Brand.find().exec();
-
-  const brandsData = brands.map((item) => {
-    return { id: item._id, name: item.name };
-  });
+  const brandsData = await dropdownService.getBrands();
 
   res.status(200).json({
     statusCode: 200,
@@ -61,11 +31,7 @@ const getBrands = async (req, res) => {
 const getCategories = async (req, res) => {
   const message = require("../../language/message")(req);
 
-  const categories = await Category.find().exec();
-
-  const categoriesData = categories.map((item) => {
-    return { id: item._id, name: item.name };
-  });
+  const categoriesData = await dropdownService.getCategories();
 
   res.status(200).json({
     statusCode: 200,
@@ -79,18 +45,7 @@ const getCategories = async (req, res) => {
 const getProducts = async (req, res) => {
   const message = require("../../language/message")(req);
 
-  const products = await Product.find().exec();
-
-  const productsData = products.map((item) => {
-    return {
-      id: item._id,
-      name: `${item.name} - ${item.packagingName} ${item.amount} ${item.unitName}ی`,
-      packagingId: item.packagingId,
-      unitId: item.unitId,
-      unitAmount: item.amount,
-      brandId: item.brandId,
-    };
-  });
+  const productsData = await dropdownService.getProducts();
 
   res.status(200).json({
     statusCode: 200,
@@ -104,11 +59,7 @@ const getProducts = async (req, res) => {
 const getPackagings = async (req, res) => {
   const message = require("../../language/message")(req);
 
-  const packaging = await Packaging.find().exec();
-
-  const packagingsData = packaging.map((item) => {
-    return { id: item._id, name: item.name, type: item.type };
-  });
+  const packagingsData = await dropdownService.getPackagings();
 
   res.status(200).json({
     statusCode: 200,
@@ -122,11 +73,7 @@ const getPackagings = async (req, res) => {
 const getUnits = async (req, res) => {
   const message = require("../../language/message")(req);
 
-  const units = await Units.find().exec();
-
-  const unitsData = units.map((item) => {
-    return { id: item._id, name: item.name };
-  });
+  const unitsData = await dropdownService.getUnits();
 
   res.status(200).json({
     statusCode: 200,
@@ -140,16 +87,12 @@ const getUnits = async (req, res) => {
 const getCompanyType = async (req, res) => {
   const message = require("../../language/message")(req);
 
-  const companyTypeData = [
-    {
-      id: COMPANY_TYPE.LEGAL_ENTITY,
-      name: message.response.legalEntity,
+  const companyTypeData = dropdownService.getCompanyType({
+    companyTypeNames: {
+      legalEntity: message.response.legalEntity,
+      individual: message.response.individual,
     },
-    {
-      id: COMPANY_TYPE.INDIVIDUAL,
-      name: message.response.individual,
-    },
-  ];
+  });
 
   res.status(200).json({
     statusCode: 200,
@@ -163,16 +106,12 @@ const getCompanyType = async (req, res) => {
 const getpaymentStatus = async (req, res) => {
   const message = require("../../language/message")(req);
 
-  const paymentStatusData = [
-    {
-      id: PAYMENT_STATUS_TYPE.PAID,
-      name: message.response.paid,
+  const paymentStatusData = dropdownService.getpaymentStatus({
+    paymentStatusNames: {
+      paid: message.response.paid,
+      awatingPayment: message.response.awatingPayment,
     },
-    {
-      id: PAYMENT_STATUS_TYPE.AWAITING_PAYMENT,
-      name: message.response.awatingPayment,
-    },
-  ];
+  });
 
   res.status(200).json({
     statusCode: 200,
