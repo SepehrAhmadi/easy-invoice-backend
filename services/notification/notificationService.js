@@ -3,9 +3,25 @@ const notificationMessages = require("../../language/notification/index");
 const { getIO } = require("../../config/socket");
 const logger = require("../../utils/logger");
 
+const getNotifications = async () => {
+  const notifications = await Notification.find().exec();
+  if (!notifications) {
+    return { notifications: [] };
+  }
+
+  return notifications.map((item) => ({
+    userId: item.userId,
+    type: item.type,
+    enTitle: item.title.en,
+    faTitle: item.title.fa,
+    enMessage: item.message.en,
+    faMessage: item.message.fa,
+    createdData: item.createdDate,
+  }));
+};
+
 const create = async ({ userId, type, data }) => {
   try {
-
     if (!notificationMessages[type]) {
       throw new Error(`Notification type "${type}" not found.`);
     }
@@ -21,7 +37,6 @@ const create = async ({ userId, type, data }) => {
     });
 
     const io = getIO();
-
     io.emit("notification", notification);
 
     return notification;
@@ -37,5 +52,6 @@ const create = async ({ userId, type, data }) => {
 };
 
 module.exports = {
+  getNotifications,
   create,
 };
