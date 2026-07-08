@@ -1,32 +1,23 @@
-const User = require("../../model/User")
-
+const logoutService = require("../../services/auth/logoutService");
 
 const handleLogout = async (req, res) => {
   const message = require("../../language/message")(req);
+  const result = await logoutService.handleLogout({ cookies: req.cookies });
 
-  const cookies = req.cookies;
-  if (!cookies?.jwt) return res.sendStatus(204); // no content
-
-  // is refresh token in db?
-  const jwtRefreshToken = cookies.jwt;
-  const foundUser = await User.findOne({refreshToken : jwtRefreshToken}).exec()
-  if (!foundUser) {
-    res.clearCookie("jwt", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-    });
-    return res.sendStatus(204);
+  if (result.noCookie && !result.missingUser) {
+    return res.sendStatus(204); // no content
   }
-
-  foundUser.refreshToken = ""
-  await foundUser.save()
 
   res.clearCookie("jwt", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
   });
+
+  if (result.missingUser) {
+    return res.sendStatus(204);
+  }
+
   res.status(200).json({
     statusCode: 200,
     message: message.success.logout,

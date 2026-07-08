@@ -1,36 +1,28 @@
-const User = require("../../model/User")
-const jwt = require("jsonwebtoken");
+const refreshTokenService = require("../../services/auth/refreshTokenService");
+const AppError = require("../../utils/AppError");
 
 const handleRefreshToken = async (req, res) => {
-  const cookies = req.cookies;
-  if (!cookies?.jwt)
-    return res.status(401).json({
-      statusCode: 401,
-      message: "JWT cookie not found",
-    });
-  const jwtRefreshToken = cookies.jwt;
-  const foundUser = await User.findOne({refreshToken : jwtRefreshToken}).exec();
-  if (!foundUser)
-    return res.status(403).json({
-      statusCode: 403,
-      message: `JWT cookie not found or invalid`,
+  try {
+    const result = await refreshTokenService.handleRefreshToken({
+      cookies: req.cookies,
     });
 
-  jwt.verify(jwtRefreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-    if (err || foundUser.username !== decoded.username) {
-      return res.status(403).json({
-        statusCode: 403,
-        message: "Invalid token",
+    return res
+      .status(200)
+      .json({ statusCode: 200, accessToken: result.accessToken });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: err.messageKey,
       });
     }
-    const roles = Object.values(foundUser.roles);
-    const accessToken = jwt.sign(
-      { UserInfo: { username: foundUser.username, userId: foundUser.id, roles: roles } },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
-    );
-    res.status(200).json({ statusCode: 200, accessToken });
-  });
+    console.error(err);
+    return res.status(500).json({
+      statusCode: 500,
+      message: err.message,
+    });
+  }
 };
 
 module.exports = { handleRefreshToken };

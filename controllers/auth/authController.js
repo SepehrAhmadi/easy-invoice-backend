@@ -1,66 +1,35 @@
-const User = require("../../model/User");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const authService = require("../../services/auth/authService");
+const AppError = require("../../utils/AppError");
 
 const handleLogin = async (req, res) => {
   const message = require("../../language/message")(req);
+  try {
+    const result = await authService.handleLogin({ body: req.body });
 
-  const { username: user, password: pswd } = req.body;
-  if (!user || !pswd)
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.userAndPassRequired,
-    });
-
-  const foundUser = await User.findOne({ username: user.toLowerCase() });
-  if (!foundUser)
-    return res.status(401).json({
-      statusCode: 401,
-      message: message.error.usernameNotFond,
-    });
-
-  const match = await bcrypt.compare(pswd, foundUser.password);
-  if (match) {
-    const roles = Object.values(foundUser.roles);
-
-    // access token
-    const accessToken = jwt.sign(
-      {
-        UserInfo: {
-          username: foundUser.username,
-          userId: foundUser.id,
-          roles: roles,
-        },
-      },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" },
-    );
-    // refresh  token
-    const refreshToken = jwt.sign(
-      { username: foundUser.username },
-      process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "1d" },
-    );
-
-    foundUser.refreshToken = refreshToken;
-    foundUser.save();
-
-    res.cookie("jwt", refreshToken, {
+    res.cookie("jwt", result.refreshToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     });
+
     return res.status(200).json({
       statusCode: 200,
-      accessToken,
-      username: user,
+      accessToken: result.accessToken,
+      username: result.username,
       message: message.success.login,
     });
-  } else {
-    return res.status(401).json({
-      statusCode: 401,
-      message: message.error.userAndPassNotMatch,
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    return res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
     });
   }
 };
