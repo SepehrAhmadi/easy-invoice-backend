@@ -1,189 +1,128 @@
-const Category = require("../../model/base/Category");
-const notificationService = require("../../services/notification/notificationService");
-
-// category type
-const NOTIFICATION_TYPE = {
-  CREATE: "category_created",
-  UPDATE: "category_updated",
-  DELETE: "category_deleted",
-};
+const categoryService = require("../../services/base/categoryService");
+const AppError = require("../../utils/AppError");
 
 const getAllCategories = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  const categories = await Category.find().exec();
-  if (!categories) {
-    return res.status(200).json({
+  try {
+    const data = await categoryService.getAllCategories();
+    res.status(200).json({
       statusCode: 200,
       message: message.success.dataReceived,
-      data: [],
+      data,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    return res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
     });
   }
-  const categoriesData = categories.map((item) => {
-    return {
-      name: item.name,
-      id: item.id,
-    };
-  });
-
-  res.status(200).json({
-    statusCode: 200,
-    message: message.success.dataReceived,
-    data: {
-      categories: categoriesData,
-    },
-  });
 };
 
 const getCategory = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
+  try {
+    const data = await categoryService.getCategory({ params: req.params });
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.dataReceived,
+      data,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    return res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
     });
   }
-
-  const category = await Category.findById(req.params.id);
-  if (!category) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.notFound,
-    });
-  }
-  const categoryData = {
-    id: category.id,
-    name: category.name,
-  };
-
-  res.status(200).json({
-    statusCode: 200,
-    message: message.success.dataReceived,
-    data: categoryData,
-  });
 };
 
 const addCategory = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  if (!req.body.name) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.requireFields,
+  try {
+    await categoryService.addCategory({ body: req.body, userId: req.userId });
+    res.status(201).json({
+      statusCode: 201,
+      message: message.success.added,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
     });
   }
-
-  const category = new Category();
-
-  category.name = req.body.name;
-
-  category
-    .save()
-    .then(async () => {
-      await notificationService.create({
-        userId: req.userId,
-        type: NOTIFICATION_TYPE.CREATE,
-        data: {
-          categoryName: category.name,
-        },
-      });
-
-      res.status(201).json({
-        statusCode: 201,
-        message: message.success.added,
-      });
-    })
-    .catch((err) => {
-      err;
-      res.status(500).json({
-        statusCode: 500,
-        message: message.error.faildToAdd,
-      });
-    });
 };
 
 const updateCategory = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
+  try {
+    await categoryService.updateCategory({
+      params: req.params,
+      body: req.body,
+      userId: req.userId,
+    });
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.edited,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToEdit,
     });
   }
-
-  const category = await Category.findById(req.params.id).exec();
-  if (!category) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.notFound,
-    });
-  }
-
-  if (!req.body.name) {
-    return res
-      .status(400)
-      .json({ statusCode: 400, message: message.error.requireFields });
-  }
-
-  category.name = req.body.name;
-  category
-    .save()
-    .then(async () => {
-      await notificationService.create({
-        userId: req.userId,
-        type: NOTIFICATION_TYPE.UPDATE,
-        data: {
-          categoryName: category.name,
-        },
-      });
-
-      res.status(200).json({
-        statusCode: 200,
-        message: message.success.edited,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        statusCode: 500,
-        message: message.error.faildToEdit,
-      });
-    });
 };
 
 const deleteCategory = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
+  try {
+    await categoryService.deleteCategory({
+      params: req.params,
+      userId: req.userId,
+    });
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.deleted,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToDelete,
     });
   }
-
-  const category = await Category.findById(req.params.id);
-  if (!category) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.notFound,
-    });
-  }
-
-  await category.deleteOne();
-
-  await notificationService.create({
-    userId: req.userId,
-    type: NOTIFICATION_TYPE.DELETE,
-    data: {
-      categoryName: category.name,
-    },
-  });
-
-  res.status(200).json({
-    statusCode: 200,
-    message: message.success.deleted,
-  });
 };
 
 module.exports = {

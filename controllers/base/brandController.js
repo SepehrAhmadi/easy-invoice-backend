@@ -1,189 +1,125 @@
-const Brand = require("../../model/base/Brand");
-const notificationService = require("../../services/notification/notificationService");
-
-// company type
-const NOTIFICATION_TYPE = {
-  CREATE: "brand_created",
-  UPDATE: "brand_updated",
-  DELETE: "brand_deleted",
-};
+const brandService = require("../../services/base/brandService");
+const AppError = require("../../utils/AppError");
 
 const getAllBrands = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  const brands = await Brand.find().exec();
-  if (!brands) {
-    return res.status(200).json({
+  try {
+    const data = await brandService.getAllBrands();
+    res.status(200).json({
       statusCode: 200,
       message: message.success.dataReceived,
-      data: [],
+      data,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    return res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
     });
   }
-  const brandsData = brands.map((item) => {
-    return {
-      name: item.name,
-      id: item.id,
-    };
-  });
-
-  res.status(200).json({
-    statusCode: 200,
-    message: message.success.dataReceived,
-    data: {
-      brands: brandsData,
-    },
-  });
 };
 
 const getBrand = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
+  try {
+    const data = await brandService.getBrand({ params: req.params });
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.dataReceived,
+      data,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    return res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
     });
   }
-
-  const brand = await Brand.findById(req.params.id);
-  if (!brand) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.notFound,
-    });
-  }
-  const brandData = {
-    id: brand.id,
-    name: brand.name,
-  };
-
-  res.status(200).json({
-    statusCode: 200,
-    message: message.success.dataReceived,
-    data: brandData,
-  });
 };
 
 const addBrand = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  if (!req.body.name) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.requireFields,
+  try {
+    await brandService.addBrand({ body: req.body, userId: req.userId });
+    res.status(201).json({
+      statusCode: 201,
+      message: message.success.added,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
     });
   }
-
-  const brand = new Brand();
-
-  brand.name = req.body.name;
-
-  brand
-    .save()
-    .then(async () => {
-      await notificationService.create({
-        userId: req.userId,
-        type: NOTIFICATION_TYPE.CREATE,
-        data: {
-          brandName: brand.name,
-        },
-      });
-
-      res.status(201).json({
-        statusCode: 201,
-        message: message.success.added,
-      });
-    })
-    .catch((err) => {
-      err;
-      res.status(500).json({
-        statusCode: 500,
-        message: message.error.faildToAdd,
-      });
-    });
 };
 
 const updateBrand = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
+  try {
+    await brandService.updateBrand({
+      params: req.params,
+      body: req.body,
+      userId: req.userId,
+    });
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.edited,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToEdit,
     });
   }
-
-  const brand = await Brand.findById(req.params.id).exec();
-  if (!brand) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.notFound,
-    });
-  }
-
-  if (!req.body.name) {
-    return res
-      .status(400)
-      .json({ statusCode: 400, message: message.error.requireFields });
-  }
-
-  brand.name = req.body.name;
-  brand
-    .save()
-    .then(async () => {
-      await notificationService.create({
-        userId: req.userId,
-        type: NOTIFICATION_TYPE.UPDATE,
-        data: {
-          brandName: brand.name,
-        },
-      });
-
-      res.status(200).json({
-        statusCode: 200,
-        message: message.success.edited,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        statusCode: 500,
-        message: message.error.faildToEdit,
-      });
-    });
 };
 
 const deleteBrand = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
+  try {
+    await brandService.deleteBrand({ params: req.params, userId: req.userId });
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.deleted,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToDelete,
     });
   }
-
-  const brand = await Brand.findById(req.params.id);
-  if (!brand) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.notFound,
-    });
-  }
-
-  await brand.deleteOne();
-
-  await notificationService.create({
-    userId: req.userId,
-    type: NOTIFICATION_TYPE.DELETE,
-    data: {
-      brandName: brand.name,
-    },
-  });
-
-  res.status(200).json({
-    statusCode: 200,
-    message: message.success.deleted,
-  });
 };
 
 module.exports = { getAllBrands, getBrand, addBrand, updateBrand, deleteBrand };

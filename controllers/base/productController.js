@@ -1,286 +1,128 @@
-const Product = require("../../model/base/Product");
-const Packaging = require("../../model/base/Packaging");
-const Unit = require("../../model/base/Unit");
-const Brand = require("../../model/base/Brand");
-const notificationService = require("../../services/notification/notificationService");
-
-// product type
-const NOTIFICATION_TYPE = {
-  CREATE: "product_created",
-  UPDATE: "product_updated",
-  DELETE: "product_deleted",
-};
+const productService = require("../../services/base/productService");
+const AppError = require("../../utils/AppError");
 
 const getAllProducts = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  const products = await Product.find().exec();
-  if (!products) {
-    return res.status(200).json({
+  try {
+    const data = await productService.getAllProducts();
+    res.status(200).json({
       statusCode: 200,
       message: message.success.dataReceived,
-      data: [],
+      data,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    return res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
     });
   }
-  const productsData = products.map((item) => {
-    return {
-      id: item.id,
-      name: item.name,
-      brandId: item.brandId,
-      brandName: item.brandName,
-      packagingId: item.packagingId,
-      packagingName: item.packagingName,
-      packagingType: item.packagingType,
-      unitId: item.unitId,
-      unitName: item.unitName,
-      amount: item.amount,
-    };
-  });
-
-  res.status(200).json({
-    statusCode: 200,
-    message: message.success.dataReceived,
-    data: {
-      products: productsData,
-    },
-  });
 };
 
 const getProduct = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
+  try {
+    const data = await productService.getProduct({ params: req.params });
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.dataReceived,
+      data,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(499).json({
+        statusCode: 400,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    return res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
     });
   }
-
-  const product = await Product.findById(req.params.id);
-  if (!product) {
-    return res.status(499).json({
-      statusCode: 400,
-      message: message.error.notFound,
-    });
-  }
-  const productData = {
-    id: product.id,
-    name: product.name,
-    brandId: product.brandId,
-    brandName: product.brandName,
-    packagingId: product.packagingId,
-    packagingName: product.packagingName,
-    packagingType: product.packagingType,
-    unitId: product.unitId,
-    unitName: product.unitName,
-    amount: product.amount,
-  };
-
-  res.status(200).json({
-    statusCode: 200,
-    message: message.success.dataReceived,
-    data: productData,
-  });
 };
 
 const addProduct = async (req, res) => {
   const message = require("../../language/message")(req);
-  if (
-    !req.body.name &&
-    !req.body.brandId &&
-    !req.body.packagingId &&
-    !req.body.unitId &&
-    !req.body.amount
-  ) {
-    res.status(400).json({
-      statusCode: 400,
-      message: message.error.requireFields,
+  try {
+    await productService.addProduct({ body: req.body, userId: req.userId });
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.added,
     });
-  }
-
-  const product = new Product();
-
-  product.name = req.body.name;
-  product.amount = req.body.amount;
-
-  const package = await Packaging.findById(req.body.packagingId);
-  if (!package) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.invalidPackagingId,
-    });
-  }
-  product.packagingId = req.body.packagingId;
-  product.packagingName = package.name;
-  product.packagingType = package.type;
-
-  const unit = await Unit.findById(req.body.unitId);
-  if (!unit) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.invalidUnitId,
-    });
-  }
-  product.unitId = req.body.unitId;
-  product.unitName = unit.name;
-
-  const brand = await Brand.findById(req.body.brandId);
-  if (!unit) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.invalidUnitId,
-    });
-  }
-  product.brandId = req.body.brandId;
-  product.brandName = brand.name;
-
-  product
-    .save()
-    .then(async () => {
-      await notificationService.create({
-        userId: req.userId,
-        type: NOTIFICATION_TYPE.CREATE,
-        data: {
-          productName: product.name,
-        },
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
       });
-
-      res.status(200).json({
-        statusCode: 200,
-        message: message.success.added,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        statusCode: 500,
-        message: message.error.faildToAdd,
-      });
+    }
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
     });
+  }
 };
 
 const updateProduct = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
+  try {
+    await productService.updateProduct({
+      params: req.params,
+      body: req.body,
+      userId: req.userId,
     });
-  }
-
-  const product = await Product.findById(req.params.id).exec();
-  if (!product) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.notFound,
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.edited,
     });
-  }
-
-  if (
-    !req.body.name &&
-    !req.body.brandId &&
-    !req.body.packagingId &&
-    !req.body.unitId &&
-    !req.body.amount
-  ) {
-    res.status(400).json({
-      statusCode: 400,
-      message: message.error.requireFields,
-    });
-  }
-
-  product.name = req.body.name;
-  product.amount = req.body.amount;
-
-  const package = await Packaging.findById(req.body.packagingId);
-  if (!package) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.invalidPackagingId,
-    });
-  }
-  product.packagingId = req.body.packagingId;
-  product.packagingName = package.name;
-  product.packagingType = package.type;
-
-  const unit = await Unit.findById(req.body.unitId);
-  if (!unit) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.invalidUnitId,
-    });
-  }
-  product.unitId = req.body.unitId;
-  product.unitName = unit.name;
-
-  const brand = await Brand.findById(req.body.brandId);
-  if (!unit) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.invalidUnitId,
-    });
-  }
-  product.brandId = req.body.brandId;
-  product.brandName = brand.name;
-
-  product
-    .save()
-    .then(async () => {
-      await notificationService.create({
-        userId: req.userId,
-        type: NOTIFICATION_TYPE.UPDATE,
-        data: {
-          productName: product.name,
-        },
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
       });
-
-      res.status(200).json({
-        statusCode: 200,
-        message: message.success.edited,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        statusCode: 500,
-        message: message.error.faildToEdit,
-      });
+    }
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToEdit,
     });
+  }
 };
 
 const deleteProduct = async (req, res) => {
   const message = require("../../language/message")(req);
-
-  if (!req?.params?.id) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.idRequired,
+  try {
+    await productService.deleteProduct({
+      params: req.params,
+      userId: req.userId,
+    });
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.deleted,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToDelete,
     });
   }
-
-  const product = await Product.findById(req.params.id).exec();
-  if (!product) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: message.error.notFound,
-    });
-  }
-
-  await product.deleteOne();
-
-  await notificationService.create({
-    userId: req.userId,
-    type: NOTIFICATION_TYPE.DELETE,
-    data: {
-      productName: product.name,
-    },
-  });
-
-  res.status(200).json({
-    statusCode: 200,
-    message: message.success.deleted,
-  });
 };
 
 module.exports = {
