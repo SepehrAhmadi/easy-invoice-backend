@@ -123,11 +123,11 @@ Uploaded files are served from `/uploads`.
 
 ```
 ├── config/          # Database, CORS, roles
-├── controllers/     # Route handlers
+├── controllers/     # Route handlers (thin — delegates to services)
 ├── middleware/      # Auth, logging, errors, file upload
 ├── model/           # Mongoose schemas
 ├── routes/          # Express routes
-├── services/        # App services
+├── services/        # Business logic layer
 ├── swagger/         # Swagger documentation
 ├── uploads/         # User-uploaded files
 ├── public/          # Static assets
@@ -135,6 +135,23 @@ Uploaded files are served from `/uploads`.
 ├── logs/            # Request and error logs
 └── server.js        # App entry point
 ```
+
+## Architecture
+
+The project follows a **Controller → Service → Model** layered architecture:
+
+| Layer | Directory | Responsibility |
+|-------|-----------|----------------|
+| **Routes** | `routes/` | Maps HTTP endpoints to controller functions, applies middleware (auth, validation, file upload) |
+| **Controllers** | `controllers/` | Thin request/response handlers — parses input, calls services, formats JSON responses, and handles errors |
+| **Services** | `services/` | All business logic — data validation, database queries, notification triggers, and cross-entity orchestration |
+| **Models** | `model/` | Mongoose schemas and document structure |
+
+### Why this separation?
+
+- **Controllers stay focused on HTTP concerns** — they translate between the HTTP layer and the service layer without containing business rules.
+- **Services are reusable and testable** — they can be called from controllers, CLI scripts, or other services without needing an HTTP request object.
+- **Clear error boundaries** — services throw `AppError` instances with a `messageKey`, and controllers translate those into appropriate HTTP status codes and localized messages.
 
 ## Logging
 
