@@ -98,6 +98,7 @@ const addProduct = async ({ body, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "add",
     type: NOTIFICATION_TYPE.CREATE,
     data: {
       productName: product.name,
@@ -154,6 +155,7 @@ const updateProduct = async ({ params, body, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "update",
     type: NOTIFICATION_TYPE.UPDATE,
     data: {
       productName: product.name,
@@ -171,6 +173,7 @@ const deleteProduct = async ({ params, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "delete",
     type: NOTIFICATION_TYPE.DELETE,
     data: {
       productName: product.name,

@@ -71,6 +71,7 @@ const addCompany = async ({ body, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "add",
     type: NOTIFICATION_TYPE.CREATE,
     data: {
       companyName: company.name,
@@ -103,6 +104,7 @@ const updateCompany = async ({ params, body, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "update",
     type: NOTIFICATION_TYPE.UPDATE,
     data: {
       companyName: company.name,
@@ -120,6 +122,7 @@ const deleteCompany = async ({ params, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "delete",
     type: NOTIFICATION_TYPE.DELETE,
     data: {
       companyName: company.name,

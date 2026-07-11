@@ -43,6 +43,7 @@ const addCategory = async ({ body, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "add",
     type: NOTIFICATION_TYPE.CREATE,
     data: {
       categoryName: category.name,
@@ -63,6 +64,7 @@ const updateCategory = async ({ params, body, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "update",
     type: NOTIFICATION_TYPE.UPDATE,
     data: {
       categoryName: category.name,
@@ -80,6 +82,7 @@ const deleteCategory = async ({ params, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "delete",
     type: NOTIFICATION_TYPE.DELETE,
     data: {
       categoryName: category.name,

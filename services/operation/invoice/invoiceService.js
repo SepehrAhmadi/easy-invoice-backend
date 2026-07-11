@@ -124,6 +124,7 @@ const addInvoice = async ({ body, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "add",
     type: NOTIFICATION_TYPE.CREATE,
     data: {
       invoiceNumber: invoice.invoiceNumber,
@@ -165,6 +166,7 @@ const updateInvoice = async ({ params, body, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "update",
     type: NOTIFICATION_TYPE.UPDATE,
     data: {
       invoiceNumber: invoice.invoiceNumber,
@@ -183,6 +185,7 @@ const deleteInvoice = async ({ params, userId }) => {
 
   await notificationService.create({
     userId,
+    action: "delete",
     type: NOTIFICATION_TYPE.DELETE,
     data: {
       invoiceNumber: invoice.invoiceNumber,
