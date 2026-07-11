@@ -5,7 +5,9 @@ const logger = require("../../utils/logger");
 const moment = require("jalali-moment");
 
 const getNotifications = async () => {
-  const notifications = await Notification.find().exec();
+  const notifications = await Notification.find()
+    .sort({ createdDate: -1 })
+    .exec();
   if (!notifications) {
     return { notifications: [] };
   }
@@ -46,8 +48,22 @@ const create = async ({ userId, action, type, data }) => {
       createdDate: now,
     });
 
+    const responseNotification = {
+      userId: notification.userId,
+      action: notification.action,
+      type: notification.type,
+      enTitle: notification.title.en,
+      faTitle: notification.title.fa,
+      enMessage: notification.message.en,
+      faMessage: notification.message.fa,
+      date: moment(notification.date).format("M/D/YYYY HH:mm"),
+      localDate,
+      createdData: notification.createdDate,
+    };
+    
     const io = getIO();
-    io.emit("notification", notification);
+    console.log("Sending notification:", notification);
+    io.emit("notification", responseNotification);
 
     return notification;
   } catch (err) {
