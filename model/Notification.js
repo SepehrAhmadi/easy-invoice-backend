@@ -11,7 +11,7 @@ const notificationSchema = new Schema({
   action: {
     type: String,
     required: true,
-    enum: ["add", "update", "delete"],
+    enum: ["add", "update", "delete", "change_status"],
   },
   type: {
     type: String,
@@ -36,6 +36,8 @@ const notificationSchema = new Schema({
       "invoice_created",
       "invoice_updated",
       "invoice_deleted",
+      "invoice_awaiting_payment",
+      "invoice_paid",
     ],
   },
   title: {

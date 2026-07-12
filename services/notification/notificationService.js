@@ -39,7 +39,7 @@ const getNotifications = async ({ query: queryParams }) => {
 
       return {
         userId: item.userId,
-        user: user?.username,
+        username: user?.username,
         action: item.action,
         type: item.type,
         enTitle: item.title.en,

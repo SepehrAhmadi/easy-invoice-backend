@@ -145,6 +145,7 @@ const changeStatus = async (req, res) => {
     await invoiceService.changeStatus({
       params: req.params,
       body: req.body,
+      userId: req.userId,
     });
     res.status(200).json({
       statusCode: 200,

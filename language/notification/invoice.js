@@ -31,6 +31,28 @@ const notification = {
           en: `Invoice "${invoiceNumber}" has been deleted.`,
         },
       }),
+
+      invoice_paid: ({ invoiceNumber }) => ({
+        title: {
+          fa: "پرداخت فاکتور",
+          en: "Invoice Paid",
+        },
+        message: {
+          fa: `فاکتور "${invoiceNumber}" پرداخت شد.`,
+          en: `Invoice "${invoiceNumber}" has been paid.`,
+        },
+  }),
+
+      invoice_awaiting_payment: ({ invoiceNumber }) => ({
+        title: {
+          fa: "در انتظار پرداخت",
+          en: "Awaiting Payment",
+        },
+        message: {
+          fa: `فاکتور "${invoiceNumber}" در انتظار پرداخت است.`,
+          en: `Invoice "${invoiceNumber}" is awaiting payment.`,
+        },
+      }),
 }
 
 module.exports = notification

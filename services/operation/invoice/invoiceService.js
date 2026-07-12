@@ -10,6 +10,8 @@ const NOTIFICATION_TYPE = {
   CREATE: "invoice_created",
   UPDATE: "invoice_updated",
   DELETE: "invoice_deleted",
+  PAID: "invoice_paid",
+  AWAITING_PAYMENT: "invoice_awaiting_payment",
 };
 
 const getAllInvoices = async ({ query: queryParams }) => {
@@ -193,7 +195,7 @@ const deleteInvoice = async ({ params, userId }) => {
   });
 };
 
-const changeStatus = async ({ params, body }) => {
+const changeStatus = async ({ params, body, userId }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
   if (![1, 2].includes(body.paymentStatus)) {
@@ -201,11 +203,25 @@ const changeStatus = async ({ params, body }) => {
   }
 
   const invoice = await Invoice.findById(params.id).exec();
+  if (!invoice) throw new AppError(400, "notFound");
+
   invoice.paymentStatus = body.paymentStatus;
   invoice.paymentStatusName =
     body.paymentStatus == 1 ? "Paid" : "Awaiting payment";
 
   await invoice.save();
+
+  await notificationService.create({
+    userId,
+    action: "change_status",
+    type:
+      body.paymentStatus == 1
+        ? NOTIFICATION_TYPE.PAID
+        : NOTIFICATION_TYPE.AWAITING_PAYMENT,
+    data: {
+      invoiceNumber: invoice.invoiceNumber,
+    },
+  });
 };
 
 const printInvoice = async ({ params }) => {
