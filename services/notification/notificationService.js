@@ -5,8 +5,27 @@ const { getIO } = require("../../config/socket");
 const logger = require("../../utils/logger");
 const moment = require("jalali-moment");
 
-const getNotifications = async () => {
-  const notifications = await Notification.find()
+const getNotifications = async ({ query: queryParams }) => {
+  const { fromDate, toDate } = queryParams;
+  let query = {};
+  if (fromDate || toDate) {
+    const isValieFrom = moment(fromDate, "jYYYY/jMM/jDD", true).isValie;
+    const isValieTo = moment(toDate, "jYYYY/jMM/jDD", true).isValie;
+
+    if (!isValieFrom || !isValieTo) {
+      throw new AppError(400, "invalidDate");
+    }
+
+    const gteDate = moment(fromDate, "jYYYY/jMM/jDD").startOf("day").toDate();
+    const lteDate = moment(toDate, "jYYYY/jMM/jDD").endOf("day").toDate();
+
+    query.date = {
+      $gte: gteDate,
+      $lte: lteDate,
+    };
+  }
+
+  const notifications = await Notification.find(query)
     .sort({ createdDate: -1 })
     .exec();
 

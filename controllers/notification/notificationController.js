@@ -3,7 +3,9 @@ const notificationService = require("../../services/notification/notificationSer
 const getNotifications = async (req, res) => {
   const message = require("../../language/message")(req);
 
-  const notificationsData = await notificationService.getNotifications();
+  const notificationsData = await notificationService.getNotifications({
+    query: req.query,
+  });
 
   res.status(200).json({
     statusCode: 200,
