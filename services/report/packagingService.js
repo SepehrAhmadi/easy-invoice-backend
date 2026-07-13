@@ -1,15 +1,12 @@
-const Packaging = require("../../model/base/Packaging");
-const InvoiceItem = require("../../model/operation/invoice/InvoiceItem");
+const packagingRepository = require("../../repositories/report/packagingRepository");
 const AppError = require("../../utils/AppError");
 
 const getReport = async () => {
-  const packagings = await Packaging.find();
+  const packagings = await packagingRepository.findAllPackagings();
 
   const packagingsReport = await Promise.all(
     packagings.map(async (item) => {
-      const invoiceItems = await InvoiceItem.find({
-        packagingId: item.id,
-      });
+      const invoiceItems = await packagingRepository.findInvoiceItemsByPackagingId(item.id);
 
       let totalPrice = 0;
       invoiceItems.forEach((invoice) => {
@@ -38,7 +35,7 @@ const getReport = async () => {
 const getReportDetail = async ({ params }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const invoiceItems = await InvoiceItem.find({ packagingId: params.id });
+  const invoiceItems = await packagingRepository.findInvoiceItemsByPackagingId(params.id);
   if (!invoiceItems) {
     throw new AppError(200, "notFound");
   }

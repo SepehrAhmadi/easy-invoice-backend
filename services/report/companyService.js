@@ -1,11 +1,8 @@
-const mongoose = require("mongoose");
-const Company = require("../../model/base/Company");
-const Invoice = require("../../model/operation/invoice/Invoice");
-const InvoiceItem = require("../../model/operation/invoice/InvoiceItem");
+const companyRepository = require("../../repositories/report/companyRepository");
 const AppError = require("../../utils/AppError");
 
 const getReport = async () => {
-  const invoiceItems = await InvoiceItem.find();
+  const invoiceItems = await companyRepository.findAllInvoiceItems();
   let invoiceTotalPrice = 0;
   let invoiceTotalCount = 0;
   invoiceItems.forEach((item) => {
@@ -13,9 +10,7 @@ const getReport = async () => {
     invoiceTotalCount += 1;
   });
 
-  const paidInvoices = await Invoice.find({
-    paymentStatus: 1,
-  });
+  const paidInvoices = await companyRepository.findInvoicesByPaymentStatus(1);
   let totalPaidPrice = 0;
   let totalPaidCount = 0;
   paidInvoices.forEach((item) => {
@@ -23,9 +18,7 @@ const getReport = async () => {
     totalPaidCount += 1;
   });
 
-  const awaitingPaymentInvoices = await Invoice.find({
-    paymentStatus: 2,
-  });
+  const awaitingPaymentInvoices = await companyRepository.findInvoicesByPaymentStatus(2);
   let totalAwaitingPrice = 0;
   let totalAwaitingCount = 0;
   awaitingPaymentInvoices.forEach((item) => {
@@ -33,12 +26,10 @@ const getReport = async () => {
     totalAwaitingCount += 1;
   });
 
-  const companies = await Company.find();
+  const companies = await companyRepository.findAllCompanies();
   const companiesData = await Promise.all(
     companies.map(async (item) => {
-      const invoices = await Invoice.find({
-        companyId: item.id,
-      });
+      const invoices = await companyRepository.findInvoicesByCompanyId(item.id);
 
       let totalCompanyPrice = 0;
       let totalCompanyPaidPrice = 0;
@@ -90,9 +81,7 @@ const getReport = async () => {
 const getInvoices = async ({ params }) => {
   if (!params?.companyId) throw new AppError(400, "idRequired");
 
-  const invoices = await Invoice.find({
-    companyId: params.companyId,
-  }).exec();
+  const invoices = await companyRepository.findInvoicesByCompanyIdExec(params.companyId);
   if (!invoices.length) {
     throw new AppError(200, "notFound");
   }
@@ -117,9 +106,7 @@ const getInvoices = async ({ params }) => {
 const getInvoiceItems = async ({ params }) => {
   if (!params.invoiceId) throw new AppError(400, "notFound");
 
-  const invoiceItems = await InvoiceItem.find({
-    invoiceId: params.invoiceId,
-  }).exec();
+  const invoiceItems = await companyRepository.findInvoiceItemsByInvoiceId(params.invoiceId);
   if (!invoiceItems) {
     throw new AppError(404, "dataReceived");
   }
