@@ -1,5 +1,4 @@
-const Notification = require("../../model/Notification");
-const User = require("../../model/User");
+const notificationRepository = require("../../repositories/notification/notificationRepository");
 const notificationMessages = require("../../language/notification/index");
 const { getIO } = require("../../config/socket");
 const logger = require("../../utils/logger");
@@ -25,9 +24,7 @@ const getNotifications = async ({ query: queryParams }) => {
     };
   }
 
-  const notifications = await Notification.find(query)
-    .sort({ createdDate: -1 })
-    .exec();
+  const notifications = await notificationRepository.findNotificationsByQuery(query);
 
   if (!notifications) {
     return { notifications: [] };
@@ -35,7 +32,7 @@ const getNotifications = async ({ query: queryParams }) => {
 
   const notificationsData = await Promise.all(
     notifications.map(async (item) => {
-      const user = await User.findById(item.userId).select("username").lean();
+      const user = await notificationRepository.findUserByIdLean(item.userId);
 
       return {
         userId: item.userId,
@@ -67,7 +64,7 @@ const create = async ({ userId, action, type, data }) => {
     const now = new Date();
     const localDate = moment(now).locale("fa").format("YYYY/MM/DD HH:mm");
 
-    const notification = await Notification.create({
+    const notification = await notificationRepository.createNotification({
       userId,
       action,
       type,
@@ -78,7 +75,7 @@ const create = async ({ userId, action, type, data }) => {
       createdDate: now,
     });
 
-    const user = await User.findById(userId).select("username").lean();
+    const user = await notificationRepository.findUserByIdLean(userId);
 
     const responseNotification = {
       userId: notification.userId,
