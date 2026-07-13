@@ -1,6 +1,4 @@
-const Invoice = require("../../../model/operation/invoice/Invoice");
-const InvoiceItem = require("../../../model/operation/invoice/InvoiceItem");
-const Company = require("../../../model/base/Company");
+const invoiceRepository = require("../../../repositories/operation/invoice/invoiceRepository");
 const notificationService = require("../../notification/notificationService");
 const AppError = require("../../../utils/AppError");
 
@@ -44,7 +42,7 @@ const getAllInvoices = async ({ query: queryParams }) => {
     query.companyType = Number(companyType);
   }
 
-  const invoices = await Invoice.find(query).lean();
+  const invoices = await invoiceRepository.findInvoicesByQuery(query);
 
   if (!invoices.length) {
     throw new AppError(200, "notFound");
@@ -70,7 +68,7 @@ const getAllInvoices = async ({ query: queryParams }) => {
 const getInvoice = async ({ params }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const invoice = await Invoice.findById(params.id);
+  const invoice = await invoiceRepository.findInvoiceById(params.id);
   if (!invoice) throw new AppError(404, "notFound");
 
   return {
@@ -95,34 +93,33 @@ const addInvoice = async ({ body, userId }) => {
     throw new AppError(400, "requireFields");
   }
 
-  const invoice = new Invoice();
-
   let invoiceNumber = 1001;
-  let lastInvoiceNumber = await Invoice.findOne().sort({ invoiceNumber: -1 });
+  let lastInvoiceNumber = await invoiceRepository.findLastInvoiceByNumber();
   if (lastInvoiceNumber) {
     invoiceNumber = lastInvoiceNumber.invoiceNumber + 1;
   }
-  invoice.invoiceNumber = invoiceNumber;
 
-  const company = await Company.findById(body.companyId);
+  const company = await invoiceRepository.findCompanyById(body.companyId);
   if (!company) throw new AppError(400, "invalidCompanyId");
-  invoice.companyId = body.companyId;
-  invoice.companyName = company.name;
-  invoice.companyType = company.type;
-  invoice.companyTypeTitle = company.typeTitle;
 
   const localDate = body.localDate;
   const isValidDate = moment(localDate, "jYYYY/jMM/jDD", true).isValid();
   if (!isValidDate) throw new AppError(400, "invalidDate");
-  invoice.localDate = localDate;
   const gregorianDate = moment
     .from(localDate, "fa", "YYYY/MM/DD")
     .startOf("day")
     .toDate();
-  invoice.date = gregorianDate;
-  invoice.createdDate = new Date();
 
-  await invoice.save();
+  const invoice = await invoiceRepository.createInvoice({
+    invoiceNumber,
+    companyId: body.companyId,
+    companyName: company.name,
+    companyType: company.type,
+    companyTypeTitle: company.typeTitle,
+    localDate,
+    date: gregorianDate,
+    createdDate: new Date(),
+  });
 
   await notificationService.create({
     userId,
@@ -139,14 +136,14 @@ const addInvoice = async ({ body, userId }) => {
 const updateInvoice = async ({ params, body, userId }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const invoice = await Invoice.findById(params.id).exec();
+  const invoice = await invoiceRepository.findInvoiceExec(params.id);
   if (!invoice) throw new AppError(400, "notFound");
 
   if (!body.companyId && !body.date) {
     throw new AppError(400, "requireFields");
   }
 
-  const company = await Company.findById(body.companyId);
+  const company = await invoiceRepository.findCompanyById(body.companyId);
   if (!company) throw new AppError(400, "invalidCompanyId");
   invoice.companyId = body.companyId;
   invoice.companyName = company.name;
@@ -164,7 +161,7 @@ const updateInvoice = async ({ params, body, userId }) => {
   invoice.date = gregorianDate;
   invoice.lastUpdateDate = new Date();
 
-  await invoice.save();
+  await invoiceRepository.saveInvoice(invoice);
 
   await notificationService.create({
     userId,
@@ -179,11 +176,11 @@ const updateInvoice = async ({ params, body, userId }) => {
 const deleteInvoice = async ({ params, userId }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const invoice = await Invoice.findById(params.id).exec();
+  const invoice = await invoiceRepository.findInvoiceExec(params.id);
   if (!invoice) throw new AppError(400, "notFound");
 
-  await InvoiceItem.deleteMany({ invoiceId: params.id });
-  await invoice.deleteOne();
+  await invoiceRepository.deleteInvoiceItemsByInvoiceId(params.id);
+  await invoiceRepository.deleteInvoiceByDoc(invoice);
 
   await notificationService.create({
     userId,
@@ -202,14 +199,14 @@ const changeStatus = async ({ params, body, userId }) => {
     throw new AppError(400, "requireFields");
   }
 
-  const invoice = await Invoice.findById(params.id).exec();
+  const invoice = await invoiceRepository.findInvoiceExec(params.id);
   if (!invoice) throw new AppError(400, "notFound");
 
   invoice.paymentStatus = body.paymentStatus;
   invoice.paymentStatusName =
     body.paymentStatus == 1 ? "Paid" : "Awaiting payment";
 
-  await invoice.save();
+  await invoiceRepository.saveInvoice(invoice);
 
   await notificationService.create({
     userId,
@@ -227,10 +224,10 @@ const changeStatus = async ({ params, body, userId }) => {
 const printInvoice = async ({ params }) => {
   if (!params.id) throw new AppError(400, "idRequired");
 
-  const invoice = await Invoice.findById(params.id).exec();
+  const invoice = await invoiceRepository.findInvoiceExec(params.id);
   if (!invoice) throw new AppError(404, "notFound");
 
-  const invoiceItems = await InvoiceItem.find({ invoiceId: params.id });
+  const invoiceItems = await invoiceRepository.findInvoiceItemsByInvoiceId(params.id);
   let invoiceItemsData = [];
   let totalPrice = 0;
   if (invoiceItems) {

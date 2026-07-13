@@ -1,10 +1,4 @@
-const Invoice = require("../../../model/operation/invoice/Invoice");
-const InvoiceItem = require("../../../model/operation/invoice/InvoiceItem");
-const Product = require("../../../model/base/Product");
-const Brand = require("../../../model/base/Brand");
-const Packaging = require("../../../model/base/Packaging");
-const Unit = require("../../../model/base/Unit");
-const Category = require("../../../model/base/Category");
+const invoiceItemRepository = require("../../../repositories/operation/invoice/invoiceItemRepository");
 const AppError = require("../../../utils/AppError");
 
 const moment = require("jalali-moment");
@@ -12,9 +6,7 @@ const moment = require("jalali-moment");
 const getAllInvoiceItems = async ({ params }) => {
   if (!params.invoiceId) throw new AppError(400, "notFound");
 
-  const invoiceItems = await InvoiceItem.find({
-    invoiceId: params.invoiceId,
-  }).exec();
+  const invoiceItems = await invoiceItemRepository.findInvoiceItemsByInvoiceId(params.invoiceId);
   if (!invoiceItems) {
     throw new AppError(404, "dataReceived");
   }
@@ -51,10 +43,10 @@ const getInvoiceItem = async ({ params }) => {
   if (!params.invoiceId) throw new AppError(400, "invoiceIdRequired");
   if (!params?.itemId) throw new AppError(400, "idRequired");
 
-  const invoiceItem = await InvoiceItem.findOne({
-    _id: params.itemId,
-    invoiceId: params.invoiceId,
-  });
+  const invoiceItem = await invoiceItemRepository.findInvoiceItemByIdAndInvoiceId(
+    params.itemId,
+    params.invoiceId,
+  );
   if (!invoiceItem) throw new AppError(404, "notFound");
 
   return {
@@ -97,92 +89,85 @@ const addInvoiceItem = async ({ params, body }) => {
     throw new AppError(400, "requireFields");
   }
 
-  const invoice = await Invoice.findById(params.invoiceId);
+  const invoice = await invoiceItemRepository.findInvoiceById(params.invoiceId);
   if (!invoice) throw new AppError(400, "notFound");
-
-  const invoiceItem = new InvoiceItem();
-
-  invoiceItem.invoiceId = params.invoiceId;
-  invoiceItem.isEdit = body.isEdit;
 
   const localDate = body.localDate;
   const isValidDate = moment(localDate, "jYYYY/jMM/jDD", true).isValid();
   if (!isValidDate) throw new AppError(400, "invalidDate");
-  invoiceItem.localDate = localDate;
   const gregorianDate = moment
     .from(localDate, "fa", "YYYY/MM/DD")
     .startOf("day")
     .toDate();
-  invoiceItem.date = gregorianDate;
-  invoiceItem.createdDate = new Date();
 
-  const product = await Product.findById(body.productId);
+  const product = await invoiceItemRepository.findProductById(body.productId);
   if (!product) throw new AppError(400, "invalidProductId");
-  invoiceItem.productId = body.productId;
-  invoiceItem.productName = product.name;
 
-  const brand = await Brand.findById(body.brandId);
+  const brand = await invoiceItemRepository.findBrandById(body.brandId);
   if (!brand) throw new AppError(400, "invalidBrandId");
-  invoiceItem.brandId = body.brandId;
-  invoiceItem.brandName = brand.name;
 
-  const category = await Category.findById(body.categoryId);
+  const category = await invoiceItemRepository.findCategoryById(body.categoryId);
   if (!category) throw new AppError(400, "invalidCategoryId");
-  invoiceItem.categoryId = body.categoryId;
-  invoiceItem.categoryName = category.name;
 
-  const packaging = await Packaging.findById(body.packagingId);
+  const packaging = await invoiceItemRepository.findPackagingById(body.packagingId);
   if (!packaging) throw new AppError(400, "invalidPackagingId");
-  invoiceItem.packagingId = body.packagingId;
-  invoiceItem.packagingName = packaging.name;
 
-  const unit = await Unit.findById(body.unitId);
+  const unit = await invoiceItemRepository.findUnitById(body.unitId);
   if (!unit) throw new AppError(400, "invalidUnitId");
-  invoiceItem.unitId = body.unitId;
-  invoiceItem.unitName = unit.name;
 
   if (body.amount <= 0) throw new AppError(400, "amountMin");
-  invoiceItem.amount = body.amount;
-
   if (body.unitCount <= 0) throw new AppError(400, "unitCountMin");
-  invoiceItem.unitCount = body.unitCount;
-
   if (body.pageCount <= 0) throw new AppError(400, "pageCountMin");
-  invoiceItem.pageCount = body.pageCount;
-
   if (body.singlePrice <= 0) throw new AppError(400, "singlePriceMin");
-  invoiceItem.singlePrice = body.singlePrice;
 
-  let totalPice = invoiceItem.pageCount * invoiceItem.singlePrice;
-  invoiceItem.totalPrice = totalPice;
+  const totalPice = body.pageCount * body.singlePrice;
 
-  invoiceItem.description = body.description;
-
-  await invoiceItem.save();
-
-  const invoiceItems = await InvoiceItem.find({
+  await invoiceItemRepository.createInvoiceItem({
     invoiceId: params.invoiceId,
+    isEdit: body.isEdit,
+    localDate,
+    date: gregorianDate,
+    createdDate: new Date(),
+    productId: body.productId,
+    productName: product.name,
+    brandId: body.brandId,
+    brandName: brand.name,
+    categoryId: body.categoryId,
+    categoryName: category.name,
+    packagingId: body.packagingId,
+    packagingName: packaging.name,
+    unitId: body.unitId,
+    unitName: unit.name,
+    amount: body.amount,
+    unitCount: body.unitCount,
+    pageCount: body.pageCount,
+    singlePrice: body.singlePrice,
+    totalPrice: totalPice,
+    description: body.description,
   });
+
+  const invoiceItems = await invoiceItemRepository.findInvoiceItemsByInvoiceId(params.invoiceId);
 
   let totalInvoicePrice = 0;
   invoiceItems.forEach((item) => {
     totalInvoicePrice += item.totalPrice;
   });
 
-  await Invoice.findByIdAndUpdate(params.invoiceId, {
-    totalPrice: totalInvoicePrice.toString(),
-    lastUpdateDate: new Date(),
-  });
+  await invoiceItemRepository.updateInvoiceTotalPrice(
+    params.invoiceId,
+    totalInvoicePrice,
+    new Date(),
+  );
 };
 
 const updateInvoiceItem = async ({ params, body }) => {
   if (!params.invoiceId) throw new AppError(400, "invoiceIdRequired");
   if (!params?.itemId) throw new AppError(400, "idRequired");
 
-  const invoiceItem = await InvoiceItem.findOne({
-    _id: params.itemId,
-    invoiceId: params.invoiceId,
-  });
+  const invoiceItem = await invoiceItemRepository.findInvoiceItemByIdAndInvoiceId(
+    params.itemId,
+    params.invoiceId,
+  );
   if (!invoiceItem) throw new AppError(400, "notFound");
 
   if (
@@ -209,27 +194,27 @@ const updateInvoiceItem = async ({ params, body }) => {
   invoiceItem.date = gregorianDate;
   invoiceItem.lastUpdateDate = new Date();
 
-  const product = await Product.findById(body.productId);
+  const product = await invoiceItemRepository.findProductById(body.productId);
   if (!product) throw new AppError(400, "invalidProductId");
   invoiceItem.productId = body.productId;
   invoiceItem.productName = product.name;
 
-  const brand = await Brand.findById(body.brandId);
+  const brand = await invoiceItemRepository.findBrandById(body.brandId);
   if (!brand) throw new AppError(400, "invalidBrandId");
   invoiceItem.brandId = body.brandId;
   invoiceItem.brandName = brand.name;
 
-  const category = await Category.findById(body.categoryId);
+  const category = await invoiceItemRepository.findCategoryById(body.categoryId);
   if (!category) throw new AppError(400, "invalidCategoryId");
   invoiceItem.categoryId = body.categoryId;
   invoiceItem.categoryName = category.name;
 
-  const packaging = await Packaging.findById(body.packagingId);
+  const packaging = await invoiceItemRepository.findPackagingById(body.packagingId);
   if (!packaging) throw new AppError(400, "invalidPackagingId");
   invoiceItem.packagingId = body.packagingId;
   invoiceItem.packagingName = packaging.name;
 
-  const unit = await Unit.findById(body.unitId);
+  const unit = await invoiceItemRepository.findUnitById(body.unitId);
   if (!unit) throw new AppError(400, "invalidUnitId");
   invoiceItem.unitId = body.unitId;
   invoiceItem.unitName = unit.name;
@@ -252,48 +237,46 @@ const updateInvoiceItem = async ({ params, body }) => {
 
   invoiceItem.description = body.description;
 
-  await invoiceItem.save();
+  await invoiceItemRepository.saveInvoiceItem(invoiceItem);
 
-  const invoiceItems = await InvoiceItem.find({
-    invoiceId: params.invoiceId,
-  });
+  const invoiceItems = await invoiceItemRepository.findInvoiceItemsByInvoiceId(params.invoiceId);
 
   let totalInvoicePrice = 0;
   invoiceItems.forEach((item) => {
     totalInvoicePrice += item.totalPrice;
   });
 
-  await Invoice.findByIdAndUpdate(params.invoiceId, {
-    totalPrice: totalInvoicePrice.toString(),
-    lastUpdateDate: new Date(),
-  });
+  await invoiceItemRepository.updateInvoiceTotalPrice(
+    params.invoiceId,
+    totalInvoicePrice,
+    new Date(),
+  );
 };
 
 const deleteInvoiceItem = async ({ params }) => {
   if (!params.invoiceId) throw new AppError(400, "invoiceIdRequired");
   if (!params?.itemId) throw new AppError(400, "idRequired");
 
-  const invoiceItem = await InvoiceItem.findOne({
-    _id: params.itemId,
-    invoiceId: params.invoiceId,
-  });
+  const invoiceItem = await invoiceItemRepository.findInvoiceItemByIdAndInvoiceId(
+    params.itemId,
+    params.invoiceId,
+  );
   if (!invoiceItem) throw new AppError(400, "notFound");
 
-  await invoiceItem.deleteOne();
+  await invoiceItemRepository.deleteInvoiceItemByDoc(invoiceItem);
 
-  const invoiceItems = await InvoiceItem.find({
-    invoiceId: params.invoiceId,
-  });
+  const invoiceItems = await invoiceItemRepository.findInvoiceItemsByInvoiceId(params.invoiceId);
 
   let totalInvoicePrice = 0;
   invoiceItems.forEach((item) => {
     totalInvoicePrice += item.totalPrice;
   });
 
-  await Invoice.findByIdAndUpdate(params.invoiceId, {
-    totalPrice: totalInvoicePrice.toString(),
-    lastUpdateDate: new Date(),
-  });
+  await invoiceItemRepository.updateInvoiceTotalPrice(
+    params.invoiceId,
+    totalInvoicePrice,
+    new Date(),
+  );
 };
 
 module.exports = {
