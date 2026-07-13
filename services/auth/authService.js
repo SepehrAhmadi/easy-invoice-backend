@@ -1,4 +1,4 @@
-const User = require("../../model/User");
+const authRepository = require("../../repositories/auth/authRepository");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AppError = require("../../utils/AppError");
@@ -7,7 +7,7 @@ const handleLogin = async ({ body }) => {
   const { username: user, password: pswd } = body;
   if (!user || !pswd) throw new AppError(400, "userAndPassRequired");
 
-  const foundUser = await User.findOne({ username: user.toLowerCase() });
+  const foundUser = await authRepository.findUserByUsername(user.toLowerCase());
   if (!foundUser) throw new AppError(401, "usernameNotFond");
 
   const match = await bcrypt.compare(pswd, foundUser.password);
@@ -34,7 +34,7 @@ const handleLogin = async ({ body }) => {
     );
 
     foundUser.refreshToken = refreshToken;
-    foundUser.save();
+    authRepository.saveUser(foundUser);
 
     return {
       accessToken,

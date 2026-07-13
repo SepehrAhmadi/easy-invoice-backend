@@ -1,4 +1,4 @@
-const User = require("../../model/User");
+const refreshTokenRepository = require("../../repositories/auth/refreshTokenRepository");
 const jwt = require("jsonwebtoken");
 const AppError = require("../../utils/AppError");
 
@@ -7,9 +7,7 @@ const handleRefreshToken = async ({ cookies }) => {
     throw new AppError(401, "JWT cookie not found");
   }
   const jwtRefreshToken = cookies.jwt;
-  const foundUser = await User.findOne({
-    refreshToken: jwtRefreshToken,
-  }).exec();
+  const foundUser = await refreshTokenRepository.findUserByRefreshToken(jwtRefreshToken);
   if (!foundUser) {
     throw new AppError(403, "JWT cookie not found or invalid");
   }

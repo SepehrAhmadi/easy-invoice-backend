@@ -1,4 +1,4 @@
-const User = require("../../model/User");
+const logoutRepository = require("../../repositories/auth/logoutRepository");
 
 const handleLogout = async ({ cookies }) => {
   // Return values:
@@ -10,13 +10,13 @@ const handleLogout = async ({ cookies }) => {
 
   // is refresh token in db?
   const jwtRefreshToken = cookies.jwt;
-  const foundUser = await User.findOne({ refreshToken: jwtRefreshToken }).exec();
+  const foundUser = await logoutRepository.findUserByRefreshToken(jwtRefreshToken);
   if (!foundUser) {
     return { noCookie: true, missingUser: true };
   }
 
   foundUser.refreshToken = "";
-  await foundUser.save();
+  await logoutRepository.saveUser(foundUser);
 
   return { noCookie: false };
 };

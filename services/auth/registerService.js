@@ -1,4 +1,4 @@
-const User = require("../../model/User");
+const registerRepository = require("../../repositories/auth/registerRepository");
 const bcrypt = require("bcrypt");
 const AppError = require("../../utils/AppError");
 
@@ -8,13 +8,13 @@ const handleNewUser = async ({ body }) => {
   if (!user || !pswd) throw new AppError(400, "userAndPassRequired");
 
   // check duplicated username
-  const duplicate = await User.findOne({ username: user }).exec();
+  const duplicate = await registerRepository.findUserByUsername(user);
   if (duplicate) throw new AppError(409, "userExist");
 
   // encrypt the password
   const hashedPassword = await bcrypt.hash(pswd, 10);
 
-  const result = await User.create({
+  const result = await registerRepository.createUser({
     username: user.toLowerCase(),
     password: hashedPassword,
   });
