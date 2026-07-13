@@ -1,4 +1,4 @@
-const Category = require("../../model/base/Category");
+const categoryRepository = require("../../repositories/base/categoryRepository");
 const notificationService = require("../notification/notificationService");
 const AppError = require("../../utils/AppError");
 
@@ -10,7 +10,7 @@ const NOTIFICATION_TYPE = {
 };
 
 const getAllCategories = async () => {
-  const categories = await Category.find().exec();
+  const categories = await categoryRepository.findAllCategories();
   if (!categories) {
     return { categories: [] };
   }
@@ -26,7 +26,7 @@ const getAllCategories = async () => {
 const getCategory = async ({ params }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const category = await Category.findById(params.id);
+  const category = await categoryRepository.findCategoryById(params.id);
   if (!category) throw new AppError(400, "notFound");
   return {
     id: category.id,
@@ -37,9 +37,7 @@ const getCategory = async ({ params }) => {
 const addCategory = async ({ body, userId }) => {
   if (!body.name) throw new AppError(400, "requireFields");
 
-  const category = new Category();
-  category.name = body.name;
-  await category.save();
+  const category = await categoryRepository.createCategory({ name: body.name });
 
   await notificationService.create({
     userId,
@@ -54,13 +52,13 @@ const addCategory = async ({ body, userId }) => {
 const updateCategory = async ({ params, body, userId }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const category = await Category.findById(params.id).exec();
+  const category = await categoryRepository.findCategoryById(params.id);
   if (!category) throw new AppError(400, "notFound");
 
   if (!body.name) throw new AppError(400, "requireFields");
 
   category.name = body.name;
-  await category.save();
+  await categoryRepository.saveCategory(category);
 
   await notificationService.create({
     userId,
@@ -75,10 +73,10 @@ const updateCategory = async ({ params, body, userId }) => {
 const deleteCategory = async ({ params, userId }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const category = await Category.findById(params.id);
+  const category = await categoryRepository.findCategoryById(params.id);
   if (!category) throw new AppError(400, "notFound");
 
-  await category.deleteOne();
+  await categoryRepository.deleteCategoryByDoc(category);
 
   await notificationService.create({
     userId,

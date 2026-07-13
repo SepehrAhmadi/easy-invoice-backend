@@ -1,4 +1,4 @@
-const Brand = require("../../model/base/Brand");
+const brandRepository = require("../../repositories/base/brandRepository");
 const notificationService = require("../notification/notificationService");
 const AppError = require("../../utils/AppError");
 
@@ -10,7 +10,7 @@ const NOTIFICATION_TYPE = {
 };
 
 const getAllBrands = async () => {
-  const brands = await Brand.find().exec();
+  const brands = await brandRepository.findAllBrands();
   if (!brands) {
     return { brands: [] };
   }
@@ -26,7 +26,7 @@ const getAllBrands = async () => {
 const getBrand = async ({ params }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const brand = await Brand.findById(params.id);
+  const brand = await brandRepository.findBrandById(params.id);
   if (!brand) throw new AppError(400, "notFound");
   return {
     id: brand.id,
@@ -37,10 +37,7 @@ const getBrand = async ({ params }) => {
 const addBrand = async ({ body, userId }) => {
   if (!body.name) throw new AppError(400, "requireFields");
 
-  const brand = new Brand();
-  brand.name = body.name;
-
-  await brand.save();
+  const brand = await brandRepository.createBrand({ name: body.name });
 
   await notificationService.create({
     userId,
@@ -55,13 +52,13 @@ const addBrand = async ({ body, userId }) => {
 const updateBrand = async ({ params, body, userId }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const brand = await Brand.findById(params.id).exec();
+  const brand = await brandRepository.findBrandById(params.id);
   if (!brand) throw new AppError(400, "notFound");
 
   if (!body.name) throw new AppError(400, "requireFields");
 
   brand.name = body.name;
-  await brand.save();
+  await brandRepository.saveBrand(brand);
 
   await notificationService.create({
     userId,
@@ -76,10 +73,10 @@ const updateBrand = async ({ params, body, userId }) => {
 const deleteBrand = async ({ params, userId }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const brand = await Brand.findById(params.id);
+  const brand = await brandRepository.findBrandById(params.id);
   if (!brand) throw new AppError(400, "notFound");
 
-  await brand.deleteOne();
+  await brandRepository.deleteBrandByDoc(brand);
 
   await notificationService.create({
     userId,

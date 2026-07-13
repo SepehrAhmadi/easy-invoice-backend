@@ -1,4 +1,4 @@
-const Company = require("../../model/base/Company");
+const companyRepository = require("../../repositories/base/companyRepository");
 const notificationService = require("../notification/notificationService");
 const AppError = require("../../utils/AppError");
 
@@ -14,7 +14,7 @@ const NOTIFICATION_TYPE = {
 };
 
 const getAllCompanies = async () => {
-  const companies = await Company.find();
+  const companies = await companyRepository.findAllCompanies();
   if (!companies) {
     return { companies: [] };
   }
@@ -35,7 +35,7 @@ const getAllCompanies = async () => {
 const getCompany = async ({ params }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const company = await Company.findById(params.id).exec();
+  const company = await companyRepository.findCompanyById(params.id);
   if (!company) throw new AppError(400, "notFound");
   return {
     id: company.id,
@@ -60,14 +60,12 @@ const addCompany = async ({ body, userId }) => {
     throw new AppError(400, "requireFields");
   }
 
-  const company = new Company();
-  company.type = body.type;
-  company.typeTitle = body.type === 1 ? "legal entity" : "individual";
-  company.name = body.name;
-  company.address = body.address;
-  company.phone = body.phone;
-
-  await company.save();
+  const company = await companyRepository.createCompany({
+    type: body.type,
+    name: body.name,
+    address: body.address,
+    phone: body.phone,
+  });
 
   await notificationService.create({
     userId,
@@ -82,7 +80,7 @@ const addCompany = async ({ body, userId }) => {
 const updateCompany = async ({ params, body, userId }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const company = await Company.findById(params.id).exec();
+  const company = await companyRepository.findCompanyById(params.id);
   if (!company) throw new AppError(400, "notFound");
 
   if (
@@ -100,7 +98,7 @@ const updateCompany = async ({ params, body, userId }) => {
   company.address = body.address;
   company.phone = body.phone;
 
-  await company.save();
+  await companyRepository.saveCompany(company);
 
   await notificationService.create({
     userId,
@@ -115,10 +113,10 @@ const updateCompany = async ({ params, body, userId }) => {
 const deleteCompany = async ({ params, userId }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const company = await Company.findById(params.id);
+  const company = await companyRepository.findCompanyById(params.id);
   if (!company) throw new AppError(400, "notFound");
 
-  await company.deleteOne();
+  await companyRepository.deleteCompanyByDoc(company);
 
   await notificationService.create({
     userId,

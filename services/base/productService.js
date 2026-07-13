@@ -1,7 +1,4 @@
-const Product = require("../../model/base/Product");
-const Packaging = require("../../model/base/Packaging");
-const Unit = require("../../model/base/Unit");
-const Brand = require("../../model/base/Brand");
+const productRepository = require("../../repositories/base/productRepository");
 const notificationService = require("../notification/notificationService");
 const AppError = require("../../utils/AppError");
 
@@ -12,7 +9,7 @@ const NOTIFICATION_TYPE = {
 };
 
 const getAllProducts = async () => {
-  const products = await Product.find().exec();
+  const products = await productRepository.findAllProducts();
   if (!products) {
     return { products: [] };
   }
@@ -36,7 +33,7 @@ const getAllProducts = async () => {
 const getProduct = async ({ params }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const product = await Product.findById(params.id);
+  const product = await productRepository.findProductById(params.id);
   if (!product) throw new AppError(499, "notFound");
   return {
     id: product.id,
@@ -63,8 +60,6 @@ const addProduct = async ({ body, userId }) => {
     throw new AppError(400, "requireFields");
   }
 
-  const product = new Product();
-
   if (
     !body.name &&
     !body.brandId &&
@@ -75,26 +70,26 @@ const addProduct = async ({ body, userId }) => {
     throw new AppError(400, "requireFields");
   }
 
-  product.name = body.name;
-  product.amount = body.amount;
-
-  const package = await Packaging.findById(body.packagingId);
+  const package = await productRepository.findPackagingById(body.packagingId);
   if (!package) throw new AppError(400, "invalidPackagingId");
-  product.packagingId = body.packagingId;
-  product.packagingName = package.name;
-  product.packagingType = package.type;
 
-  const unit = await Unit.findById(body.unitId);
+  const unit = await productRepository.findUnitById(body.unitId);
   if (!unit) throw new AppError(400, "invalidUnitId");
-  product.unitId = body.unitId;
-  product.unitName = unit.name;
 
-  const brand = await Brand.findById(body.brandId);
+  const brand = await productRepository.findBrandById(body.brandId);
   if (!unit) throw new AppError(400, "invalidUnitId");
-  product.brandId = body.brandId;
-  product.brandName = brand.name;
 
-  await product.save();
+  const product = await productRepository.createProduct({
+    name: body.name,
+    amount: body.amount,
+    packagingId: body.packagingId,
+    packagingName: package.name,
+    packagingType: package.type,
+    unitId: body.unitId,
+    unitName: unit.name,
+    brandId: body.brandId,
+    brandName: brand.name,
+  });
 
   await notificationService.create({
     userId,
@@ -109,7 +104,7 @@ const addProduct = async ({ body, userId }) => {
 const updateProduct = async ({ params, body, userId }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const product = await Product.findById(params.id).exec();
+  const product = await productRepository.findProductByIdExec(params.id);
   if (!product) throw new AppError(400, "notFound");
 
   if (
@@ -132,26 +127,26 @@ const updateProduct = async ({ params, body, userId }) => {
     throw new AppError(400, "requireFields");
   }
 
+  const package = await productRepository.findPackagingById(body.packagingId);
+  if (!package) throw new AppError(400, "invalidPackagingId");
+
+  const unit = await productRepository.findUnitById(body.unitId);
+  if (!unit) throw new AppError(400, "invalidUnitId");
+
+  const brand = await productRepository.findBrandById(body.brandId);
+  if (!unit) throw new AppError(400, "invalidUnitId");
+
   product.name = body.name;
   product.amount = body.amount;
-
-  const package = await Packaging.findById(body.packagingId);
-  if (!package) throw new AppError(400, "invalidPackagingId");
   product.packagingId = body.packagingId;
   product.packagingName = package.name;
   product.packagingType = package.type;
-
-  const unit = await Unit.findById(body.unitId);
-  if (!unit) throw new AppError(400, "invalidUnitId");
   product.unitId = body.unitId;
   product.unitName = unit.name;
-
-  const brand = await Brand.findById(body.brandId);
-  if (!unit) throw new AppError(400, "invalidUnitId");
   product.brandId = body.brandId;
   product.brandName = brand.name;
 
-  await product.save();
+  await productRepository.saveProduct(product);
 
   await notificationService.create({
     userId,
@@ -166,10 +161,10 @@ const updateProduct = async ({ params, body, userId }) => {
 const deleteProduct = async ({ params, userId }) => {
   if (!params?.id) throw new AppError(400, "idRequired");
 
-  const product = await Product.findById(params.id).exec();
+  const product = await productRepository.findProductByIdExec(params.id);
   if (!product) throw new AppError(400, "notFound");
 
-  await product.deleteOne();
+  await productRepository.deleteProductByDoc(product);
 
   await notificationService.create({
     userId,
