@@ -1,25 +1,19 @@
-const Invoice = require("../../model/operation/invoice/Invoice");
-const InvoiceItem = require("../../model/operation/invoice/InvoiceItem");
-const Company = require("../../model/base/Company");
-const Packaging = require("../../model/base/Packaging");
-const Product = require("../../model/base/Product");
+const dashboardRepository = require("../../repositories/dashboard/dashboardRepository");
 
 const getDashboard = async () => {
-  const packagings = await Packaging.find();
-  const invoices = await Invoice.find();
+  const packagings = await dashboardRepository.findAllPackagings();
+  const invoices = await dashboardRepository.findAllInvoices();
 
-  const invoiceItems = await InvoiceItem.find();
+  const invoiceItems = await dashboardRepository.findAllInvoiceItems();
   let invoiceTotalPrice = 0;
   invoiceItems.forEach((item) => {
     invoiceTotalPrice += Number(item.totalPrice);
   });
 
-  const companies = await Company.find();
+  const companies = await dashboardRepository.findAllCompanies();
   const valueByCompany = await Promise.all(
     companies.map(async (item) => {
-      const companyInvoices = await Invoice.find({
-        companyId: item.id,
-      });
+      const companyInvoices = await dashboardRepository.findInvoicesByCompanyId(item.id);
 
       let totalPrice = 0;
       companyInvoices.forEach((inv) => {
@@ -37,9 +31,7 @@ const getDashboard = async () => {
     }),
   );
 
-  const awaitingPaymentInvoices = await Invoice.find({
-    paymentStatus: 2,
-  });
+  const awaitingPaymentInvoices = await dashboardRepository.findInvoicesByPaymentStatus(2);
   let awaitingPaymentInvoiceTotalPrice = 0;
   awaitingPaymentInvoices.forEach((item) => {
     awaitingPaymentInvoiceTotalPrice += Number(item.totalPrice);
@@ -62,9 +54,7 @@ const getDashboard = async () => {
     };
   });
 
-  const paidInvoices = await Invoice.find({
-    paymentStatus: 1,
-  });
+  const paidInvoices = await dashboardRepository.findInvoicesByPaymentStatus(1);
   let paidInvoiceTotalPrice = 0;
   paidInvoices.forEach((item) => {
     paidInvoiceTotalPrice += Number(item.totalPrice);
@@ -89,9 +79,7 @@ const getDashboard = async () => {
 
   const productByPackaging = await Promise.all(
     packagings.map(async (item) => {
-      const products = await Product.find({
-        packagingId: item.id,
-      });
+      const products = await dashboardRepository.findProductsByPackagingId(item.id);
 
       return {
         packagingId: item.id,
