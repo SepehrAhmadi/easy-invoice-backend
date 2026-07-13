@@ -1,4 +1,4 @@
-const User = require("../../model/User");
+const profileRepository = require("../../repositories/profile/profileRepository");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
@@ -18,7 +18,7 @@ const _getUserIdFromToken = ({ headers }) => {
 const getProfile = async ({ headers, protocol, host }) => {
   const userId = _getUserIdFromToken({ headers });
 
-  const user = await User.findById(userId).exec();
+  const user = await profileRepository.findUserById(userId);
   if (!user) throw new AppError(200, "notFound");
 
   let avatarUrl = "";
@@ -38,7 +38,7 @@ const getProfile = async ({ headers, protocol, host }) => {
 const updateProfile = async ({ headers, body, params, file }) => {
   const userId = _getUserIdFromToken({ headers });
 
-  const user = await User.findById(userId).exec();
+  const user = await profileRepository.findUserById(userId);
   if (!user) throw new AppError(200, "notFound");
 
   if (!body.username) throw new AppError(400, "requireFields");
@@ -46,10 +46,10 @@ const updateProfile = async ({ headers, body, params, file }) => {
   const newUsername = body.username.toLowerCase();
 
   if (user.username !== newUsername) {
-    const existingUser = await User.findOne({
-      username: newUsername,
-      _id: { $ne: params.id },
-    }).exec();
+    const existingUser = await profileRepository.findUserByUsernameExcludingId(
+      newUsername,
+      params.id,
+    );
     if (existingUser) throw new AppError(409, "userExist");
   }
 
@@ -59,13 +59,13 @@ const updateProfile = async ({ headers, body, params, file }) => {
     user.avatarPath = file.path;
   }
 
-  await user.save();
+  await profileRepository.saveUser(user);
 };
 
 const changePassword = async ({ headers, body }) => {
   const userId = _getUserIdFromToken({ headers });
 
-  const user = await User.findById(userId).exec();
+  const user = await profileRepository.findUserById(userId);
   if (!user) throw new AppError(200, "notFound");
 
   if (!body.currentPassword && !body.newPassword) {
@@ -78,13 +78,13 @@ const changePassword = async ({ headers, body }) => {
   const hashedPassword = await bcrypt.hash(body.newPassword, 10);
   user.password = hashedPassword;
 
-  await user.save();
+  await profileRepository.saveUser(user);
 };
 
 const deleteAvatar = async ({ headers }) => {
   const userId = _getUserIdFromToken({ headers });
 
-  const user = await User.findById(userId);
+  const user = await profileRepository.findUserByIdLean(userId);
   if (!user) throw new AppError(400, "notFound");
 
   // Delete the avatar file from disk if it exists
@@ -98,7 +98,7 @@ const deleteAvatar = async ({ headers }) => {
   }
 
   user.avatarPath = "";
-  await user.save();
+  await profileRepository.saveUser(user);
 };
 
 module.exports = {
