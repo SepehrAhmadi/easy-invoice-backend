@@ -1,9 +1,4 @@
-const Company = require("../../model/base/Company");
-const Brand = require("../../model/base/Brand");
-const Packaging = require("../../model/base/Packaging");
-const Units = require("../../model/base/Unit");
-const Product = require("../../model/base/Product");
-const Category = require("../../model/base/Category");
+const dropdownRepository = require("../../repositories/dropdown/dropdownRepository");
 
 const COMPANY_TYPE = {
   LEGAL_ENTITY: 1,
@@ -16,7 +11,7 @@ const PAYMENT_STATUS_TYPE = {
 };
 
 const getCompanies = async () => {
-  const companies = await Company.find().exec();
+  const companies = await dropdownRepository.findAllCompanies();
   return companies.map((item) => {
     return {
       id: item._id,
@@ -28,21 +23,21 @@ const getCompanies = async () => {
 };
 
 const getBrands = async () => {
-  const brands = await Brand.find().exec();
+  const brands = await dropdownRepository.findAllBrands();
   return brands.map((item) => {
     return { id: item._id, name: item.name };
   });
 };
 
 const getCategories = async () => {
-  const categories = await Category.find().exec();
+  const categories = await dropdownRepository.findAllCategories();
   return categories.map((item) => {
     return { id: item._id, name: item.name };
   });
 };
 
 const getProducts = async () => {
-  const products = await Product.find().exec();
+  const products = await dropdownRepository.findAllProducts();
   return products.map((item) => {
     return {
       id: item._id,
@@ -56,14 +51,14 @@ const getProducts = async () => {
 };
 
 const getPackagings = async () => {
-  const packaging = await Packaging.find().exec();
+  const packaging = await dropdownRepository.findAllPackagings();
   return packaging.map((item) => {
     return { id: item._id, name: item.name, type: item.type };
   });
 };
 
 const getUnits = async () => {
-  const units = await Units.find().exec();
+  const units = await dropdownRepository.findAllUnits();
   return units.map((item) => {
     return { id: item._id, name: item.name };
   });
