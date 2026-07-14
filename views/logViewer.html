@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log Viewer</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --bg:        #0d1117;
+        --surface:   #161b22;
+        --surface2:  #1c2128;
+        --border:    #30363d;
+        --text:      #e6edf3;
+        --muted:     #7d8590;
+        --accent:    #7c3aed;
+        --accent-h:  #6d28d9;
+      }
+
+      body { font-family: ui-monospace, "Cascadia Code", "Fira Code", monospace;
+             background: var(--bg); color: var(--text); min-height: 100vh; }
+
+      /* ── HEADER ─────────────────────────────────── */
+      .header {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 14px 20px;
+        display: flex; align-items: center; gap: 10px;
+      }
+      .header-logo {
+        width: 32px; height: 32px; border-radius: 7px;
+        background: linear-gradient(135deg, var(--accent), #db2777);
+        display: flex; align-items: center; justify-content: center; font-size: 16px;
+      }
+      .header-title { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+      .header-sub   { font-size: 11px; color: var(--muted); margin-top: 1px; font-family: sans-serif; }
+      .total-pill {
+        margin-left: auto;
+        background: var(--surface2); border: 1px solid var(--border);
+        border-radius: 20px; padding: 3px 11px; font-size: 11px;
+        color: var(--muted); font-family: sans-serif;
+      }
+
+      /* ── FILTER BAR ──────────────────────────────── */
+      .filters {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 10px 20px;
+        display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      }
+      .fg { display: flex; align-items: center; gap: 5px; }
+      .fg label { font-size: 10px; color: var(--muted); text-transform: uppercase;
+                  letter-spacing: .6px; font-family: sans-serif; }
+      select, input {
+        background: var(--bg); border: 1px solid var(--border);
+        border-radius: 5px; color: var(--text);
+        padding: 5px 9px; font-size: 12px; outline: none;
+        font-family: ui-monospace, monospace;
+        transition: border-color .15s;
+      }
+      select:focus, input:focus { border-color: var(--accent); }
+      input[type=text] { width: 200px; }
+      input[type=date]::-webkit-calendar-picker-indicator { filter: invert(.5); cursor: pointer; }
+
+      .btn {
+        padding: 5px 14px; border-radius: 5px; font-size: 12px;
+        cursor: pointer; border: none; font-family: sans-serif; font-weight: 500;
+        transition: background .15s;
+      }
+      .btn-primary { background: var(--accent); color: #fff; }
+      .btn-primary:hover { background: var(--accent-h); }
+      .btn-ghost   { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+      .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+      /* ── STATS BAR ───────────────────────────────── */
+      .statsbar {
+        padding: 7px 20px;
+        display: flex; gap: 18px; align-items: center;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg); font-family: sans-serif;
+      }
+      .stat { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+      .dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+      /* ── TABLE ───────────────────────────────────── */
+      .wrap { padding: 12px 20px 80px; overflow-x: auto; }
+      table { width: 100%; border-collapse: collapse; font-size: 12px; }
+      thead th {
+        background: var(--surface2); color: var(--muted);
+        font-weight: 500; font-size: 10px; text-transform: uppercase;
+        letter-spacing: .6px; padding: 8px 12px; text-align: left;
+        border-bottom: 1px solid var(--border); white-space: nowrap;
+        font-family: sans-serif;
+      }
+      tbody tr { border-bottom: 1px solid #161b22; transition: background .1s; cursor: pointer; }
+      tbody tr:hover { background: var(--surface2); }
+      td { padding: 8px 12px; vertical-align: middle; }
+
+      /* ── BADGES ──────────────────────────────────── */
+      .badge {
+        display: inline-flex; align-items: center;
+        padding: 1px 7px; border-radius: 4px;
+        font-size: 10px; font-weight: 700; letter-spacing: .4px;
+        text-transform: uppercase; white-space: nowrap;
+      }
+      .b-error   { background: #2d1515; color: #f87171; border: 1px solid #4d1f1f; }
+      .b-warn    { background: #2a1f0a; color: #fbbf24; border: 1px solid #4a3510; }
+      .b-info    { background: #0d1f36; color: #60a5fa; border: 1px solid #1a3558; }
+      .b-http    { background: #0d2820; color: #34d399; border: 1px solid #1a4535; }
+      .b-debug   { background: #1a1a2e; color: #818cf8; border: 1px solid #2d2d50; }
+      .b-unknown { background: #1a1a1a; color: #94a3b8; border: 1px solid #2d2d2d; }
+
+      .t-request { background: #1a1030; color: #a78bfa; border: 1px solid #2d1a50; }
+      .t-error   { background: #2d1515; color: #fca5a5; border: 1px solid #4d1f1f; }
+
+      .m-GET    { color: #4ade80; }
+      .m-POST   { color: #60a5fa; }
+      .m-PUT    { color: #fbbf24; }
+      .m-PATCH  { color: #fb923c; }
+      .m-DELETE { color: #f87171; }
+
+      .ts    { color: #4b5563; font-size: 11px; white-space: nowrap; }
+      .msg   { max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #9ca3af; }
+      .url   { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #6b7280; }
+      .meth  { font-weight: 700; font-size: 11px; }
+
+      /* ── PAGINATION ──────────────────────────────── */
+      .pag {
+        position: fixed; bottom: 0; left: 0; right: 0;
+        background: var(--surface); border-top: 1px solid var(--border);
+        display: flex; justify-content: center; align-items: center; gap: 5px;
+        padding: 10px; font-family: sans-serif;
+      }
+      .pbtn {
+        padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border);
+        background: var(--surface2); color: var(--muted); cursor: pointer;
+        font-size: 12px; transition: all .15s;
+      }
+      .pbtn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+      .pbtn.cur { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .pbtn:disabled { opacity: .35; cursor: not-allowed; }
+      .pinfo { font-size: 11px; color: var(--muted); padding: 0 8px; }
+
+      /* ── EMPTY / LOADING ─────────────────────────── */
+      .center { text-align: center; padding: 60px 20px; }
+      .center .ico { font-size: 36px; margin-bottom: 10px; }
+      .center p { color: var(--muted); font-size: 13px; font-family: sans-serif; }
+
+      .spin {
+        display: inline-block; width: 16px; height: 16px;
+        border: 2px solid var(--border); border-top-color: var(--accent);
+        border-radius: 50%; animation: sp .7s linear infinite; vertical-align: middle;
+        margin-left: 6px;
+      }
+      @keyframes sp { to { transform: rotate(360deg); } }
+
+      /* ── MODAL ───────────────────────────────────── */
+      .overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,.65); z-index: 200;
+        align-items: center; justify-content: center;
+      }
+      .overlay.open { display: flex; }
+      .modal {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 10px; width: 92%; max-width: 720px;
+        max-height: 82vh; display: flex; flex-direction: column;
+      }
+      .mhead {
+        padding: 14px 18px; border-bottom: 1px solid var(--border);
+        display: flex; justify-content: space-between; align-items: center;
+      }
+      .mhead h3 { font-size: 13px; font-weight: 600; font-family: sans-serif; }
+      .mclose { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; }
+      .mclose:hover { color: var(--text); }
+      .mbody { padding: 16px; overflow-y: auto; flex: 1; }
+      pre {
+        background: var(--bg); border: 1px solid var(--border);
+        border-radius: 7px; padding: 14px; font-size: 11.5px;
+        line-height: 1.65; color: #9ca3af; overflow-x: auto;
+        white-space: pre-wrap; word-break: break-all;
+      }
+      /* JSON رنگ‌آمیزی ساده */
+      .jk { color: #60a5fa; }   /* key */
+      .js { color: #4ade80; }   /* string value */
+      .jn { color: #f59e0b; }   /* number */
+      .jb { color: #a78bfa; }   /* boolean/null */
+    </style>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-logo">📋</div>
+      <div>
+        <div class="header-title">Log Viewer</div>
+        <div class="header-sub">MongoDB · requests &amp; errors</div>
+      </div>
+      <div class="total-pill" id="totalPill">—</div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+
+      <div class="fg">
+        <label>Type</label>
+        <select id="fType">
+          <option value="all">All</option>
+          <option value="request">Request (http)</option>
+          <option value="error">Error</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label>Level</label>
+        <select id="fLevel">
+          <option value="all">All</option>
+          <option value="http">http</option>
+          <option value="error">error</option>
+          <option value="warn">warn</option>
+          <option value="info">info</option>
+          <option value="debug">debug</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label>Date</label>
+        <input type="date" id="fDate" />
+      </div>
+
+      <div class="fg">
+        <label>Search</label>
+        <input type="text" id="fSearch" placeholder="search in message..." />
+      </div>
+
+      <button class="btn btn-primary" onclick="load(1)">Apply</button>
+      <button class="btn btn-ghost"   onclick="reset()">Reset</button>
+
+      <div class="fg" style="margin-left:auto">
+        <label>Auto Refresh</label>
+        <select id="fRefresh" onchange="setRefresh()">
+          <option value="0">Off</option>
+          <option value="10">10s</option>
+          <option value="30">30s</option>
+          <option value="60">1 min</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- STATS -->
+    <div class="statsbar">
+      <div class="stat"><div class="dot" style="background:#4ade80"></div><span id="sReq">Requests: —</span></div>
+      <div class="stat"><div class="dot" style="background:#f87171"></div><span id="sErr">Errors: —</span></div>
+      <div class="stat"><div class="dot" style="background:#fbbf24"></div><span id="sWrn">Warns: —</span></div>
+      <div class="stat" style="margin-left:auto; color:#4b5563" id="sTime">—</div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Type</th>
+            <th>Level</th>
+            <th>Method</th>
+            <th>URL / Message</th>
+            <th>Status</th>
+            <th>User</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="7"><div class="center"><p>Loading <span class="spin"></span></p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pag" id="pag"></div>
+
+    <!-- MODAL -->
+    <div class="overlay" id="overlay" onclick="closeModal(event)">
+      <div class="modal">
+        <div class="mhead">
+          <h3>Log Detail</h3>
+          <button class="mclose" onclick="closeModal()">✕</button>
+        </div>
+        <div class="mbody">
+          <pre id="mpre"></pre>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let _page = 1;
+      let _logs = [];
+      let _timer = null;
+
+      // ── fetch ────────────────────────────────────────────────────────────
+      async function load(page = 1) {
+        _page = page;
+
+        const params = new URLSearchParams({
+          type:   document.getElementById("fType").value,
+          level:  document.getElementById("fLevel").value,
+          date:   document.getElementById("fDate").value,
+          search: document.getElementById("fSearch").value,
+          page,
+          limit: 50,
+        });
+
+        // نشون دادن spinner
+        document.getElementById("tbody").innerHTML =
+          `<tr><td colspan="7"><div class="center"><p>Loading <span class="spin"></span></p></div></td></tr>`;
+
+        try {
+          const res  = await fetch(`/admin/logs/data?${params}`);
+          const data = await res.json();
+          if (data.error) throw new Error(data.error);
+          _logs = data.logs || [];
+          render(data);
+          renderPag(data);
+          renderStats(data);
+          document.getElementById("sTime").textContent =
+            "Last update: " + new Date().toLocaleTimeString();
+        } catch (e) {
+          document.getElementById("tbody").innerHTML =
+            `<tr><td colspan="7"><div class="center">
+               <div class="ico">⚠️</div>
+               <p>Error: ${e.message}</p>
+             </div></td></tr>`;
+        }
+      }
+
+      // ── render table ─────────────────────────────────────────────────────
+      function render({ logs }) {
+        if (!logs.length) {
+          document.getElementById("tbody").innerHTML =
+            `<tr><td colspan="7"><div class="center">
+               <div class="ico">📭</div><p>No logs found</p>
+             </div></td></tr>`;
+          return;
+        }
+
+        document.getElementById("tbody").innerHTML = logs.map((log, i) => {
+          const level    = log.level || "unknown";
+          const type     = log.logType || "error";                          // request | error
+          const method   = log._method || "—";
+          const url      = log._url    || log.message || "—";
+          const status   = log._statusCode;
+          const userId   = log.meta?.userId || "—";
+          const ts       = fmtTime(log.timestamp);
+
+          // class‌های رنگ
+          const lvlCls   = { error:"b-error", warn:"b-warn", info:"b-info",
+                             http:"b-http",  debug:"b-debug" }[level] || "b-unknown";
+          const typeCls  = type === "request" ? "t-request" : "t-error";
+          const methCls  = ["GET","POST","PUT","PATCH","DELETE"].includes(method)
+                           ? "m-"+method : "";
+          const stColor  = statusColor(status);
+
+          return `
+            <tr onclick="openModal(${i})">
+              <td class="ts">${ts}</td>
+              <td><span class="badge ${typeCls}">${type}</span></td>
+              <td><span class="badge ${lvlCls}">${level}</span></td>
+              <td class="meth ${methCls}">${method}</td>
+              <td class="url" title="${esc(url)}">${esc(url)}</td>
+              <td style="color:${stColor};font-weight:600">${status ?? "—"}</td>
+              <td style="color:#6b7280;font-size:11px">${userId}</td>
+            </tr>`;
+        }).join("");
+      }
+
+      // ── pagination ────────────────────────────────────────────────────────
+      function renderPag({ page, totalPages, total }) {
+        document.getElementById("totalPill").textContent = total + " logs";
+
+        const pag = document.getElementById("pag");
+        if (totalPages <= 1) { pag.innerHTML = ""; return; }
+
+        let h = `<button class="pbtn" onclick="load(${page-1})" ${page===1?"disabled":""}>← Prev</button>`;
+        h += `<span class="pinfo">Page ${page} / ${totalPages}</span>`;
+        h += `<button class="pbtn" onclick="load(${page+1})" ${page===totalPages?"disabled":""}>Next →</button>`;
+        pag.innerHTML = h;
+      }
+
+      // ── stats ─────────────────────────────────────────────────────────────
+      function renderStats({ logs, total }) {
+        const reqs = (logs || []).filter(l => l.logType === "request").length;
+        const errs = (logs || []).filter(l => l.level === "error").length;
+        const wrns = (logs || []).filter(l => l.level === "warn").length;
+        document.getElementById("sReq").textContent = `Requests: ${reqs}`;
+        document.getElementById("sErr").textContent = `Errors: ${errs}`;
+        document.getElementById("sWrn").textContent = `Warns: ${wrns}`;
+      }
+
+      // ── modal ─────────────────────────────────────────────────────────────
+      function openModal(i) {
+        document.getElementById("mpre").innerHTML = colorizeJson(_logs[i]);
+        document.getElementById("overlay").classList.add("open");
+      }
+      function closeModal(e) {
+        if (!e || e.target === document.getElementById("overlay"))
+          document.getElementById("overlay").classList.remove("open");
+      }
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape") document.getElementById("overlay").classList.remove("open");
+      });
+
+      // ── auto refresh ──────────────────────────────────────────────────────
+      function setRefresh() {
+        clearInterval(_timer);
+        const s = Number(document.getElementById("fRefresh").value);
+        if (s > 0) _timer = setInterval(() => load(_page), s * 1000);
+      }
+
+      // ── filters ───────────────────────────────────────────────────────────
+      function reset() {
+        ["fType","fLevel","fRefresh"].forEach(id => document.getElementById(id).value = "all");
+        document.getElementById("fDate").value   = "";
+        document.getElementById("fSearch").value = "";
+        clearInterval(_timer);
+        load(1);
+      }
+      document.getElementById("fSearch").addEventListener("keydown", e => {
+        if (e.key === "Enter") load(1);
+      });
+
+      // ── helpers ───────────────────────────────────────────────────────────
+      function fmtTime(ts) {
+        if (!ts) return "—";
+        const d = new Date(ts);
+        return d.toLocaleDateString("en-GB") + " " +
+               d.toLocaleTimeString("en-GB", { hour12: false });
+      }
+
+      function statusColor(code) {
+        if (!code) return "#4b5563";
+        if (code >= 500) return "#f87171";
+        if (code >= 400) return "#fbbf24";
+        if (code >= 300) return "#60a5fa";
+        return "#4ade80";
+      }
+
+      function esc(s) {
+        return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      }
+
+      // رنگ‌آمیزی ساده JSON برای modal
+      function colorizeJson(obj) {
+        // فیلدهای اضافه داخلی رو حذف کن
+        const { _method, _url, _statusCode, __v, ...clean } = obj;
+        return JSON.stringify(clean, null, 2)
+          .replace(/("[\w$]+")(\s*:)/g,    '<span class="jk">$1</span>$2')
+          .replace(/:\s*(".*?")/g,          ': <span class="js">$1</span>')
+          .replace(/:\s*(\d+\.?\d*)/g,      ': <span class="jn">$1</span>')
+          .replace(/:\s*(true|false|null)/g, ': <span class="jb">$1</span>');
+      }
+
+      // ── init ──────────────────────────────────────────────────────────────
+      load(1);
+    </script>
+  </body>
+</html>
