@@ -7,7 +7,7 @@ const handleLogin = async ({ body }) => {
   const { username: user, password: pswd } = body;
   if (!user || !pswd) throw new AppError(400, "userAndPassRequired");
 
-  const foundUser = await authRepository.findUserByUsername(user.toLowerCase());
+  const foundUser = await authRepository.findUserByUsername(user.toLowerCase().trim());
   if (!foundUser) throw new AppError(401, "usernameNotFond");
 
   const match = await bcrypt.compare(pswd, foundUser.password);
@@ -18,7 +18,7 @@ const handleLogin = async ({ body }) => {
     const accessToken = jwt.sign(
       {
         UserInfo: {
-          username: foundUser.username,
+          username: foundUser.username.trim(),
           userId: foundUser.id,
           roles: roles,
         },
@@ -28,7 +28,7 @@ const handleLogin = async ({ body }) => {
     );
     // refresh  token
     const refreshToken = jwt.sign(
-      { username: foundUser.username },
+      { username: foundUser.username.trim() },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "1d" },
     );
