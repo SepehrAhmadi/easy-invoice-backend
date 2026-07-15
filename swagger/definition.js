@@ -10,7 +10,7 @@ module.exports = {
     { name: "Auth", description: "Authentication" },
     { name: "Dashboard", description: "Dashboard data" },
     { name: "Profile", description: "User profile" },
-    { name: "Notification", description: "Notifications" },
+    { name: "Notification", description: "List and mark notifications as read" },
 
     // ─── dropdown ─────────────────────────────────
     { name: "Dropdown", description: "Dropdown options" },
