@@ -114,7 +114,7 @@ const readAllNotifications = async ({ userId }) => {
 
     const user = await notificationRepository.findUserByIdLean(userId);
 
-    const responseData = await Promise.all(
+    await Promise.all(
       notifications.map(async (notification) => {
         await notificationRepository.readNotification({
           notificationId: notification._id,
