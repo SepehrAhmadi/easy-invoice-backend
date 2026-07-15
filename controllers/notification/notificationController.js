@@ -61,4 +61,28 @@ const readNotification = async (req, res) => {
   }
 };
 
-module.exports = { getNotifications, readNotification };
+const readAllNotifications = async (req, res) => {
+  const message = require("../../language/message")(req);
+
+  try {
+    await notificationService.readAllNotifications({ userId: req.userId });
+    res.status(200).json({
+      statusCode: 200,
+      message: message.success.readAllNotifications,
+    });
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        statusCode: err.statusCode,
+        message: message.error[err.messageKey],
+      });
+    }
+    console.error(err);
+    return res.status(500).json({
+      statusCode: 500,
+      message: message.error.faildToAdd,
+    });
+  }
+};
+
+module.exports = { getNotifications, readNotification, readAllNotifications };

@@ -38,8 +38,6 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     readNotifications.map((item) => item.notificationId.toString()),
   );
 
-  console.log("readNotificationIds : " , readNotificationIds)
-
   const notificationsData = await Promise.all(
     notifications.map(async (item) => {
       const user = await notificationRepository.findUserByIdLean(item.userId);
@@ -95,6 +93,35 @@ const readNotification = async ({ notificationId, userId }) => {
       date: moment(notification.date).format("M/D/YYYY HH:mm"),
       localDate: notification.localDate,
     };
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+
+    logger.error({
+      message: error.message,
+      stack: error.stack,
+      method: "notificationService.read",
+    });
+
+    throw error;
+  }
+};
+
+const readAllNotifications = async ({ userId }) => {
+  try {
+    const notifications =
+      await notificationRepository.findNotificationsByUserId(userId);
+    if (!notifications) throw new AppError(400, "notFound");
+
+    const user = await notificationRepository.findUserByIdLean(userId);
+
+    const responseData = await Promise.all(
+      notifications.map(async (notification) => {
+        await notificationRepository.readNotification({
+          notificationId: notification._id,
+          userId,
+        });
+      }),
+    );
   } catch (error) {
     if (error instanceof AppError) throw error;
 
@@ -164,5 +191,6 @@ const create = async ({ userId, action, type, data }) => {
 module.exports = {
   getNotifications,
   readNotification,
+  readAllNotifications,
   create,
 };

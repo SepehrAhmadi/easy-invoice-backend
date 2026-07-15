@@ -6,6 +6,10 @@ const findNotificationsByQuery = async (query) => {
   return Notification.find(query).sort({ createdDate: -1 }).exec();
 };
 
+const findNotificationsByUserId = async (userId) => {
+  return Notification.find({ userId: userId }).exec();
+};
+
 const findUserByIdLean = async (userId) => {
   return User.findById(userId).select("username").lean();
 };
@@ -28,6 +32,7 @@ const createNotification = async (notificationData) => {
 
 module.exports = {
   findNotificationsByQuery,
+  findNotificationsByUserId,
   findUserByIdLean,
   findNotificationById,
   findReadNotificationsByUserId,

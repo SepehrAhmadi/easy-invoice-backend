@@ -14,6 +14,7 @@ module.exports = (req) => {
         statusChanged: "Status changed successfully",
         passowrdChanged: "Password changed successfully",
         readNotification: "Notification read successfully",
+        readAllNotifications: "All notifications read successfully",
       },
       error: {
         idRequired: "ID parametr is required",
@@ -69,6 +70,7 @@ module.exports = (req) => {
         statusChanged: "وضعیت با موقیت تغییر پیدا کرد",
         passowrdChanged: "کلمه عبور با موفیقت تغییر یافت",
         readNotification: "اعلان با موقیت خوانده شد",
+        readAllNotifications: "تمام اعلانات با موقیت خوانده شد",
       },
       error: {
         idRequired: "شناسه الزامی می باشد",
