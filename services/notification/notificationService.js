@@ -112,8 +112,6 @@ const readAllNotifications = async ({ userId }) => {
       await notificationRepository.findNotificationsByUserId(userId);
     if (!notifications) throw new AppError(400, "notFound");
 
-    const user = await notificationRepository.findUserByIdLean(userId);
-
     await Promise.all(
       notifications.map(async (notification) => {
         await notificationRepository.readNotification({
