@@ -13,6 +13,7 @@ module.exports = (req) => {
         userCreate: "Your account successfully created",
         statusChanged: "Status changed successfully",
         passowrdChanged: "Password changed successfully",
+        readNotification: "Notification read successfully",
       },
       error: {
         idRequired: "ID parametr is required",
@@ -67,6 +68,7 @@ module.exports = (req) => {
         userCreate: "حساب کاربری شما ایجاد شد",
         statusChanged: "وضعیت با موقیت تغییر پیدا کرد",
         passowrdChanged: "کلمه عبور با موفیقت تغییر یافت",
+        readNotification: "اعلان با موقیت خوانده شد",
       },
       error: {
         idRequired: "شناسه الزامی می باشد",

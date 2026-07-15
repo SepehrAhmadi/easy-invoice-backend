@@ -3,38 +3,49 @@ const notificationMessages = require("../../language/notification/index");
 const { getIO } = require("../../config/socket");
 const logger = require("../../utils/logger");
 const moment = require("jalali-moment");
+const AppError = require("../../utils/AppError");
 
-const getNotifications = async ({ query: queryParams }) => {
+const getNotifications = async ({ query: queryParams, userId }) => {
   const { fromDate, toDate } = queryParams;
-  let query = {};
-  if (fromDate || toDate) {
-    const isValieFrom = moment(fromDate, "jYYYY/jMM/jDD", true).isValie;
-    const isValieTo = moment(toDate, "jYYYY/jMM/jDD", true).isValie;
 
-    if (!isValieFrom || !isValieTo) {
+  let query = {};
+
+  if (fromDate || toDate) {
+    const isValidFrom = moment(fromDate, "jYYYY/jMM/jDD", true).isValid();
+    const isValidTo = moment(toDate, "jYYYY/jMM/jDD", true).isValid();
+
+    if (!isValidFrom || !isValidTo) {
       throw new AppError(400, "invalidDate");
     }
 
-    const gteDate = moment(fromDate, "jYYYY/jMM/jDD").startOf("day").toDate();
-    const lteDate = moment(toDate, "jYYYY/jMM/jDD").endOf("day").toDate();
-
     query.date = {
-      $gte: gteDate,
-      $lte: lteDate,
+      $gte: moment(fromDate, "jYYYY/jMM/jDD").startOf("day").toDate(),
+      $lte: moment(toDate, "jYYYY/jMM/jDD").endOf("day").toDate(),
     };
   }
 
-  const notifications = await notificationRepository.findNotificationsByQuery(query);
+  const notifications =
+    await notificationRepository.findNotificationsByQuery(query);
 
-  if (!notifications) {
-    return { notifications: [] };
+  if (!notifications.length) {
+    return [];
   }
+
+  const readNotifications =
+    await notificationRepository.findReadNotificationsByUserId(userId);
+
+  const readNotificationIds = new Set(
+    readNotifications.map((item) => item.notificationId.toString()),
+  );
+
+  console.log("readNotificationIds : " , readNotificationIds)
 
   const notificationsData = await Promise.all(
     notifications.map(async (item) => {
       const user = await notificationRepository.findUserByIdLean(item.userId);
 
       return {
+        id: item._id,
         userId: item.userId,
         username: user?.username,
         action: item.action,
@@ -43,14 +54,58 @@ const getNotifications = async ({ query: queryParams }) => {
         faTitle: item.title.fa,
         enMessage: item.message.en,
         faMessage: item.message.fa,
+        isRead: readNotificationIds.has(item._id.toString()),
         date: moment(item.date).format("M/D/YYYY HH:mm"),
         localDate: item.localDate,
-        createdDate: item.createdDate,
       };
     }),
   );
 
   return notificationsData;
+};
+
+const readNotification = async ({ notificationId, userId }) => {
+  try {
+    if (!notificationId) throw new AppError(400, "idRequired");
+
+    const notification =
+      await notificationRepository.findNotificationById(notificationId);
+    if (!notification) throw new AppError(400, "notFound");
+
+    await notificationRepository.readNotification({
+      notificationId,
+      userId,
+    });
+
+    const user = await notificationRepository.findUserByIdLean(
+      notification.userId,
+    );
+
+    return {
+      id: notification._id,
+      userId: notification.userId,
+      username: user?.username,
+      action: notification.action,
+      type: notification.type,
+      enTitle: notification.title.en,
+      faTitle: notification.title.fa,
+      enMessage: notification.message.en,
+      faMessage: notification.message.fa,
+      isRead: true,
+      date: moment(notification.date).format("M/D/YYYY HH:mm"),
+      localDate: notification.localDate,
+    };
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+
+    logger.error({
+      message: error.message,
+      stack: error.stack,
+      method: "notificationService.read",
+    });
+
+    throw error;
+  }
 };
 
 const create = async ({ userId, action, type, data }) => {
@@ -86,9 +141,9 @@ const create = async ({ userId, action, type, data }) => {
       faTitle: notification.title.fa,
       enMessage: notification.message.en,
       faMessage: notification.message.fa,
+      isRead: false,
       date: moment(notification.date).format("M/D/YYYY HH:mm"),
       localDate,
-      createdDate: notification.createdDate,
     };
 
     const io = getIO();
@@ -108,5 +163,6 @@ const create = async ({ userId, action, type, data }) => {
 
 module.exports = {
   getNotifications,
+  readNotification,
   create,
 };
