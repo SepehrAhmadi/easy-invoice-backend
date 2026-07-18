@@ -6,7 +6,11 @@ const moment = require("jalali-moment");
 const AppError = require("../../utils/AppError");
 
 const getNotifications = async ({ query: queryParams, userId }) => {
-  const { fromDate, toDate } = queryParams;
+  const { fromDate, toDate, page = 1, pageSize = 10 } = queryParams;
+
+  const currentPage = Math.max(Number(page), 1);
+  const limit = Math.max(Number(pageSize), 1);
+  const skip = (currentPage - 1) * limit;
 
   let query = {};
 
@@ -25,7 +29,7 @@ const getNotifications = async ({ query: queryParams, userId }) => {
   }
 
   const notifications =
-    await notificationRepository.findNotificationsByQuery(query);
+    await notificationRepository.findNotificationsByQuery({ query, skip, limit });
 
   if (!notifications.length) {
     return {
@@ -62,13 +66,11 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     }),
   );
 
-  const unreadCount = notificationsData.filter(
-    (item) => !item.isRead,
-  ).length;
+  const unreadCount = notificationsData.filter((item) => !item.isRead).length;
 
-  // if (!fromDate && !toDate) {
-  //   notificationsData.sort((a, b) => Number(a.isRead) - Number(b.isRead));
-  // }
+  if (!fromDate && !toDate) {
+    notificationsData.sort((a, b) => Number(a.isRead) - Number(b.isRead));
+  }
 
   return {
     unreadCount,

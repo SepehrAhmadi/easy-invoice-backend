@@ -18,6 +18,18 @@
  *         schema:
  *           type: string
  *         description: Jalali end date (jYYYY/jMM/jDD). Required together with fromDate.
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number (minimum 1). Defaults to 1.
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of notifications per page (minimum 1). Defaults to 10.
  *     responses:
  *       200:
  *         description: Notifications retrieved successfully

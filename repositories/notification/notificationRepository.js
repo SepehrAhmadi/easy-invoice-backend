@@ -2,8 +2,12 @@ const Notification = require("../../model/notification/Notification");
 const NotificationRead = require("../../model/notification/NotificatioRead");
 const User = require("../../model/User");
 
-const findNotificationsByQuery = async (query) => {
-  return Notification.find(query).sort({ createdDate: -1 }).exec();
+const findNotificationsByQuery = async ({ query, skip, limit }) => {
+  return Notification.find(query)
+    .sort({ createdDate: -1 })
+    .skip(skip)
+    .limit(limit)
+    .exec();
 };
 
 const findNotificationsByUserId = async (userId) => {
