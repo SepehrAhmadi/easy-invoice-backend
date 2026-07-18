@@ -5,7 +5,7 @@ const getNotifications = async (req, res) => {
   const message = require("../../language/message")(req);
 
   try {
-    const notificationsData = await notificationService.getNotifications({
+    const data = await notificationService.getNotifications({
       query: req.query,
       userId: req.userId,
     });
@@ -13,9 +13,7 @@ const getNotifications = async (req, res) => {
     res.status(200).json({
       statusCode: 200,
       message: message.success.dataReceived,
-      data: {
-        notifications: notificationsData,
-      },
+      data,
     });
   } catch (err) {
     if (err instanceof AppError) {

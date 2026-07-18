@@ -4,7 +4,7 @@
  *   get:
  *     tags: [Notification]
  *     summary: Get all notifications
- *     description: Returns notifications ordered by newest first. Optionally filter by Jalali date range. Each item includes isRead based on the authenticated user.
+ *     description: Returns notifications ordered by newest first, plus an unreadCount for the authenticated user. Optionally filter by Jalali date range. Each item includes isRead based on the authenticated user.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -35,6 +35,10 @@
  *                 data:
  *                   type: object
  *                   properties:
+ *                     unreadCount:
+ *                       type: integer
+ *                       example: 10
+ *                       description: Number of unread notifications in the result set
  *                     notifications:
  *                       type: array
  *                       items:

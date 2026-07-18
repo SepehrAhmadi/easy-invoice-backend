@@ -28,7 +28,10 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     await notificationRepository.findNotificationsByQuery(query);
 
   if (!notifications.length) {
-    return [];
+    return {
+      unreadCount: 0,
+      notifications: [],
+    };
   }
 
   const readNotifications =
@@ -59,7 +62,14 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     }),
   );
 
-  return notificationsData;
+  const unreadCount = notificationsData.filter(
+    (item) => !item.isRead,
+  ).length;
+
+  return {
+    unreadCount,
+    notifications: notificationsData,
+  };
 };
 
 const readNotification = async ({ notificationId, userId }) => {
