@@ -66,6 +66,10 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     (item) => !item.isRead,
   ).length;
 
+  // if (!fromDate && !toDate) {
+  //   notificationsData.sort((a, b) => Number(a.isRead) - Number(b.isRead));
+  // }
+
   return {
     unreadCount,
     notifications: notificationsData,
@@ -168,6 +172,7 @@ const create = async ({ userId, action, type, data }) => {
     const user = await notificationRepository.findUserByIdLean(userId);
 
     const responseNotification = {
+      id: notification._id,
       userId: notification.userId,
       username: user?.username,
       action: notification.action,
