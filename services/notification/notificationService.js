@@ -14,22 +14,41 @@ const getNotifications = async ({ query: queryParams, userId }) => {
 
   let query = {};
 
-  if (fromDate || toDate) {
+  if (fromDate) {
     const isValidFrom = moment(fromDate, "jYYYY/jMM/jDD", true).isValid();
-    const isValidTo = moment(toDate, "jYYYY/jMM/jDD", true).isValid();
 
-    if (!isValidFrom || !isValidTo) {
+    if (!isValidFrom) {
       throw new AppError(400, "invalidDate");
     }
-
-    query.date = {
-      $gte: moment(fromDate, "jYYYY/jMM/jDD").startOf("day").toDate(),
-      $lte: moment(toDate, "jYYYY/jMM/jDD").endOf("day").toDate(),
-    };
   }
 
-  const notifications =
-    await notificationRepository.findNotificationsByQuery({ query, skip, limit });
+  if (toDate) {
+    const isValidTo = moment(toDate, "jYYYY/jMM/jDD", true).isValid();
+
+    if (!isValidTo) {
+      throw new AppError(400, "invalidDate");
+    }
+  }
+
+  if (fromDate || toDate) {
+    query.date = {};
+
+    if (fromDate) {
+      query.date.$gte = moment(fromDate, "jYYYY/jMM/jDD")
+        .startOf("day")
+        .toDate();
+    }
+
+    if (toDate) {
+      query.date.$lte = moment(toDate, "jYYYY/jMM/jDD").endOf("day").toDate();
+    }
+  }
+
+  const notifications = await notificationRepository.findNotificationsByQuery({
+    query,
+    skip,
+    limit,
+  });
 
   if (!notifications.length) {
     return {
