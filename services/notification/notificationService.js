@@ -30,6 +30,7 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     }
   }
 
+
   if (fromDate || toDate) {
     query.date = {};
 
@@ -40,44 +41,55 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     }
 
     if (toDate) {
-      query.date.$lte = moment(toDate, "jYYYY/jMM/jDD").endOf("day").toDate();
+      query.date.$lte = moment(toDate, "jYYYY/jMM/jDD")
+        .endOf("day")
+        .toDate();
     }
   }
 
+
+  // اول همه notification ها را بگیر
   const [notifications, totalCount] = await Promise.all([
     notificationRepository.findNotificationsByQuery({
       query,
-      skip,
-      limit,
+      limit: 200,
     }),
     notificationRepository.countNotificationsByQuery(query),
   ]);
 
-  const totalPages = Math.ceil(totalCount / limit) || 0;
-  const pagination = {
-    page: currentPage,
-    pageSize: limit,
-    totalPages,
-    hasNextPage: currentPage < totalPages,
-  };
 
   if (!notifications.length) {
     return {
       notifications: [],
-      pagination,
+      pagination: {
+        page: currentPage,
+        pageSize: limit,
+        totalPages: 0,
+        hasNextPage: false,
+      },
     };
   }
 
+
+  // notification های خوانده شده کاربر
   const readNotifications =
     await notificationRepository.findReadNotificationsByUserId(userId);
 
+
   const readNotificationIds = new Set(
-    readNotifications.map((item) => item.notificationId.toString()),
+    readNotifications.map((item) =>
+      item.notificationId.toString()
+    )
   );
+
 
   const notificationsData = await Promise.all(
     notifications.map(async (item) => {
-      const user = await notificationRepository.findUserByIdLean(item.userId);
+      const user =
+        await notificationRepository.findUserByIdLean(
+          item.userId
+        );
+
 
       return {
         id: item._id,
@@ -89,20 +101,45 @@ const getNotifications = async ({ query: queryParams, userId }) => {
         faTitle: item.title.fa,
         enMessage: item.message.en,
         faMessage: item.message.fa,
-        isRead: readNotificationIds.has(item._id.toString()),
-        date: moment(item.date).format("M/D/YYYY HH:mm"),
+        isRead: readNotificationIds.has(
+          item._id.toString()
+        ),
+        date: moment(item.date).format(
+          "M/D/YYYY HH:mm"
+        ),
         localDate: item.localDate,
       };
-    }),
+    })
   );
 
-  if (!fromDate && !toDate) {
-    notificationsData.sort((a, b) => Number(a.isRead) - Number(b.isRead));
-  }
+
+  notificationsData.sort((a, b) => {
+    if (a.isRead !== b.isRead) {
+      return Number(a.isRead) - Number(b.isRead);
+    }
+
+    return new Date(b.date) - new Date(a.date);
+  });
+
+
+  const paginatedNotifications = notificationsData.slice(
+    skip,
+    skip + limit
+  );
+
+
+  const totalPages = Math.ceil(totalCount / limit) || 0;
+
 
   return {
-    notifications: notificationsData,
-    pagination,
+    notifications: paginatedNotifications,
+
+    pagination: {
+      page: currentPage,
+      pageSize: limit,
+      totalPages,
+      hasNextPage: currentPage < totalPages,
+    },
   };
 };
 
