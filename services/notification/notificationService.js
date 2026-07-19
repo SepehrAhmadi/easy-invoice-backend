@@ -44,58 +44,71 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     }
   }
 
-  const notifications = await notificationRepository.findNotificationsByQuery({
-    query,
-    skip,
-    limit,
-  });
+  const [notifications, totalCount] = await Promise.all([
+      notificationRepository.findNotificationsByQuery({
+        query,
+        skip,
+        limit,
+      }),
+      notificationRepository.countNotificationsByQuery(query),
+    ]);
 
-  if (!notifications.length) {
-    return {
-      unreadCount: 0,
-      notifications: [],
+    const totalPages = Math.ceil(totalCount / limit) || 0;
+    const pagination = {
+      page: currentPage,
+      pageSize: limit,
+      totalPages,
+      hasNextPage: currentPage < totalPages,
     };
-  }
 
-  const readNotifications =
-    await notificationRepository.findReadNotificationsByUserId(userId);
-
-  const readNotificationIds = new Set(
-    readNotifications.map((item) => item.notificationId.toString()),
-  );
-
-  const notificationsData = await Promise.all(
-    notifications.map(async (item) => {
-      const user = await notificationRepository.findUserByIdLean(item.userId);
-
+    if (!notifications.length) {
       return {
-        id: item._id,
-        userId: item.userId,
-        username: user?.username,
-        action: item.action,
-        type: item.type,
-        enTitle: item.title.en,
-        faTitle: item.title.fa,
-        enMessage: item.message.en,
-        faMessage: item.message.fa,
-        isRead: readNotificationIds.has(item._id.toString()),
-        date: moment(item.date).format("M/D/YYYY HH:mm"),
-        localDate: item.localDate,
+        unreadCount: 0,
+        notifications: [],
+        pagination,
       };
-    }),
-  );
+    }
 
-  const unreadCount = notificationsData.filter((item) => !item.isRead).length;
+    const readNotifications =
+      await notificationRepository.findReadNotificationsByUserId(userId);
 
-  if (!fromDate && !toDate) {
-    notificationsData.sort((a, b) => Number(a.isRead) - Number(b.isRead));
-  }
+    const readNotificationIds = new Set(
+      readNotifications.map((item) => item.notificationId.toString()),
+    );
 
-  return {
-    unreadCount,
-    notifications: notificationsData,
+    const notificationsData = await Promise.all(
+      notifications.map(async (item) => {
+        const user = await notificationRepository.findUserByIdLean(item.userId);
+
+        return {
+          id: item._id,
+          userId: item.userId,
+          username: user?.username,
+          action: item.action,
+          type: item.type,
+          enTitle: item.title.en,
+          faTitle: item.title.fa,
+          enMessage: item.message.en,
+          faMessage: item.message.fa,
+          isRead: readNotificationIds.has(item._id.toString()),
+          date: moment(item.date).format("M/D/YYYY HH:mm"),
+          localDate: item.localDate,
+        };
+      }),
+    );
+
+    const unreadCount = notificationsData.filter((item) => !item.isRead).length;
+
+    if (!fromDate && !toDate) {
+      notificationsData.sort((a, b) => Number(a.isRead) - Number(b.isRead));
+    }
+
+    return {
+      unreadCount,
+      notifications: notificationsData,
+      pagination,
+    };
   };
-};
 
 const readNotification = async ({ notificationId, userId }) => {
   try {

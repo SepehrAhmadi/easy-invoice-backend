@@ -10,6 +10,10 @@ const findNotificationsByQuery = async ({ query, skip, limit }) => {
     .exec();
 };
 
+const countNotificationsByQuery = async (query) => {
+  return Notification.countDocuments(query).exec();
+};
+
 const findNotificationsByUserId = async (userId) => {
   return Notification.find({ userId: userId }).exec();
 };
@@ -36,6 +40,7 @@ const createNotification = async (notificationData) => {
 
 module.exports = {
   findNotificationsByQuery,
+  countNotificationsByQuery,
   findNotificationsByUserId,
   findUserByIdLean,
   findNotificationById,
