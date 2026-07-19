@@ -45,70 +45,66 @@ const getNotifications = async ({ query: queryParams, userId }) => {
   }
 
   const [notifications, totalCount] = await Promise.all([
-      notificationRepository.findNotificationsByQuery({
-        query,
-        skip,
-        limit,
-      }),
-      notificationRepository.countNotificationsByQuery(query),
-    ]);
+    notificationRepository.findNotificationsByQuery({
+      query,
+      skip,
+      limit,
+    }),
+    notificationRepository.countNotificationsByQuery(query),
+  ]);
 
-    const totalPages = Math.ceil(totalCount / limit) || 0;
-    const pagination = {
-      page: currentPage,
-      pageSize: limit,
-      totalPages,
-      hasNextPage: currentPage < totalPages,
-    };
+  const totalPages = Math.ceil(totalCount / limit) || 0;
+  const pagination = {
+    page: currentPage,
+    pageSize: limit,
+    totalPages,
+    hasNextPage: currentPage < totalPages,
+  };
 
-    if (!notifications.length) {
-      return {
-        unreadCount: 0,
-        notifications: [],
-        pagination,
-      };
-    }
-
-    const readNotifications =
-      await notificationRepository.findReadNotificationsByUserId(userId);
-
-    const readNotificationIds = new Set(
-      readNotifications.map((item) => item.notificationId.toString()),
-    );
-
-    const notificationsData = await Promise.all(
-      notifications.map(async (item) => {
-        const user = await notificationRepository.findUserByIdLean(item.userId);
-
-        return {
-          id: item._id,
-          userId: item.userId,
-          username: user?.username,
-          action: item.action,
-          type: item.type,
-          enTitle: item.title.en,
-          faTitle: item.title.fa,
-          enMessage: item.message.en,
-          faMessage: item.message.fa,
-          isRead: readNotificationIds.has(item._id.toString()),
-          date: moment(item.date).format("M/D/YYYY HH:mm"),
-          localDate: item.localDate,
-        };
-      }),
-    );
-
-    const unreadCount = notificationsData.filter((item) => !item.isRead).length;
-
-    if (!fromDate && !toDate) {
-      notificationsData.sort((a, b) => Number(a.isRead) - Number(b.isRead));
-    }
-
+  if (!notifications.length) {
     return {
-      unreadCount,
-      notifications: notificationsData,
+      notifications: [],
       pagination,
     };
+  }
+
+  const readNotifications =
+    await notificationRepository.findReadNotificationsByUserId(userId);
+
+  const readNotificationIds = new Set(
+    readNotifications.map((item) => item.notificationId.toString()),
+  );
+
+  const notificationsData = await Promise.all(
+    notifications.map(async (item) => {
+      const user = await notificationRepository.findUserByIdLean(item.userId);
+
+      return {
+        id: item._id,
+        userId: item.userId,
+        username: user?.username,
+        action: item.action,
+        type: item.type,
+        enTitle: item.title.en,
+        faTitle: item.title.fa,
+        enMessage: item.message.en,
+        faMessage: item.message.fa,
+        isRead: readNotificationIds.has(item._id.toString()),
+        date: moment(item.date).format("M/D/YYYY HH:mm"),
+        localDate: item.localDate,
+      };
+    }),
+  );
+
+  if (!fromDate && !toDate) {
+    notificationsData.sort((a, b) => Number(a.isRead) - Number(b.isRead));
+  }
+
+  return {
+    notifications: notificationsData,
+    pagination,
   };
+};
 
 const readNotification = async ({ notificationId, userId }) => {
   try {
@@ -181,6 +177,21 @@ const readAllNotifications = async ({ userId }) => {
   }
 };
 
+const getUnreadCountNotifications = async ({ userId }) => {
+  const readNotifications =
+    await notificationRepository.findReadNotificationsByUserId(userId);
+
+  const readNotificationIds = readNotifications.map(
+    (item) => item.notificationId,
+  );
+
+  const unreadCount = await notificationRepository.countNotificationsByQuery({
+    _id: { $nin: readNotificationIds },
+  });
+
+  return unreadCount;
+};
+
 const create = async ({ userId, action, type, data }) => {
   try {
     if (!notificationMessages[type]) {
@@ -239,5 +250,6 @@ module.exports = {
   getNotifications,
   readNotification,
   readAllNotifications,
+  getUnreadCountNotifications,
   create,
 };

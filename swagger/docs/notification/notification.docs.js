@@ -4,7 +4,7 @@
  *   get:
  *     tags: [Notification]
  *     summary: Get all notifications
- *     description: Returns notifications ordered by newest first, plus an unreadCount for the authenticated user. Optionally filter by Jalali date range. Each item includes isRead based on the authenticated user.
+ *     description: Returns paginated notifications ordered by newest first. Optionally filter by Jalali date range. Each item includes isRead based on the authenticated user. Without a date filter, unread items are sorted first.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -12,12 +12,12 @@
  *         name: fromDate
  *         schema:
  *           type: string
- *         description: Jalali start date (jYYYY/jMM/jDD). Required together with toDate.
+ *         description: Jalali start date (jYYYY/jMM/jDD).
  *       - in: query
  *         name: toDate
  *         schema:
  *           type: string
- *         description: Jalali end date (jYYYY/jMM/jDD). Required together with fromDate.
+ *         description: Jalali end date (jYYYY/jMM/jDD).
  *       - in: query
  *         name: page
  *         schema:
@@ -47,10 +47,6 @@
  *                 data:
  *                   type: object
  *                   properties:
- *                     unreadCount:
- *                       type: integer
- *                       example: 10
- *                       description: Number of unread notifications in the result set
  *                     notifications:
  *                       type: array
  *                       items:
@@ -93,6 +89,21 @@
  *                           localDate:
  *                             type: string
  *                             example: "1402/10/25 10:30"
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         page:
+ *                           type: integer
+ *                           example: 1
+ *                         pageSize:
+ *                           type: integer
+ *                           example: 10
+ *                         totalPages:
+ *                           type: integer
+ *                           example: 3
+ *                         hasNextPage:
+ *                           type: boolean
+ *                           example: true
  *       400:
  *         description: Invalid date filter
  *         content:
@@ -106,6 +117,50 @@
  *                 message:
  *                   type: string
  *                   example: "Invalid Date"
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: "Faild to add data"
+ */
+
+/**
+ * @swagger
+ * /notification/unreadCount:
+ *   get:
+ *     tags: [Notification]
+ *     summary: Get unread notifications count
+ *     description: Returns the number of unread notifications for the authenticated user.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Unread count retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: "data successfully received"
+ *                 unreadCount:
+ *                   type: integer
+ *                   example: 5
+ *                   description: Total number of notifications the authenticated user has not read
  *       401:
  *         description: Unauthorized
  *       500:
@@ -230,7 +285,7 @@
  *   post:
  *     tags: [Notification]
  *     summary: Mark all notifications as read
- *     description: Marks every unread notification as read for the authenticated user. Already-read notifications are skipped.
+ *     description: Marks every notification as read for the authenticated user.
  *     security:
  *       - bearerAuth: []
  *     responses:
