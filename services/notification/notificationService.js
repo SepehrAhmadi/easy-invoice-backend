@@ -5,6 +5,51 @@ const logger = require("../../utils/logger");
 const moment = require("jalali-moment");
 const AppError = require("../../utils/AppError");
 
+const mapAndSortNotifications = async (notifications, userId) => {
+  if (!notifications.length) {
+    return [];
+  }
+
+  // notification های خوانده شده کاربر
+  const readNotifications =
+    await notificationRepository.findReadNotificationsByUserId(userId);
+
+  const readNotificationIds = new Set(
+    readNotifications.map((item) => item.notificationId.toString())
+  );
+
+  const notificationsData = await Promise.all(
+    notifications.map(async (item) => {
+      const user = await notificationRepository.findUserByIdLean(item.userId);
+
+      return {
+        id: item._id,
+        userId: item.userId,
+        username: user?.username,
+        action: item.action,
+        type: item.type,
+        enTitle: item.title.en,
+        faTitle: item.title.fa,
+        enMessage: item.message.en,
+        faMessage: item.message.fa,
+        isRead: readNotificationIds.has(item._id.toString()),
+        date: moment(item.date).format("M/D/YYYY HH:mm"),
+        localDate: item.localDate,
+      };
+    })
+  );
+
+  notificationsData.sort((a, b) => {
+    if (a.isRead !== b.isRead) {
+      return Number(a.isRead) - Number(b.isRead);
+    }
+
+    return new Date(b.date) - new Date(a.date);
+  });
+
+  return notificationsData;
+};
+
 const getNotifications = async ({ query: queryParams, userId }) => {
   const { fromDate, toDate, page = 1, pageSize = 10 } = queryParams;
 
@@ -30,7 +75,6 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     }
   }
 
-
   if (fromDate || toDate) {
     query.date = {};
 
@@ -47,8 +91,6 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     }
   }
 
-
-  // اول همه notification ها را بگیر
   const [notifications, totalCount] = await Promise.all([
     notificationRepository.findNotificationsByQuery({
       query,
@@ -56,7 +98,6 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     }),
     notificationRepository.countNotificationsByQuery(query),
   ]);
-
 
   if (!notifications.length) {
     return {
@@ -70,66 +111,14 @@ const getNotifications = async ({ query: queryParams, userId }) => {
     };
   }
 
-
-  // notification های خوانده شده کاربر
-  const readNotifications =
-    await notificationRepository.findReadNotificationsByUserId(userId);
-
-
-  const readNotificationIds = new Set(
-    readNotifications.map((item) =>
-      item.notificationId.toString()
-    )
+  const notificationsData = await mapAndSortNotifications(
+    notifications,
+    userId
   );
 
-
-  const notificationsData = await Promise.all(
-    notifications.map(async (item) => {
-      const user =
-        await notificationRepository.findUserByIdLean(
-          item.userId
-        );
-
-
-      return {
-        id: item._id,
-        userId: item.userId,
-        username: user?.username,
-        action: item.action,
-        type: item.type,
-        enTitle: item.title.en,
-        faTitle: item.title.fa,
-        enMessage: item.message.en,
-        faMessage: item.message.fa,
-        isRead: readNotificationIds.has(
-          item._id.toString()
-        ),
-        date: moment(item.date).format(
-          "M/D/YYYY HH:mm"
-        ),
-        localDate: item.localDate,
-      };
-    })
-  );
-
-
-  notificationsData.sort((a, b) => {
-    if (a.isRead !== b.isRead) {
-      return Number(a.isRead) - Number(b.isRead);
-    }
-
-    return new Date(b.date) - new Date(a.date);
-  });
-
-
-  const paginatedNotifications = notificationsData.slice(
-    skip,
-    skip + limit
-  );
-
+  const paginatedNotifications = notificationsData.slice(skip, skip + limit);
 
   const totalPages = Math.ceil(totalCount / limit) || 0;
-
 
   return {
     notifications: paginatedNotifications,
@@ -140,6 +129,23 @@ const getNotifications = async ({ query: queryParams, userId }) => {
       totalPages,
       hasNextPage: currentPage < totalPages,
     },
+  };
+};
+
+const getWidgetNotifications = async ({ userId }) => {
+  const notifications =
+    await notificationRepository.findNotificationsByQuery({
+      query: {},
+      limit: 200,
+    });
+
+  const notificationsData = await mapAndSortNotifications(
+    notifications,
+    userId
+  );
+
+  return {
+    notifications: notificationsData.slice(0, 3),
   };
 };
 
@@ -285,6 +291,7 @@ const create = async ({ userId, action, type, data }) => {
 
 module.exports = {
   getNotifications,
+  getWidgetNotifications,
   readNotification,
   readAllNotifications,
   getUnreadCountNotifications,

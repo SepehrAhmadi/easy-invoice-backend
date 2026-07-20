@@ -4,6 +4,7 @@ const router = express.Router();
 const notificationController = require("../../../controllers/notification/notificationController");
 
 router.get("/", notificationController.getNotifications);
+router.get("/widget", notificationController.getWidgetNotifications);
 router.get("/unreadCount", notificationController.getUnreadCountNotifications);
 router.post("/readAll", notificationController.readAllNotifications);
 router.post("/:id/read", notificationController.readNotification);
