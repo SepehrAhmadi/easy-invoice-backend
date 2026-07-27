@@ -4,7 +4,7 @@ module.exports = {
     title: "Easy Invoice API",
     version: "1.0.0",
   },
-  servers: [{ url: `http://localhost:${process.env.PORT}` }],
+  servers: [{ url: process.env.NODE_ENV == "production" ? process.env.PROJECT_PATH_URL  : `http://localhost:${process.env.PORT}` }],
   tags: [
     // ─── root endpoints ───────────────────────────
     { name: "Auth", description: "Authentication" },
