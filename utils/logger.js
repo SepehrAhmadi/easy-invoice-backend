@@ -29,7 +29,7 @@ const logger = createLogger({
 
     // MongoDB transport — always active
     new MongoDB({
-      db: process.env.DATABASE_LOCAL_URI,
+      db: process.env.DATABASE_ATLAS_URI,
       collection: "logs",
       level: process.env.LOG_LEVEL || "info",
     }),
