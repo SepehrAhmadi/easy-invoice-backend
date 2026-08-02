@@ -179,7 +179,7 @@ const printInvoice = async (req, res) => {
         const designType = item.isEdit
           ? message.response.edit
           : message.response.design;
-        const productDisplayName = `${designType} ${item.categoryName} ${item.amount} ${item.unitName} - ${item.brandName.includes("Other" || "دیگر") ? "" : item.brandName} - ${item.productName}`;
+        const productDisplayName = `${designType} ${item.categoryName} ${item.amount} ${item.unitName} - ${item.brandName.includes("Other" || "دیگر") ? "" : item.brandName + "-"} ${item.productName}`;
         return {
           ...item,
           prroduntDisplayName: productDisplayName,
